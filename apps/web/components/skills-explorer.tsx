@@ -7,6 +7,7 @@ import {
   ArrowUpDown,
   ChevronLeft,
   ChevronRight,
+  Folder,
   Package,
   Search,
 } from "lucide-react";
@@ -47,6 +48,7 @@ export function SkillsExplorer({ skills }: { skills: Skill[] }) {
   const t = useT();
   const [query, setQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState<TypeFilter>("all");
+  const [projectFilter, setProjectFilter] = useState("all");
   const [sort, setSort] = useState<SortKey>("updated");
   const [page, setPage] = useState(1);
 
@@ -62,10 +64,18 @@ export function SkillsExplorer({ skills }: { skills: Skill[] }) {
     return c;
   }, [skills]);
 
+  const projects = useMemo(() => {
+    const set = new Set<string>();
+    for (const s of skills) if (s.project?.name) set.add(s.project.name);
+    return [...set].sort((a, b) => a.localeCompare(b));
+  }, [skills]);
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     const list = skills.filter((s) => {
       if (typeFilter !== "all" && s.type !== typeFilter) return false;
+      if (projectFilter !== "all" && s.project?.name !== projectFilter)
+        return false;
       if (!q) return true;
       return (
         s.name.toLowerCase().includes(q) ||
@@ -80,7 +90,7 @@ export function SkillsExplorer({ skills }: { skills: Skill[] }) {
         return (b.usage?.usageCount ?? 0) - (a.usage?.usageCount ?? 0);
       return Date.parse(b.lastUpdated) - Date.parse(a.lastUpdated);
     });
-  }, [skills, query, typeFilter, sort]);
+  }, [skills, query, typeFilter, projectFilter, sort]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const currentPage = Math.min(page, totalPages);
@@ -93,7 +103,7 @@ export function SkillsExplorer({ skills }: { skills: Skill[] }) {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
+      <div className="flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-center">
         <div className="relative lg:max-w-xs lg:flex-1">
           <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
@@ -122,6 +132,31 @@ export function SkillsExplorer({ skills }: { skills: Skill[] }) {
             ))}
           </TabsList>
         </Tabs>
+        {projects.length > 0 && (
+          <Select
+            value={projectFilter}
+            onValueChange={(v) => {
+              setProjectFilter(v);
+              setPage(1);
+            }}
+          >
+            <SelectTrigger
+              className="gap-1.5 lg:w-[180px]"
+              aria-label={t.common.filterByProject}
+            >
+              <Folder className="h-3.5 w-3.5 shrink-0 opacity-70" />
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">{t.common.allProjects}</SelectItem>
+              {projects.map((p) => (
+                <SelectItem key={p} value={p}>
+                  {p}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
         <Select
           value={sort}
           onValueChange={(v) => {

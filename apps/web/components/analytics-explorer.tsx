@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Activity,
   Bell,
@@ -9,11 +10,19 @@ import {
   CalendarDays,
   CircleSlash,
   Clock,
+  Folder,
   SquareTerminal,
   Target,
   type LucideIcon,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CountBadge } from "@/components/count-badge";
 import { UsageHeatmap } from "@/components/usage-heatmap";
@@ -202,10 +211,33 @@ function GapList({
   );
 }
 
-export function AnalyticsExplorer({ analytics }: { analytics: Analytics }) {
+export function AnalyticsExplorer({
+  analytics,
+  projects,
+  selectedProject,
+}: {
+  analytics: Analytics;
+  projects: string[];
+  selectedProject: string;
+}) {
   const t = useT();
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const [win, setWin] = useState<ActivityWindow>("1d");
   const windowMeta = t.analytics.windows[win];
+  const projectValue = projects.includes(selectedProject)
+    ? selectedProject
+    : "all";
+
+  const onProjectChange = (value: string) => {
+    startTransition(() => {
+      router.push(
+        value === "all"
+          ? "/analytic"
+          : `/analytic?project=${encodeURIComponent(value)}`,
+      );
+    });
+  };
 
   const rank = (a: UsageStat, b: UsageStat) =>
     b.windows[win] - a.windows[win] || b.lastUsed - a.lastUsed;
@@ -229,7 +261,31 @@ export function AnalyticsExplorer({ analytics }: { analytics: Analytics }) {
   const winCount = analytics.windowTotals[win];
 
   return (
-    <div className="space-y-8">
+    <div
+      className={`space-y-8 transition-opacity ${isPending ? "opacity-60" : ""}`}
+    >
+      {projects.length > 0 && (
+        <div className="flex items-center justify-end gap-2">
+          <Select value={projectValue} onValueChange={onProjectChange}>
+            <SelectTrigger
+              className="gap-1.5 lg:w-[220px]"
+              aria-label={t.common.filterByProject}
+            >
+              <Folder className="h-3.5 w-3.5 shrink-0 opacity-70" />
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">{t.common.allProjects}</SelectItem>
+              {projects.map((p) => (
+                <SelectItem key={p} value={p}>
+                  {p}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
+
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           label={t.analytics.trackedInvocations}

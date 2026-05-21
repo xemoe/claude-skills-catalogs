@@ -64,6 +64,8 @@ export interface Analytics {
   firstEventAt: number;
   transcriptFiles: number;
   scannedAt: string;
+  /** Distinct project names across the full catalog, for the project filter. */
+  projects: string[];
 }
 
 const CACHE_TTL_MS = 8000;
@@ -74,7 +76,12 @@ const HOUR = 3_600_000;
 const DAY = 86_400_000;
 const WEEK = 7 * DAY;
 
-let cache: { analytics: Analytics; at: number; locale: Locale } | null = null;
+let cache: {
+  analytics: Analytics;
+  at: number;
+  locale: Locale;
+  project: string;
+} | null = null;
 
 /** Skill identity — the last namespace segment, lowercased (plugin prefix dropped). */
 function skillId(name: string): string {
@@ -121,13 +128,15 @@ interface Group {
  * lists, a recent-activity heatmap, and which skills/commands have gone unused.
  */
 export function buildAnalytics(
-  opts: { force?: boolean; locale?: Locale } = {},
+  opts: { force?: boolean; locale?: Locale; project?: string } = {},
 ): Analytics {
   const locale = opts.locale ?? DEFAULT_LOCALE;
+  const project = opts.project ?? "";
   if (
     !opts.force &&
     cache &&
     cache.locale === locale &&
+    cache.project === project &&
     Date.now() - cache.at < CACHE_TTL_MS
   ) {
     return cache.analytics;
@@ -135,9 +144,27 @@ export function buildAnalytics(
 
   const t = getDictionary(locale);
   const activity = scanActivity(opts);
-  const skills = scanSkills(opts).skills;
-  const commands = scanCommands(opts).commands;
+  const allSkills = scanSkills(opts).skills;
+  const allCommands = scanCommands(opts).commands;
   const now = Date.now();
+
+  // Distinct project names across the whole catalog — drives the filter UI.
+  const projects = [
+    ...new Set(
+      [...allSkills, ...allCommands]
+        .map((item) => item.project?.name)
+        .filter((name): name is string => !!name),
+    ),
+  ].sort((a, b) => a.localeCompare(b));
+
+  // When a project is selected, only that project's catalog entries — and the
+  // activity that resolves to them — feed the aggregation.
+  const skills = project
+    ? allSkills.filter((s) => s.project?.name === project)
+    : allSkills;
+  const commands = project
+    ? allCommands.filter((c) => c.project?.name === project)
+    : allCommands;
 
   // Catalog lookup keys — let a slash invocation resolve to skill vs command.
   const skillKeySet = new Set(skills.map((s) => skillId(s.name)));
@@ -162,6 +189,15 @@ export function buildAnalytics(
 
     const matchKey = kind === "skill" ? skillId(ev.name) : cmdId(ev.name);
     if (!matchKey) continue;
+    // With a project filter active, drop activity that doesn't resolve to one
+    // of the project's catalog entries.
+    if (project) {
+      const inProject =
+        kind === "skill"
+          ? skillKeySet.has(matchKey)
+          : commandKeySet.has(matchKey);
+      if (!inProject) continue;
+    }
     const display = kind === "skill" ? matchKey : `/${matchKey}`;
     const identity = `${kind}\u0000${matchKey}`;
 
@@ -305,8 +341,9 @@ export function buildAnalytics(
     firstEventAt: activity.events.length ? activity.events[0].ts : 0,
     transcriptFiles: activity.fileCount,
     scannedAt: new Date().toISOString(),
+    projects,
   };
 
-  cache = { analytics, at: Date.now(), locale };
+  cache = { analytics, at: Date.now(), locale, project };
   return analytics;
 }

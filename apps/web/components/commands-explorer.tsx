@@ -7,6 +7,7 @@ import {
   ArrowUpDown,
   ChevronLeft,
   ChevronRight,
+  Folder,
   Package,
   Search,
 } from "lucide-react";
@@ -47,6 +48,7 @@ export function CommandsExplorer({ commands }: { commands: Command[] }) {
   const t = useT();
   const [query, setQuery] = useState("");
   const [scopeFilter, setScopeFilter] = useState<ScopeFilter>("all");
+  const [projectFilter, setProjectFilter] = useState("all");
   const [sort, setSort] = useState<SortKey>("updated");
   const [page, setPage] = useState(1);
 
@@ -61,10 +63,18 @@ export function CommandsExplorer({ commands }: { commands: Command[] }) {
     return c;
   }, [commands]);
 
+  const projects = useMemo(() => {
+    const set = new Set<string>();
+    for (const c of commands) if (c.project?.name) set.add(c.project.name);
+    return [...set].sort((a, b) => a.localeCompare(b));
+  }, [commands]);
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     const list = commands.filter((c) => {
       if (scopeFilter !== "all" && c.scope !== scopeFilter) return false;
+      if (projectFilter !== "all" && c.project?.name !== projectFilter)
+        return false;
       if (!q) return true;
       return (
         c.name.toLowerCase().includes(q) ||
@@ -77,7 +87,7 @@ export function CommandsExplorer({ commands }: { commands: Command[] }) {
       if (sort === "name") return a.name.localeCompare(b.name);
       return Date.parse(b.lastUpdated) - Date.parse(a.lastUpdated);
     });
-  }, [commands, query, scopeFilter, sort]);
+  }, [commands, query, scopeFilter, projectFilter, sort]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const currentPage = Math.min(page, totalPages);
@@ -90,7 +100,7 @@ export function CommandsExplorer({ commands }: { commands: Command[] }) {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
+      <div className="flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-center">
         <div className="relative lg:max-w-xs lg:flex-1">
           <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
@@ -119,6 +129,31 @@ export function CommandsExplorer({ commands }: { commands: Command[] }) {
             ))}
           </TabsList>
         </Tabs>
+        {projects.length > 0 && (
+          <Select
+            value={projectFilter}
+            onValueChange={(v) => {
+              setProjectFilter(v);
+              setPage(1);
+            }}
+          >
+            <SelectTrigger
+              className="gap-1.5 lg:w-[180px]"
+              aria-label={t.common.filterByProject}
+            >
+              <Folder className="h-3.5 w-3.5 shrink-0 opacity-70" />
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">{t.common.allProjects}</SelectItem>
+              {projects.map((p) => (
+                <SelectItem key={p} value={p}>
+                  {p}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
         <Select
           value={sort}
           onValueChange={(v) => {

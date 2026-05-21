@@ -43,6 +43,8 @@ export const th: Dictionary = {
     justNow: "เมื่อสักครู่",
     loadingGraph: "กำลังโหลดกราฟ…",
     loadingPipeline: "กำลังโหลดไปป์ไลน์…",
+    allProjects: "ทุกโปรเจ็กต์",
+    filterByProject: "กรองตามโปรเจ็กต์",
     page: (current, total) => `หน้า ${current} จาก ${total}`,
   },
 

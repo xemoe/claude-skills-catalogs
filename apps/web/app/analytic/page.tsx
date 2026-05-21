@@ -6,9 +6,15 @@ import { getServerI18n } from "@/lib/i18n/server";
 
 export const dynamic = "force-dynamic";
 
-export default async function AnalyticPage() {
+export default async function AnalyticPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ project?: string }>;
+}) {
   const { t, locale } = await getServerI18n();
-  const analytics = buildAnalytics({ locale });
+  const { project: projectParam } = await searchParams;
+  const project = typeof projectParam === "string" ? projectParam : "";
+  const analytics = buildAnalytics({ locale, project });
 
   return (
     <div className="space-y-8">
@@ -29,7 +35,11 @@ export default async function AnalyticPage() {
         </p>
       </div>
 
-      <AnalyticsExplorer analytics={analytics} />
+      <AnalyticsExplorer
+        analytics={analytics}
+        projects={analytics.projects}
+        selectedProject={project}
+      />
 
       {analytics.totalEvents === 0 && (
         <div className="flex items-start gap-2 rounded-none border border-dashed p-4 text-xs text-muted-foreground">

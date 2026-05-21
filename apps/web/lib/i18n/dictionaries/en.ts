@@ -46,6 +46,8 @@ export const en = {
     justNow: "just now",
     loadingGraph: "Loading graph…",
     loadingPipeline: "Loading pipeline…",
+    allProjects: "All projects",
+    filterByProject: "Filter by project",
     page: (current: number, total: number) => `Page ${current} of ${total}`,
   },
 
