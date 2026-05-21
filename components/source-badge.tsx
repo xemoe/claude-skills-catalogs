@@ -20,7 +20,7 @@ export function SourceBadge({
         onClick={(e) => e.stopPropagation()}
         title={source.url}
         className={cn(
-          "inline-flex items-center gap-1.5 text-sm hover:underline",
+          "flex min-w-0 items-center gap-1.5 text-sm hover:underline",
           className,
         )}
       >
@@ -31,27 +31,17 @@ export function SourceBadge({
     );
   }
 
-  if (source.kind === "git") {
-    return (
-      <span
-        title={source.label}
-        className={cn("inline-flex items-center gap-1.5 text-sm", className)}
-      >
-        <GitBranch className="h-3.5 w-3.5 shrink-0" />
-        <span className="truncate">{source.label}</span>
-      </span>
-    );
-  }
-
+  const Icon = source.kind === "git" ? GitBranch : FolderOpen;
   return (
     <span
       title={source.label}
       className={cn(
-        "inline-flex items-center gap-1.5 text-sm text-muted-foreground",
+        "flex min-w-0 items-center gap-1.5 text-sm",
+        source.kind === "local" && "text-muted-foreground",
         className,
       )}
     >
-      <FolderOpen className="h-3.5 w-3.5 shrink-0" />
+      <Icon className="h-3.5 w-3.5 shrink-0" />
       <span className="truncate">{source.label}</span>
     </span>
   );

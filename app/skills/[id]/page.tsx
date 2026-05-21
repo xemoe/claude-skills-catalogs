@@ -67,7 +67,7 @@ export default async function SkillDetailPage({
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
-        <Card className="lg:col-span-2">
+        <Card className="min-w-0 lg:col-span-2">
           <CardHeader className="flex-row items-center justify-between space-y-0">
             <CardTitle className="flex items-center gap-2 text-base">
               <FileText className="h-4 w-4" /> SKILL.md
@@ -87,7 +87,7 @@ export default async function SkillDetailPage({
           </CardContent>
         </Card>
 
-        <div className="space-y-6">
+        <div className="min-w-0 space-y-6">
           <Card>
             <CardHeader>
               <CardTitle className="text-base">Details</CardTitle>
@@ -95,7 +95,13 @@ export default async function SkillDetailPage({
             <CardContent className="pt-0">
               <div className="divide-y">
                 <MetaRow label="Source">
-                  <SourceBadge source={skill.source} />
+                  <span className="flex min-w-0 items-center justify-end gap-1">
+                    <SourceBadge source={skill.source} />
+                    <CopyButton
+                      value={skill.source.url ?? skill.source.label}
+                      className="h-6 w-6 shrink-0"
+                    />
+                  </span>
                 </MetaRow>
                 {skill.source.branch && (
                   <MetaRow label="Branch">
