@@ -3,12 +3,7 @@
 import { useState } from "react";
 import { Check, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-
-const VIEWS = [
-  ["preview", "Preview"],
-  ["raw", "Raw"],
-] as const;
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export function SkillMdViewer({
   preview,
@@ -18,7 +13,6 @@ export function SkillMdViewer({
   preview: React.ReactNode;
   raw: string;
 }) {
-  const [view, setView] = useState<"preview" | "raw">("preview");
   const [copied, setCopied] = useState(false);
 
   async function copyRaw() {
@@ -32,26 +26,14 @@ export function SkillMdViewer({
   }
 
   return (
-    <>
+    // Force column layout: the Tabs primitive's data-horizontal:flex-col
+    // variant never matches radix's data-orientation attribute.
+    <Tabs defaultValue="preview" className="flex-col">
       <div className="flex items-center justify-between gap-2">
-        <div className="inline-flex border bg-muted p-0.5">
-          {VIEWS.map(([value, label]) => (
-            <button
-              key={value}
-              type="button"
-              aria-pressed={view === value}
-              onClick={() => setView(value)}
-              className={cn(
-                "px-3 py-1.5 text-xs font-medium transition-colors",
-                view === value
-                  ? "bg-background text-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground",
-              )}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
+        <TabsList>
+          <TabsTrigger value="preview">Preview</TabsTrigger>
+          <TabsTrigger value="raw">Raw</TabsTrigger>
+        </TabsList>
         <Button
           variant="outline"
           onClick={copyRaw}
@@ -71,15 +53,12 @@ export function SkillMdViewer({
           )}
         </Button>
       </div>
-      <div className="mt-3">
-        {view === "preview" ? (
-          preview
-        ) : (
-          <pre className="overflow-x-auto rounded border bg-secondary/60 p-4 font-mono text-xs leading-relaxed whitespace-pre-wrap break-words">
-            {raw}
-          </pre>
-        )}
-      </div>
-    </>
+      <TabsContent value="preview">{preview}</TabsContent>
+      <TabsContent value="raw">
+        <pre className="overflow-x-auto rounded-none border bg-secondary/60 p-4 font-mono text-xs leading-relaxed whitespace-pre-wrap break-words">
+          {raw}
+        </pre>
+      </TabsContent>
+    </Tabs>
   );
 }

@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { FileText, Package } from "lucide-react";
+import { Separator } from "@/components/ui/separator"
 import { getSkillById } from "@/lib/scanner";
 import { parseSkillMd } from "@/lib/skill-parser";
 import { lastCommitDate } from "@/lib/git";
@@ -12,6 +13,7 @@ import { CopyButton } from "@/components/copy-button";
 import {
   Card,
   CardContent,
+  CardAction,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -64,10 +66,18 @@ export default async function SkillDetailPage({
 
       <Card className="min-w-0">
         <CardHeader className="flex-row items-center justify-between space-y-0">
-          <CardTitle className="flex items-center gap-2 text-base">
+          <CardAction>
+            <MetaRow label="Last modified">
+                <span title={formatDate(skill.lastUpdated)}>
+                  {formatRelativeTime(skill.lastUpdated)}
+                </span>
+            </MetaRow>
+          </CardAction>
+          <CardTitle className="flex items-center gap-2 text-2xl">
             <FileText className="h-4 w-4" /> SKILL.md
           </CardTitle>
         </CardHeader>
+        <Separator className={'border-b border-dotted border-gray-200'} />
         <CardContent>
           {rawSkillMd ? (
             <SkillMdViewer
@@ -102,7 +112,8 @@ export default async function SkillDetailPage({
                   <SourceBadge source={skill.source} />
                   <CopyButton
                     value={skill.source.url ?? skill.source.label}
-                    className="h-6 w-6 shrink-0"
+                    size="icon-xs"
+                    className="shrink-0"
                   />
                 </span>
               </MetaRow>
@@ -196,7 +207,7 @@ export default async function SkillDetailPage({
           </CardHeader>
           <CardContent className="pt-0">
             <div className="flex items-start gap-2">
-              <code className="min-w-0 flex-1 break-all rounded bg-secondary p-2 text-xs">
+              <code className="min-w-0 flex-1 break-all rounded-none bg-secondary p-2 text-xs">
                 {skill.path}
               </code>
               <CopyButton value={skill.path} />

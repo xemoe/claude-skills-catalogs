@@ -5,24 +5,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { CountBadge } from "@/components/count-badge";
+import { SKILL_TYPE_META } from "@/components/skill-type";
 import { cn } from "@/lib/utils";
 import type { Skill, SkillType } from "@/lib/types";
 
 const TYPE_ORDER: SkillType[] = ["personal", "plugin", "project", "local"];
-
-const TYPE_LABELS: Record<SkillType, string> = {
-  personal: "Personal",
-  plugin: "Plugin",
-  project: "Project",
-  local: "Local",
-};
-
-const TYPE_DOT: Record<SkillType, string> = {
-  personal: "bg-blue-500",
-  plugin: "bg-purple-500",
-  project: "bg-green-500",
-  local: "bg-slate-400",
-};
 
 export function SkillSidebar({ skills }: { skills: Skill[] }) {
   const pathname = usePathname();
@@ -58,16 +46,16 @@ export function SkillSidebar({ skills }: { skills: Skill[] }) {
 
   return (
     <aside className="lg:sticky lg:top-[4.5rem] lg:w-72 lg:shrink-0">
-      <div className="flex flex-col overflow-hidden rounded-xl border bg-card lg:max-h-[calc(100vh-6rem)]">
+      <div className="flex flex-col overflow-hidden bg-card ring-1 ring-foreground/10 lg:max-h-[calc(100vh-6rem)]">
         <Link
           href="/"
           className="flex items-center gap-2 border-b px-3 py-2.5 text-sm font-semibold transition-colors hover:bg-accent"
         >
           <LayoutDashboard className="h-4 w-4 text-primary" />
           <span>All skills</span>
-          <span className="ml-auto rounded bg-foreground/10 px-1.5 py-0.5 text-[11px] font-normal tabular-nums text-muted-foreground">
+          <CountBadge className="ml-auto font-normal text-muted-foreground">
             {skills.length}
-          </span>
+          </CountBadge>
         </Link>
 
         <div className="border-b p-2">
@@ -77,7 +65,7 @@ export function SkillSidebar({ skills }: { skills: Skill[] }) {
               placeholder="Filter skills…"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="rounded-md pl-7"
+              className="pl-7"
               aria-label="Filter skills"
             />
           </div>
@@ -93,11 +81,14 @@ export function SkillSidebar({ skills }: { skills: Skill[] }) {
               <div key={g.type} className="mb-1.5 last:mb-0">
                 <div className="flex items-center gap-1.5 px-2 pb-1 pt-2">
                   <span
-                    className={cn("h-2 w-2 rounded-full", TYPE_DOT[g.type])}
+                    className={cn(
+                      "h-2 w-2 rounded-full",
+                      SKILL_TYPE_META[g.type].dot,
+                    )}
                     aria-hidden
                   />
                   <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-                    {TYPE_LABELS[g.type]}
+                    {SKILL_TYPE_META[g.type].label}
                   </span>
                   <span className="text-[11px] tabular-nums text-muted-foreground/70">
                     {g.items.length}

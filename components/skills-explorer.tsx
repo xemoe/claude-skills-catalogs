@@ -30,6 +30,7 @@ import {
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SkillTypeBadge } from "@/components/skill-type-badge";
 import { SourceBadge } from "@/components/source-badge";
+import { CountBadge } from "@/components/count-badge";
 import { formatDate } from "@/lib/utils";
 import type { Skill, SkillType } from "@/lib/types";
 
@@ -120,9 +121,7 @@ export function SkillsExplorer({ skills }: { skills: Skill[] }) {
             {TABS.map((t) => (
               <TabsTrigger key={t.key} value={t.key} className="gap-1.5">
                 {t.label}
-                <span className="rounded bg-foreground/10 px-1 text-[10px] tabular-nums">
-                  {counts[t.key]}
-                </span>
+                <CountBadge>{counts[t.key]}</CountBadge>
               </TabsTrigger>
             ))}
           </TabsList>
@@ -146,7 +145,7 @@ export function SkillsExplorer({ skills }: { skills: Skill[] }) {
         </Select>
       </div>
 
-      <div className="rounded-xl border">
+      <div className="ring-1 ring-foreground/10">
         <Table>
           <TableHeader>
             <TableRow className="hover:bg-transparent">

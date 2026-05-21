@@ -1,19 +1,6 @@
 import { cn } from "@/lib/utils";
 import type { SkillType } from "@/lib/types";
-
-const STYLES: Record<SkillType, string> = {
-  personal: "border-blue-200 bg-blue-50 text-blue-700",
-  plugin: "border-purple-200 bg-purple-50 text-purple-700",
-  project: "border-green-200 bg-green-50 text-green-700",
-  local: "border-slate-300 bg-slate-100 text-slate-600",
-};
-
-const LABELS: Record<SkillType, string> = {
-  personal: "Personal",
-  plugin: "Plugin",
-  project: "Project",
-  local: "Local",
-};
+import { SKILL_TYPE_META } from "@/components/skill-type";
 
 export function SkillTypeBadge({
   type,
@@ -22,15 +9,16 @@ export function SkillTypeBadge({
   type: SkillType;
   className?: string;
 }) {
+  const meta = SKILL_TYPE_META[type];
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-medium",
-        STYLES[type],
+        "inline-flex items-center rounded-none border px-2 py-0.5 text-xs font-medium",
+        meta.badge,
         className,
       )}
     >
-      {LABELS[type]}
+      {meta.label}
     </span>
   );
 }

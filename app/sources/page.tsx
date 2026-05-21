@@ -15,6 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { InlineCode } from "@/components/inline-code";
 import type { Skill, SourceKind } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -88,7 +89,7 @@ export default function SourcesPage() {
                 <CardTitle className="min-w-0 flex-1 truncate text-base">
                   {group.title}
                 </CardTitle>
-                <span className="shrink-0 rounded border px-1.5 py-0.5 text-[10px] text-muted-foreground">
+                <span className="shrink-0 rounded-none border px-1.5 py-0.5 text-[11px] text-muted-foreground">
                   {KIND_LABEL[group.kind]}
                 </span>
               </div>
@@ -115,7 +116,7 @@ export default function SourcesPage() {
                   <li key={s.id}>
                     <Link
                       href={`/skills/${s.id}`}
-                      className="inline-flex rounded-md border bg-secondary/40 px-2 py-0.5 text-xs hover:bg-secondary"
+                      className="inline-flex rounded-none border bg-secondary/40 px-2 py-0.5 text-xs hover:bg-secondary"
                     >
                       {s.name}
                     </Link>
@@ -134,13 +135,9 @@ export default function SourcesPage() {
         <h2 className="text-lg font-semibold tracking-tight">Scan locations</h2>
         <p className="text-sm text-muted-foreground">
           Directories the catalog walks to discover SKILL.md files. Configure
-          extra roots in{" "}
-          <code className="rounded bg-secondary px-1.5 py-0.5 text-xs">
-            skills-catalog.config.json
-          </code>
-          .
+          extra roots in <InlineCode>skills-catalog.config.json</InlineCode>.
         </p>
-        <div className="rounded-xl border">
+        <div className="ring-1 ring-foreground/10">
           <Table>
             <TableHeader>
               <TableRow className="hover:bg-transparent">

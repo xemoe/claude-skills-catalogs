@@ -33,7 +33,7 @@ export function SkillDescription({ description }: { description: string }) {
   const showToggle = overflowing || expanded;
 
   return (
-    <div className="rounded-lg border bg-muted/60 px-4 py-3">
+    <div className="rounded-none border bg-muted/60 px-4 py-3">
       <p
         id={textId}
         ref={textRef}

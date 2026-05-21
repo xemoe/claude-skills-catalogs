@@ -45,7 +45,7 @@ export function StatCards({ result }: { result: ScanResult }) {
       {cards.map(({ label, value, sub, Icon }) => (
         <Card key={label}>
           <CardContent className="flex items-center gap-4 p-5">
-            <div className="rounded-lg bg-secondary p-2.5">
+            <div className="rounded-none bg-secondary p-2.5">
               <Icon className="h-5 w-5" />
             </div>
             <div className="min-w-0">

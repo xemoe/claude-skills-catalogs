@@ -3,14 +3,15 @@
 import { useState } from "react";
 import { Check, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 
 export function CopyButton({
   value,
   className,
+  size = "icon-sm",
 }: {
   value: string;
   className?: string;
+  size?: "icon-sm" | "icon-xs";
 }) {
   const [copied, setCopied] = useState(false);
 
@@ -27,15 +28,15 @@ export function CopyButton({
   return (
     <Button
       variant="ghost"
-      size="icon"
-      className={cn("h-7 w-7", className)}
+      size={size}
+      className={className}
       onClick={copy}
       title="Copy to clipboard"
     >
       {copied ? (
-        <Check className="h-3.5 w-3.5 text-green-600" />
+        <Check className="text-green-600" />
       ) : (
-        <Copy className="h-3.5 w-3.5" />
+        <Copy />
       )}
     </Button>
   );
