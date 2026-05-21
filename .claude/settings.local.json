@@ -1,9 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Read(//c/Users/User/.claude/**)",
-      "Read(//c/Users/User/.claude/plugins/**)",
-      "Bash(echo \"=== find SKILL.md \\(anywhere under .claude\\) ===\"; find \"C:\\\\Users\\\\User\\\\.claude\" -iname \"SKILL.md\" 2>/dev/null | head -20; echo; echo \"=== .claude.json / config ===\"; ls \"C:\\\\Users\\\\User\\\\.claude.json\" 2>/dev/null; ls \"C:\\\\Users\\\\User\\\\.claude\\\\config.json\" 2>/dev/null; echo; echo \"=== plugin config dir ===\"; find \"C:\\\\Users\\\\User\\\\.claude\" -maxdepth 3 -iname \"*plugin*\" 2>/dev/null | head -20)"
-    ]
-  }
-}

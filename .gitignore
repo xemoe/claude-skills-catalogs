@@ -29,3 +29,4 @@ next-env.d.ts
 
 # local config
 skills-catalog.config.json
+.claude/settings.local.json
