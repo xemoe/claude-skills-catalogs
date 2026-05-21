@@ -1,13 +1,15 @@
 import path from "path";
 import { notFound } from "next/navigation";
-import { FileText, Package } from "lucide-react";
+import { FileText, Package, Workflow } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { getCommandById } from "@/lib/command-scanner";
 import { parseCommandMd } from "@/lib/command-parser";
+import { extractPipeline } from "@/lib/pipeline";
 import { stripBom } from "@/lib/frontmatter";
 import { lastCommitDate } from "@/lib/git";
 import { Markdown } from "@/components/markdown";
 import { SkillMdViewer } from "@/components/skill-md-viewer";
+import { NodePipeline } from "@/components/node-pipeline";
 import { SkillDescription } from "@/components/skill-description";
 import { SkillTypeBadge } from "@/components/skill-type-badge";
 import { SourceBadge } from "@/components/source-badge";
@@ -48,6 +50,7 @@ export default async function CommandDetailPage({
   if (!command) notFound();
 
   const parsed = parseCommandMd(command.path);
+  const pipeline = extractPipeline(parsed.body);
   const rawCommandMd = stripBom(parsed.raw);
   const committedAt = command.source.repoRoot
     ? lastCommitDate(command.source.repoRoot, command.path)
@@ -113,6 +116,24 @@ export default async function CommandDetailPage({
           )}
         </CardContent>
       </Card>
+
+      {pipeline.steps.length >= 2 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base">
+              <Workflow className="h-4 w-4" /> Pipeline
+              <span className="text-xs font-normal text-muted-foreground">
+                {pipeline.kind === "steps"
+                  ? "workflow steps"
+                  : "section outline"}
+              </span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pt-0">
+            <NodePipeline pipeline={pipeline} />
+          </CardContent>
+        </Card>
+      )}
 
       <div className="grid items-start gap-6 sm:grid-cols-2 xl:grid-cols-3">
         <Card>
