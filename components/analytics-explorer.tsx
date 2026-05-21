@@ -137,6 +137,11 @@ function GapList({
   emptyLabel: string;
   showLastUsed: boolean;
 }) {
+  const nameCounts = new Map<string, number>();
+  for (const g of items) {
+    const key = `${g.kind}:${g.name}`;
+    nameCounts.set(key, (nameCounts.get(key) ?? 0) + 1);
+  }
   return (
     <Card>
       <CardContent className="p-5">
@@ -151,34 +156,46 @@ function GapList({
           </p>
         ) : (
           <ul className="max-h-80 space-y-0.5 overflow-y-auto">
-            {items.map((g) => (
-              <li key={g.href}>
-                <Link
-                  href={g.href}
-                  className="flex items-center gap-2 px-2 py-1.5 hover:bg-accent"
-                >
-                  {g.kind === "skill" ? (
-                    <Boxes className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-                  ) : (
-                    <SquareTerminal className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-                  )}
-                  <span
-                    className="min-w-0 flex-1 truncate text-xs font-medium"
-                    title={g.name}
+            {items.map((g) => {
+              const duplicated =
+                (nameCounts.get(`${g.kind}:${g.name}`) ?? 0) > 1;
+              return (
+                <li key={g.href}>
+                  <Link
+                    href={g.href}
+                    className="flex items-center gap-2 px-2 py-1.5 hover:bg-accent"
                   >
-                    {g.name}
-                  </span>
-                  <span className="shrink-0 text-[10px] uppercase tracking-wide text-muted-foreground">
-                    {g.origin}
-                  </span>
-                  {showLastUsed && (
-                    <span className="shrink-0 text-xs tabular-nums text-muted-foreground">
-                      {g.lastUsedLabel}
+                    {g.kind === "skill" ? (
+                      <Boxes className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                    ) : (
+                      <SquareTerminal className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                    )}
+                    <span
+                      className="min-w-0 flex-1 truncate text-xs font-medium"
+                      title={g.name}
+                    >
+                      {g.name}
                     </span>
-                  )}
-                </Link>
-              </li>
-            ))}
+                    {duplicated && g.source && (
+                      <span
+                        className="max-w-[8rem] shrink-0 truncate rounded-none bg-secondary px-1.5 py-0.5 text-[10px] leading-none text-muted-foreground"
+                        title={`from ${g.source}`}
+                      >
+                        {g.source}
+                      </span>
+                    )}
+                    <span className="shrink-0 text-[10px] uppercase tracking-wide text-muted-foreground">
+                      {g.origin}
+                    </span>
+                    {showLastUsed && (
+                      <span className="shrink-0 text-xs tabular-nums text-muted-foreground">
+                        {g.lastUsedLabel}
+                      </span>
+                    )}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         )}
       </CardContent>
@@ -289,11 +306,36 @@ export function AnalyticsExplorer({ analytics }: { analytics: Analytics }) {
             last {analytics.heatDays.length} days
           </span>
         </div>
-        <Card>
-          <CardContent className="p-5">
-            <UsageHeatmap days={analytics.heatDays} rows={analytics.heatRows} />
-          </CardContent>
-        </Card>
+        <div className="grid gap-4 lg:grid-cols-2">
+          <Card>
+            <CardContent className="p-5">
+              <div className="mb-4 flex items-center gap-2">
+                <Boxes className="h-4 w-4" />
+                <h3 className="text-sm font-semibold">Skills</h3>
+                <CountBadge>{analytics.heatSkillRows.length}</CountBadge>
+              </div>
+              <UsageHeatmap
+                days={analytics.heatDays}
+                rows={analytics.heatSkillRows}
+                emptyLabel={`No skill activity in the last ${analytics.heatDays.length} days.`}
+              />
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-5">
+              <div className="mb-4 flex items-center gap-2">
+                <SquareTerminal className="h-4 w-4" />
+                <h3 className="text-sm font-semibold">Commands</h3>
+                <CountBadge>{analytics.heatCommandRows.length}</CountBadge>
+              </div>
+              <UsageHeatmap
+                days={analytics.heatDays}
+                rows={analytics.heatCommandRows}
+                emptyLabel={`No command activity in the last ${analytics.heatDays.length} days.`}
+              />
+            </CardContent>
+          </Card>
+        </div>
       </div>
 
       <div className="space-y-4">

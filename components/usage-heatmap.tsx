@@ -38,11 +38,19 @@ function weekdayOf(iso: string): string {
 }
 
 /** Recent-activity grid: one row per skill/command, one column per day. */
-export function UsageHeatmap({ days, rows }: { days: string[]; rows: HeatRow[] }) {
+export function UsageHeatmap({
+  days,
+  rows,
+  emptyLabel,
+}: {
+  days: string[];
+  rows: HeatRow[];
+  emptyLabel?: string;
+}) {
   if (rows.length === 0) {
     return (
       <div className="rounded-none border border-dashed p-8 text-center text-sm text-muted-foreground">
-        No skill or command activity in the last {days.length} days.
+        {emptyLabel ?? `No activity in the last ${days.length} days.`}
       </div>
     );
   }
