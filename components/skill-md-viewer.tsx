@@ -26,9 +26,7 @@ export function SkillMdViewer({
   }
 
   return (
-    // Force column layout: the Tabs primitive's data-horizontal:flex-col
-    // variant never matches radix's data-orientation attribute.
-    <Tabs defaultValue="preview" className="flex-col">
+    <Tabs defaultValue="preview">
       <div className="flex items-center justify-between gap-2">
         <TabsList>
           <TabsTrigger value="preview">Preview</TabsTrigger>
