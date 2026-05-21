@@ -55,4 +55,4 @@ Targets Windows and macOS — always use `os.homedir()` and `path`, never hardco
 
 ## Styling
 
-GitHub light theme defined as CSS variables in `app/globals.css` and consumed by shadcn/ui components (`components/ui/`). No dark mode. Type/status colors are plain Tailwind classes tuned for a light background.
+Tailwind CSS v4 — there is no `tailwind.config.ts`. The theme is defined entirely in `app/globals.css`: OKLCH color tokens in `:root`/`.dark`, mapped to utilities via `@theme inline`, with `@plugin "@tailwindcss/typography"` and `@custom-variant dark`. PostCSS uses `@tailwindcss/postcss`; animations come from `tw-animate-css`. shadcn/ui components (`components/ui/`) consume the tokens. A `.dark` token block exists but nothing toggles the `dark` class, so the app renders in the GitHub-style light theme. Type/status colors are plain Tailwind classes tuned for a light background.

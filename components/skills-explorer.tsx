@@ -143,7 +143,7 @@ export function SkillsExplorer({ skills }: { skills: Skill[] }) {
                   className="cursor-pointer hover:bg-accent"
                   onClick={() => router.push(`/skills/${s.id}`)}
                 >
-                  <TableCell>
+                  <TableCell className="whitespace-normal">
                     <Link
                       href={`/skills/${s.id}`}
                       className="font-medium hover:underline"

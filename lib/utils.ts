@@ -5,7 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-/** Deterministic YYYY-MM-DD — safe for SSR hydration on a local app. */
+/** Deterministic YYYY-MM-DD HH:MM — safe for SSR hydration on a local app. */
 export function formatDate(value: string | number | undefined | null): string {
   if (value == null) return "—";
   const d = new Date(value);
