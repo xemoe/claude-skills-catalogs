@@ -4,6 +4,7 @@ import { getSkillById } from "@/lib/scanner";
 import { parseSkillMd } from "@/lib/skill-parser";
 import { lastCommitDate } from "@/lib/git";
 import { Markdown } from "@/components/markdown";
+import { SkillMdViewer } from "@/components/skill-md-viewer";
 import { SkillDescription } from "@/components/skill-description";
 import { SkillTypeBadge } from "@/components/skill-type-badge";
 import { SourceBadge } from "@/components/source-badge";
@@ -43,6 +44,8 @@ export default async function SkillDetailPage({
   if (!skill) notFound();
 
   const parsed = parseSkillMd(skill.skillMdPath);
+  const rawSkillMd =
+    parsed.raw.charCodeAt(0) === 0xfeff ? parsed.raw.slice(1) : parsed.raw;
   const committedAt = skill.source.repoRoot
     ? lastCommitDate(skill.source.repoRoot, skill.path)
     : null;
@@ -66,11 +69,22 @@ export default async function SkillDetailPage({
           </CardTitle>
         </CardHeader>
         <CardContent>
-          {parsed.body ? (
-            <Markdown content={parsed.body} />
+          {rawSkillMd ? (
+            <SkillMdViewer
+              raw={rawSkillMd}
+              preview={
+                parsed.body ? (
+                  <Markdown content={parsed.body} />
+                ) : (
+                  <p className="text-sm text-muted-foreground">
+                    This SKILL.md has no body content.
+                  </p>
+                )
+              }
+            />
           ) : (
             <p className="text-sm text-muted-foreground">
-              This SKILL.md has no body content.
+              This SKILL.md could not be read.
             </p>
           )}
         </CardContent>
