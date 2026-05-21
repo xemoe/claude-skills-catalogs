@@ -8,10 +8,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 export function SkillMdViewer({
   preview,
   raw,
+  copyLabel = "SKILL.md",
 }: {
   // Pre-rendered on the server so react-markdown stays out of the client bundle.
   preview: React.ReactNode;
   raw: string;
+  /** Name of the file being shown — used in the copy button's accessible label. */
+  copyLabel?: string;
 }) {
   const [copied, setCopied] = useState(false);
 
@@ -35,8 +38,8 @@ export function SkillMdViewer({
         <Button
           variant="outline"
           onClick={copyRaw}
-          title="Copy raw SKILL.md to clipboard"
-          aria-label="Copy raw SKILL.md to clipboard"
+          title={`Copy raw ${copyLabel} to clipboard`}
+          aria-label={`Copy raw ${copyLabel} to clipboard`}
         >
           {copied ? (
             <>

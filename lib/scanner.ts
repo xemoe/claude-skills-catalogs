@@ -22,7 +22,7 @@ import type {
 } from "./types";
 import { readProjectPaths, readSkillUsage } from "./usage";
 
-const SKIP_DIRS = new Set([
+export const SKIP_DIRS = new Set([
   "node_modules", ".git", ".next", ".turbo", "dist", "build", "out",
   "coverage", ".cache", ".idea", ".vscode", "vm_bundles", "Crashpad",
   "Cache", "GPUCache", "Code Cache", "DawnGraphiteCache", "DawnWebGPUCache",
@@ -33,7 +33,7 @@ const SKIP_DIRS = new Set([
 const CACHE_TTL_MS = 8000;
 let cache: { result: ScanResult; at: number } | null = null;
 
-function safeExists(p: string): boolean {
+export function safeExists(p: string): boolean {
   try {
     return fs.existsSync(p);
   } catch {
@@ -114,7 +114,7 @@ function findPluginRoot(skillDir: string): string | null {
   return null;
 }
 
-function readPluginJson(pluginRoot: string): PluginInfo | null {
+export function readPluginJson(pluginRoot: string): PluginInfo | null {
   try {
     const j = JSON.parse(
       fs.readFileSync(path.join(pluginRoot, ".claude-plugin", "plugin.json"), "utf8"),
@@ -218,7 +218,7 @@ function buildSkill(
 }
 
 function getScanRoots(config: CatalogConfig): ScanRoot[] {
-  const candidates: Omit<ScanRoot, "exists" | "skillCount">[] = [
+  const candidates: Omit<ScanRoot, "exists" | "count">[] = [
     { path: personalSkillsDir(), kind: "personal", label: "Personal skills", maxDepth: 3 },
     { path: pluginsDir(), kind: "plugin", label: "Installed plugins", maxDepth: 9 },
   ];
@@ -260,7 +260,7 @@ function getScanRoots(config: CatalogConfig): ScanRoot[] {
     const key = path.resolve(c.path).toLowerCase();
     if (seen.has(key)) continue;
     seen.add(key);
-    roots.push({ ...c, exists: safeExists(c.path), skillCount: 0 });
+    roots.push({ ...c, exists: safeExists(c.path), count: 0 });
   }
   return roots.filter((r) => r.exists);
 }
@@ -296,7 +296,7 @@ export function scanSkills(opts: { force?: boolean } = {}): ScanResult {
         byId.set(skill.id, skill);
       }
     }
-    root.skillCount = count;
+    root.count = count;
   }
 
   const skills = [...byId.values()].sort(

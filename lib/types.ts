@@ -67,11 +67,56 @@ export interface ScanRoot {
   label: string;
   maxDepth: number;
   exists: boolean;
-  skillCount: number;
+  /** Number of catalog entries (skills or commands) found under this root. */
+  count: number;
 }
 
 export interface ScanResult {
   skills: Skill[];
+  roots: ScanRoot[];
+  /** ISO timestamp of when the scan ran. */
+  scannedAt: string;
+  claudeHome: string;
+  platform: string;
+  errors: string[];
+  durationMs: number;
+}
+
+/** Where a slash command is deployed from. */
+export type CommandScope = "personal" | "project" | "plugin";
+
+export interface Command {
+  /** Stable id derived from the command's logical identity — used in URLs. */
+  id: string;
+  /** Invocable name, including any namespace from subdirectories (e.g. "git:commit"). */
+  name: string;
+  description: string;
+  scope: CommandScope;
+  /** Absolute path to the command's .md file. */
+  path: string;
+  /** Subdirectory namespace, when the file is nested under commands/. */
+  namespace?: string;
+  /** Frontmatter argument-hint, shown in the slash-command menu. */
+  argumentHint?: string;
+  /** Frontmatter allowed-tools. */
+  allowedTools?: string;
+  /** Frontmatter model override. */
+  model?: string;
+  /** Frontmatter disable-model-invocation — true means the command is slash-only. */
+  disableModelInvocation?: boolean;
+  /** ISO timestamp — the .md file's mtime. */
+  lastUpdated: string;
+  /** Size of the .md file in bytes. */
+  sizeBytes: number;
+  source: SkillSource;
+  plugin?: PluginInfo;
+  project?: ProjectInfo;
+  /** First lines of the command body, for previews. */
+  bodyExcerpt: string;
+}
+
+export interface CommandScanResult {
+  commands: Command[];
   roots: ScanRoot[];
   /** ISO timestamp of when the scan ran. */
   scannedAt: string;

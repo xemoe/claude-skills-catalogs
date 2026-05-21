@@ -16,6 +16,11 @@ export function personalSkillsDir(): string {
   return path.join(claudeHome(), "skills");
 }
 
+/** Personal slash-commands directory: ~/.claude/commands */
+export function personalCommandsDir(): string {
+  return path.join(claudeHome(), "commands");
+}
+
 /** Installed plugins directory: ~/.claude/plugins */
 export function pluginsDir(): string {
   return path.join(claudeHome(), "plugins");

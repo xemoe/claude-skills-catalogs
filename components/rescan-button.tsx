@@ -14,11 +14,11 @@ export function RescanButton() {
 
   async function rescan() {
     setFetching(true);
-    try {
-      await fetch("/api/skills?force=1", { cache: "no-store" });
-    } catch {
-      /* surfaced on the page after refresh */
-    }
+    // Promise.allSettled never rejects; a failed fetch just surfaces on the page after refresh.
+    await Promise.allSettled([
+      fetch("/api/skills?force=1", { cache: "no-store" }),
+      fetch("/api/commands?force=1", { cache: "no-store" }),
+    ]);
     setFetching(false);
     startTransition(() => router.refresh());
   }

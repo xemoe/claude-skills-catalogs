@@ -160,7 +160,7 @@ export default function SourcesPage() {
                     </span>
                   </TableCell>
                   <TableCell className="text-right tabular-nums">
-                    {root.skillCount}
+                    {root.count}
                   </TableCell>
                 </TableRow>
               ))}

@@ -28,7 +28,7 @@ Moving the project to an NTFS drive would make all of the above unnecessary.
 
 ## Architecture
 
-The app is a thin UI over one real piece of logic: a **server-side filesystem scanner**. Everything in `lib/` is server-only (uses `fs` / `child_process`) — never import it from a client component.
+The app is a thin UI over two parallel **server-side filesystem scanners** — one for Skills, one for slash Commands. Everything in `lib/` is server-only (uses `fs` / `child_process`) — never import it from a client component.
 
 ### Scan pipeline — `lib/scanner.ts`
 
@@ -40,9 +40,13 @@ The app is a thin UI over one real piece of logic: a **server-side filesystem sc
 
 Results are cached in-process for 8 seconds; pass `{ force: true }` to bypass.
 
+### Command scan pipeline — `lib/command-scanner.ts`
+
+`scanCommands()` mirrors `scanSkills()` for Claude Code slash commands. It scans three kinds of root: personal `~/.claude/commands`, each installed plugin's `commands/` directory, and project `.claude/commands` dirs (known projects from `~/.claude.json` plus the current working directory). Every `.md` file is a command — its name is the path relative to the `commands/` dir, with subdirectories becoming a `:` namespace. Frontmatter is parsed by `lib/command-parser.ts`; the lenient YAML helpers shared with `skill-parser.ts` live in `lib/frontmatter.ts`. Returns a `CommandScanResult`; cached for 8 seconds like the skill scan.
+
 ### UI data flow
 
-Pages are dynamic Server Components (`export const dynamic = "force-dynamic"`) that call `scanSkills()` directly and hand plain, serializable `Skill[]` to client components — there is no client-side fetching for the initial render. `components/skills-explorer.tsx` is the only stateful client component (search / filter / sort, all in-browser). `app/api/skills/route.ts` returns the same `ScanResult` as JSON; the Rescan button calls it with `?force=1` then `router.refresh()`.
+Pages are dynamic Server Components (`export const dynamic = "force-dynamic"`) that call `scanSkills()` / `scanCommands()` directly and hand plain, serializable data to client components — there is no client-side fetching for the initial render. `components/skills-explorer.tsx` and `components/commands-explorer.tsx` are the stateful client components (search / filter / sort, all in-browser). The Skills catalog lives at `/` and `/skills/[id]`; the Commands catalog mirrors it at `/commands` and `/commands/[id]`. `app/api/skills/route.ts` and `app/api/commands/route.ts` return the scan results as JSON; the Rescan button force-refreshes both with `?force=1` then calls `router.refresh()`.
 
 ### Cross-platform
 
