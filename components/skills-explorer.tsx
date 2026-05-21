@@ -3,7 +3,14 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowUpDown, Package, Search } from "lucide-react";
+import {
+  ArrowUpDown,
+  ChevronLeft,
+  ChevronRight,
+  Package,
+  Search,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -37,11 +44,14 @@ const TABS: { key: TypeFilter; label: string }[] = [
   { key: "local", label: "Local" },
 ];
 
+const PAGE_SIZE = 10;
+
 export function SkillsExplorer({ skills }: { skills: Skill[] }) {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState<TypeFilter>("all");
   const [sort, setSort] = useState<SortKey>("updated");
+  const [page, setPage] = useState(1);
 
   const counts = useMemo(() => {
     const c: Record<TypeFilter, number> = {
@@ -75,6 +85,15 @@ export function SkillsExplorer({ skills }: { skills: Skill[] }) {
     });
   }, [skills, query, typeFilter, sort]);
 
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const currentPage = Math.min(page, totalPages);
+  const paged = useMemo(
+    () => filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE),
+    [filtered, currentPage],
+  );
+  const rangeStart = filtered.length === 0 ? 0 : (currentPage - 1) * PAGE_SIZE + 1;
+  const rangeEnd = Math.min(currentPage * PAGE_SIZE, filtered.length);
+
   return (
     <div className="space-y-4">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
@@ -83,13 +102,19 @@ export function SkillsExplorer({ skills }: { skills: Skill[] }) {
           <Input
             placeholder="Search skills, plugins, sources…"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setPage(1);
+            }}
             className="pl-8"
           />
         </div>
         <Tabs
           value={typeFilter}
-          onValueChange={(v) => setTypeFilter(v as TypeFilter)}
+          onValueChange={(v) => {
+            setTypeFilter(v as TypeFilter);
+            setPage(1);
+          }}
         >
           <TabsList>
             {TABS.map((t) => (
@@ -102,7 +127,13 @@ export function SkillsExplorer({ skills }: { skills: Skill[] }) {
             ))}
           </TabsList>
         </Tabs>
-        <Select value={sort} onValueChange={(v) => setSort(v as SortKey)}>
+        <Select
+          value={sort}
+          onValueChange={(v) => {
+            setSort(v as SortKey);
+            setPage(1);
+          }}
+        >
           <SelectTrigger className="gap-1.5 lg:w-[180px]">
             <ArrowUpDown className="h-3.5 w-3.5 shrink-0 opacity-70" />
             <SelectValue />
@@ -137,7 +168,7 @@ export function SkillsExplorer({ skills }: { skills: Skill[] }) {
                 </TableCell>
               </TableRow>
             ) : (
-              filtered.map((s) => (
+              paged.map((s) => (
                 <TableRow
                   key={s.id}
                   className="cursor-pointer hover:bg-accent"
@@ -184,9 +215,38 @@ export function SkillsExplorer({ skills }: { skills: Skill[] }) {
         </Table>
       </div>
 
-      <p className="text-xs text-muted-foreground">
-        Showing {filtered.length} of {skills.length} skills
-      </p>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-xs text-muted-foreground">
+          {filtered.length > 0
+            ? `Showing ${rangeStart}–${rangeEnd} of ${filtered.length} skills`
+            : `0 of ${skills.length} skills`}
+        </p>
+        {totalPages > 1 && (
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={currentPage <= 1}
+              onClick={() => setPage(currentPage - 1)}
+            >
+              <ChevronLeft />
+              Previous
+            </Button>
+            <span className="text-xs tabular-nums text-muted-foreground">
+              Page {currentPage} of {totalPages}
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={currentPage >= totalPages}
+              onClick={() => setPage(currentPage + 1)}
+            >
+              Next
+              <ChevronRight />
+            </Button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
