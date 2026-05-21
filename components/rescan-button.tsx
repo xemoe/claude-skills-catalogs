@@ -18,6 +18,7 @@ export function RescanButton() {
     await Promise.allSettled([
       fetch("/api/skills?force=1", { cache: "no-store" }),
       fetch("/api/commands?force=1", { cache: "no-store" }),
+      fetch("/api/activity?force=1", { cache: "no-store" }),
     ]);
     setFetching(false);
     startTransition(() => router.refresh());
