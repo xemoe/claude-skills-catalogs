@@ -213,6 +213,7 @@ function buildSkill(
         project: classified.project,
         usage: usage[name],
         allowedTools: parsed.allowedTools,
+        disableModelInvocation: parsed.disableModelInvocation,
         bodyExcerpt: excerpt(parsed.body, 240),
     };
 }

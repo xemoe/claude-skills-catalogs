@@ -10,6 +10,7 @@ import {
     Folder,
     Package,
     Search,
+    Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,12 +33,14 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SkillTypeBadge } from "@/components/skill-type-badge";
 import { SourceBadge } from "@/components/source-badge";
 import { CountBadge } from "@/components/count-badge";
+import { ModelInvocationBadge } from "@/components/model-invocation-badge";
 import { formatDate } from "@/lib/utils";
 import { useT } from "@/lib/i18n/context";
 import type { Skill, SkillType } from "@lector/core/types";
 
 type SortKey = "updated" | "name" | "usage";
 type TypeFilter = "all" | SkillType;
+type InvocationFilter = "all" | "model" | "slash-only";
 
 const TAB_KEYS: TypeFilter[] = ["all", "plugin", "personal", "project", "local"];
 
@@ -49,6 +52,8 @@ export function SkillsExplorer({ skills }: { skills: Skill[] }) {
     const [query, setQuery] = useState("");
     const [typeFilter, setTypeFilter] = useState<TypeFilter>("all");
     const [projectFilter, setProjectFilter] = useState("all");
+    const [invocationFilter, setInvocationFilter] =
+        useState<InvocationFilter>("all");
     const [sort, setSort] = useState<SortKey>("updated");
     const [page, setPage] = useState(1);
 
@@ -76,6 +81,10 @@ export function SkillsExplorer({ skills }: { skills: Skill[] }) {
             if (typeFilter !== "all" && s.type !== typeFilter) return false;
             if (projectFilter !== "all" && s.project?.name !== projectFilter)
                 return false;
+            if (invocationFilter === "model" && s.disableModelInvocation)
+                return false;
+            if (invocationFilter === "slash-only" && !s.disableModelInvocation)
+                return false;
             if (!q) return true;
             return (
                 s.name.toLowerCase().includes(q) ||
@@ -90,7 +99,7 @@ export function SkillsExplorer({ skills }: { skills: Skill[] }) {
                 return (b.usage?.usageCount ?? 0) - (a.usage?.usageCount ?? 0);
             return Date.parse(b.lastUpdated) - Date.parse(a.lastUpdated);
         });
-    }, [skills, query, typeFilter, projectFilter, sort]);
+    }, [skills, query, typeFilter, projectFilter, invocationFilter, sort]);
 
     const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
     const currentPage = Math.min(page, totalPages);
@@ -158,6 +167,32 @@ export function SkillsExplorer({ skills }: { skills: Skill[] }) {
                     </Select>
                 )}
                 <Select
+                    value={invocationFilter}
+                    onValueChange={(v) => {
+                        setInvocationFilter(v as InvocationFilter);
+                        setPage(1);
+                    }}
+                >
+                    <SelectTrigger
+                        className="gap-1.5 lg:w-[180px]"
+                        aria-label={t.explorer.filterInvocation}
+                    >
+                        <Sparkles className="h-3.5 w-3.5 shrink-0 opacity-70" />
+                        <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="all">
+                            {t.explorer.invocationAll}
+                        </SelectItem>
+                        <SelectItem value="model">
+                            {t.explorer.invocationModel}
+                        </SelectItem>
+                        <SelectItem value="slash-only">
+                            {t.explorer.invocationSlashOnly}
+                        </SelectItem>
+                    </SelectContent>
+                </Select>
+                <Select
                     value={sort}
                     onValueChange={(v) => {
                         setSort(v as SortKey);
@@ -184,6 +219,9 @@ export function SkillsExplorer({ skills }: { skills: Skill[] }) {
                                 {t.explorer.colSkill}
                             </TableHead>
                             <TableHead className="w-[96px]">{t.explorer.colType}</TableHead>
+                            <TableHead className="w-[150px]">
+                                {t.explorer.colInvocation}
+                            </TableHead>
                             <TableHead className="min-w-[180px]">
                                 {t.explorer.colSource}
                             </TableHead>
@@ -199,7 +237,7 @@ export function SkillsExplorer({ skills }: { skills: Skill[] }) {
                         {filtered.length === 0 ? (
                             <TableRow className="hover:bg-transparent">
                                 <TableCell
-                                    colSpan={5}
+                                    colSpan={6}
                                     className="h-24 text-center text-muted-foreground"
                                 >
                                     {t.explorer.noSkillsMatch}
@@ -226,6 +264,11 @@ export function SkillsExplorer({ skills }: { skills: Skill[] }) {
                                     </TableCell>
                                     <TableCell>
                                         <SkillTypeBadge type={s.type} />
+                                    </TableCell>
+                                    <TableCell>
+                                        <ModelInvocationBadge
+                                            disabled={s.disableModelInvocation}
+                                        />
                                     </TableCell>
                                     <TableCell className="max-w-[240px]">
                                         {s.plugin && s.source.kind === "local" ? (

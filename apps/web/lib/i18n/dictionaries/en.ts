@@ -105,6 +105,7 @@ export const en = {
         colSource: "Source",
         colUpdated: "Last updated",
         colUsed: "Used",
+        colInvocation: "Invocation",
         noSkillsMatch: "No skills match your filters.",
         noCommandsMatch: "No commands match your filters.",
         showingSkills: (start: number, end: number, total: number) =>
@@ -114,6 +115,13 @@ export const en = {
         emptySkills: (total: number) => `0 of ${total} skills`,
         emptyCommands: (total: number) => `0 of ${total} commands`,
         pluginTitle: (name: string) => `Plugin: ${name}`,
+        filterInvocation: "Filter by invocation",
+        invocationAll: "All invocation",
+        invocationModel: "Model-invocable",
+        invocationSlashOnly: "Slash-only",
+        invocationModelHint:
+            "Model-invocable — Claude can invoke this automatically, no slash command needed",
+        invocationSlashOnlyHint: "Slash-only — Claude will not auto-invoke it",
     },
 
     sidebar: {
@@ -300,8 +308,6 @@ export const en = {
         argumentHint: "Argument hint",
         model: "Model",
         modelInvocation: "Model invocation",
-        modelEnabled: "Enabled",
-        modelDisabled: "Disabled (slash-only)",
         pipeline: "Pipeline",
         workflowSteps: "workflow steps",
         sectionOutline: "section outline",

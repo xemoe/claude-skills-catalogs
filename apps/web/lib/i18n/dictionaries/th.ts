@@ -99,6 +99,7 @@ export const th: Dictionary = {
         colSource: "แหล่งที่มา",
         colUpdated: "อัปเดตล่าสุด",
         colUsed: "ใช้แล้ว",
+        colInvocation: "การเรียกใช้",
         noSkillsMatch: "ไม่มีสกิลที่ตรงกับตัวกรอง",
         noCommandsMatch: "ไม่มีคำสั่งที่ตรงกับตัวกรอง",
         showingSkills: (start, end, total) =>
@@ -108,6 +109,13 @@ export const th: Dictionary = {
         emptySkills: (total) => `0 จาก ${total} สกิล`,
         emptyCommands: (total) => `0 จาก ${total} คำสั่ง`,
         pluginTitle: (name) => `ปลั๊กอิน: ${name}`,
+        filterInvocation: "กรองตามการเรียกใช้",
+        invocationAll: "การเรียกใช้ทั้งหมด",
+        invocationModel: "โมเดลเรียกได้",
+        invocationSlashOnly: "สแลชเท่านั้น",
+        invocationModelHint:
+            "โมเดลเรียกได้ — Claude เรียกใช้เองได้อัตโนมัติ ไม่ต้องพิมพ์คำสั่งสแลช",
+        invocationSlashOnlyHint: "สแลชเท่านั้น — Claude จะไม่เรียกใช้เอง",
     },
 
     sidebar: {
@@ -277,8 +285,6 @@ export const th: Dictionary = {
         argumentHint: "คำใบ้อาร์กิวเมนต์",
         model: "โมเดล",
         modelInvocation: "การเรียกใช้โดยโมเดล",
-        modelEnabled: "เปิดใช้งาน",
-        modelDisabled: "ปิดใช้งาน (สแลชเท่านั้น)",
         pipeline: "ไปป์ไลน์",
         workflowSteps: "ขั้นตอนเวิร์กโฟลว์",
         sectionOutline: "โครงร่างหัวข้อ",

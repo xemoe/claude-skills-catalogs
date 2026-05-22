@@ -10,6 +10,7 @@ import {
     Folder,
     Package,
     Search,
+    Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,12 +33,14 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SkillTypeBadge } from "@/components/skill-type-badge";
 import { SourceBadge } from "@/components/source-badge";
 import { CountBadge } from "@/components/count-badge";
+import { ModelInvocationBadge } from "@/components/model-invocation-badge";
 import { formatDate } from "@/lib/utils";
 import { useT } from "@/lib/i18n/context";
 import type { Command, CommandScope } from "@lector/core/types";
 
 type SortKey = "updated" | "name";
 type ScopeFilter = "all" | CommandScope;
+type InvocationFilter = "all" | "model" | "slash-only";
 
 const TAB_KEYS: ScopeFilter[] = ["all", "plugin", "personal", "project"];
 
@@ -49,6 +52,8 @@ export function CommandsExplorer({ commands }: { commands: Command[] }) {
     const [query, setQuery] = useState("");
     const [scopeFilter, setScopeFilter] = useState<ScopeFilter>("all");
     const [projectFilter, setProjectFilter] = useState("all");
+    const [invocationFilter, setInvocationFilter] =
+        useState<InvocationFilter>("all");
     const [sort, setSort] = useState<SortKey>("updated");
     const [page, setPage] = useState(1);
 
@@ -75,6 +80,10 @@ export function CommandsExplorer({ commands }: { commands: Command[] }) {
             if (scopeFilter !== "all" && c.scope !== scopeFilter) return false;
             if (projectFilter !== "all" && c.project?.name !== projectFilter)
                 return false;
+            if (invocationFilter === "model" && c.disableModelInvocation)
+                return false;
+            if (invocationFilter === "slash-only" && !c.disableModelInvocation)
+                return false;
             if (!q) return true;
             return (
                 c.name.toLowerCase().includes(q) ||
@@ -87,7 +96,7 @@ export function CommandsExplorer({ commands }: { commands: Command[] }) {
             if (sort === "name") return a.name.localeCompare(b.name);
             return Date.parse(b.lastUpdated) - Date.parse(a.lastUpdated);
         });
-    }, [commands, query, scopeFilter, projectFilter, sort]);
+    }, [commands, query, scopeFilter, projectFilter, invocationFilter, sort]);
 
     const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
     const currentPage = Math.min(page, totalPages);
@@ -155,6 +164,32 @@ export function CommandsExplorer({ commands }: { commands: Command[] }) {
                     </Select>
                 )}
                 <Select
+                    value={invocationFilter}
+                    onValueChange={(v) => {
+                        setInvocationFilter(v as InvocationFilter);
+                        setPage(1);
+                    }}
+                >
+                    <SelectTrigger
+                        className="gap-1.5 lg:w-[180px]"
+                        aria-label={t.explorer.filterInvocation}
+                    >
+                        <Sparkles className="h-3.5 w-3.5 shrink-0 opacity-70" />
+                        <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="all">
+                            {t.explorer.invocationAll}
+                        </SelectItem>
+                        <SelectItem value="model">
+                            {t.explorer.invocationModel}
+                        </SelectItem>
+                        <SelectItem value="slash-only">
+                            {t.explorer.invocationSlashOnly}
+                        </SelectItem>
+                    </SelectContent>
+                </Select>
+                <Select
                     value={sort}
                     onValueChange={(v) => {
                         setSort(v as SortKey);
@@ -180,6 +215,9 @@ export function CommandsExplorer({ commands }: { commands: Command[] }) {
                                 {t.explorer.colCommand}
                             </TableHead>
                             <TableHead className="w-[96px]">{t.explorer.colScope}</TableHead>
+                            <TableHead className="w-[150px]">
+                                {t.explorer.colInvocation}
+                            </TableHead>
                             <TableHead className="min-w-[180px]">
                                 {t.explorer.colSource}
                             </TableHead>
@@ -192,7 +230,7 @@ export function CommandsExplorer({ commands }: { commands: Command[] }) {
                         {filtered.length === 0 ? (
                             <TableRow className="hover:bg-transparent">
                                 <TableCell
-                                    colSpan={4}
+                                    colSpan={5}
                                     className="h-24 text-center text-muted-foreground"
                                 >
                                     {t.explorer.noCommandsMatch}
@@ -219,6 +257,11 @@ export function CommandsExplorer({ commands }: { commands: Command[] }) {
                                     </TableCell>
                                     <TableCell>
                                         <SkillTypeBadge type={c.scope} />
+                                    </TableCell>
+                                    <TableCell>
+                                        <ModelInvocationBadge
+                                            disabled={c.disableModelInvocation}
+                                        />
                                     </TableCell>
                                     <TableCell className="max-w-[240px]">
                                         {c.plugin && c.source.kind === "local" ? (

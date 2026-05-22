@@ -57,6 +57,8 @@ export interface Skill {
     project?: ProjectInfo;
     usage?: SkillUsage;
     allowedTools?: string;
+    /** Frontmatter disable-model-invocation — true means the skill is slash-only. */
+    disableModelInvocation?: boolean;
     /** First lines of the SKILL.md body, for previews. */
     bodyExcerpt: string;
 }

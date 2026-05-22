@@ -11,6 +11,7 @@ import { NodePipeline } from "@/components/node-pipeline";
 import { SkillDescription } from "@/components/skill-description";
 import { SkillTypeBadge } from "@/components/skill-type-badge";
 import { SourceBadge } from "@/components/source-badge";
+import { ModelInvocationBadge } from "@/components/model-invocation-badge";
 import { CopyButton } from "@/components/copy-button";
 import {
     Card,
@@ -173,6 +174,11 @@ export default async function SkillDetailPage({
                                     {formatRelativeTime(skill.usage.lastUsedAt, locale)}
                                 </MetaRow>
                             ) : null}
+                            <MetaRow label={t.detail.modelInvocation}>
+                                <ModelInvocationBadge
+                                    disabled={skill.disableModelInvocation}
+                                />
+                            </MetaRow>
                             {skill.allowedTools && (
                                 <MetaRow label={t.detail.allowedTools}>
                                     <span className="font-mono text-xs">
