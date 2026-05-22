@@ -9,7 +9,7 @@ import {
   samePath,
 } from "./claude-paths";
 import { type CatalogConfig, loadConfig } from "./config";
-import { clearGitCache, resolveSource } from "./git";
+import { clearGitCache, PROVENANCE_FILE, resolveSource } from "./git";
 import { excerpt, parseSkillMd } from "./skill-parser";
 import type {
   PluginInfo,
@@ -86,7 +86,7 @@ function dirStats(dir: string): { newestMtimeMs: number; fileCount: number; size
       if (entry.isDirectory()) {
         if (SKIP_DIRS.has(entry.name)) continue;
         walk(full, depth + 1);
-      } else if (entry.isFile()) {
+      } else if (entry.isFile() && entry.name !== PROVENANCE_FILE) {
         try {
           const st = fs.statSync(full);
           fileCount++;

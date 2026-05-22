@@ -3,6 +3,7 @@
  * vendor-skills - list and install Claude Skills vendored under ./vendor.
  * Bundled with the install-vendor-skill project skill. No dependencies (Node 18+).
  */
+import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -12,6 +13,8 @@ const SCRIPT_PATH = fileURLToPath(import.meta.url);
 // scripts/ -> install-vendor-skill/ -> skills/ -> .claude/ -> project root
 const PROJECT_ROOT = path.resolve(path.dirname(SCRIPT_PATH), "..", "..", "..", "..");
 const SKIP_DIRS = new Set([".git", "node_modules", ".next"]);
+// Marker file written into each installed skill, recording where it came from.
+const PROVENANCE_FILE = ".vendor-source.json";
 
 function fail(msg) {
   console.error(`error: ${msg}`);
@@ -173,6 +176,70 @@ function resolveSrcPath(query, opts) {
   return null;
 }
 
+/** Best-effort `git` invocation; returns trimmed stdout, or "" on any failure. */
+function gitOutput(args, cwd) {
+  try {
+    return execFileSync("git", args, {
+      cwd,
+      encoding: "utf8",
+      timeout: 5000,
+      stdio: ["ignore", "pipe", "ignore"],
+      windowsHide: true,
+    }).trim();
+  } catch {
+    return "";
+  }
+}
+
+/** Parses the project's .gitmodules into [{ path, url }] entries. */
+function readGitmodules() {
+  let text;
+  try {
+    text = fs.readFileSync(path.join(PROJECT_ROOT, ".gitmodules"), "utf8");
+  } catch {
+    return [];
+  }
+  const mods = [];
+  let cur = null;
+  for (const line of text.split(/\r?\n/)) {
+    if (/^\s*\[submodule\b/.test(line)) {
+      cur = {};
+      mods.push(cur);
+    } else if (cur) {
+      const m = line.match(/^\s*(path|url)\s*=\s*(.+?)\s*$/);
+      if (m) cur[m[1]] = m[2];
+    }
+  }
+  return mods.filter((m) => m.path && m.url);
+}
+
+/**
+ * Describes where an installed copy came from. When the source is a skill in a
+ * vendored submodule, records the upstream repo URL, the path within that repo,
+ * and the pinned commit — so the catalog can show the real GitHub origin.
+ */
+function computeProvenance(srcDir, opts) {
+  const prov = {
+    installedFrom: rel(srcDir),
+    installedAt: new Date().toISOString(),
+  };
+  const fromVendor = path.relative(vendorDir(opts), srcDir);
+  if (fromVendor && !fromVendor.startsWith("..") && !path.isAbsolute(fromVendor)) {
+    const parts = fromVendor.split(path.sep);
+    const submodulePath = `vendor/${parts[0]}`;
+    const mod = readGitmodules().find((m) => m.path === submodulePath);
+    if (mod) {
+      prov.repo = mod.url;
+      const pathInRepo = parts.slice(1).join("/");
+      if (pathInRepo) prov.pathInRepo = pathInRepo;
+      const status = gitOutput(["submodule", "status", "--", submodulePath], PROJECT_ROOT);
+      const commit = (status.match(/[0-9a-f]{7,64}/) || [])[0];
+      if (commit) prov.commit = commit;
+    }
+  }
+  return prov;
+}
+
 function cmdInstall(opts) {
   const query = opts._[1];
   if (!query) fail("install: missing skill name or path. Run `list` to see options.");
@@ -214,9 +281,16 @@ function cmdInstall(opts) {
     filter: (src) => path.basename(src) !== ".git",
   });
 
+  const provenance = computeProvenance(srcDir, opts);
+  fs.writeFileSync(
+    path.join(dest, PROVENANCE_FILE),
+    JSON.stringify(provenance, null, 2) + "\n",
+  );
+
   console.log(`Installed "${installName}"`);
-  console.log(`  from ${rel(srcDir)}`);
-  console.log(`  to   ${dest}`);
+  console.log(`  from   ${rel(srcDir)}`);
+  console.log(`  to     ${dest}`);
+  console.log(`  source ${provenance.repo || provenance.installedFrom}`);
 }
 
 function cmdInstalled(opts) {

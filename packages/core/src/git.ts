@@ -56,10 +56,55 @@ export function normalizeGitUrl(raw: string): { kind: "github" | "git"; label: s
   return { kind: "git", label: host ? `${host}/${repoPath}` : repoPath };
 }
 
+/** Filename of the provenance marker the install-vendor-skill workflow writes into each installed skill. */
+export const PROVENANCE_FILE = ".vendor-source.json";
+
+interface VendorProvenance {
+  repo?: string;
+  pathInRepo?: string;
+  commit?: string;
+  installedFrom?: string;
+  installedAt?: string;
+}
+
+/** Reads the .vendor-source.json provenance marker an installed skill may carry. */
+function readProvenance(skillDir: string): VendorProvenance | null {
+  try {
+    const parsed = JSON.parse(fs.readFileSync(path.join(skillDir, PROVENANCE_FILE), "utf8"));
+    return parsed && typeof parsed === "object" ? (parsed as VendorProvenance) : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Turns an install-time provenance marker into a source descriptor. The URL is the
+ * repo root, matching every other GitHub-sourced skill — the exact path and commit
+ * stay in the .vendor-source.json record.
+ */
+function sourceFromProvenance(p: VendorProvenance): SkillSource | null {
+  if (p.repo) {
+    const norm = normalizeGitUrl(p.repo);
+    return { kind: norm.kind, label: norm.label, url: norm.url };
+  }
+  if (p.installedFrom) {
+    return { kind: "local", label: p.installedFrom };
+  }
+  return null;
+}
+
 const remoteCache = new Map<string, SkillSource>();
 
 /** Resolves where a skill's files came from: a GitHub repo, another git host, or a local directory. */
 export function resolveSource(skillDir: string): SkillSource {
+  // An installed copy carries a provenance marker — trust it over the directory's
+  // git context, since the install location is unrelated to the skill's origin.
+  const provenance = readProvenance(skillDir);
+  if (provenance) {
+    const fromProvenance = sourceFromProvenance(provenance);
+    if (fromProvenance) return fromProvenance;
+  }
+
   const repoRoot = findRepoRoot(skillDir);
   if (!repoRoot) {
     // Not in a git repo — the "source" is the directory that contains the skill.
