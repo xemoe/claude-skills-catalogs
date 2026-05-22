@@ -48,7 +48,7 @@ function StepNode({ data }: NodeProps) {
 
     return (
         <div
-            className="flex items-stretch gap-2.5 border bg-card px-3 py-2.5 shadow-sm"
+            className="flex items-stretch gap-2.5 border bg-card px-3 py-2.5 shadow-none"
             style={{ width: NODE_W, height: NODE_H }}
             title={d.detail ? `${d.title} — ${d.detail}` : d.title}
         >
@@ -153,7 +153,7 @@ export function NodePipeline({ pipeline }: { pipeline: Pipeline }) {
 
     return (
         <div
-            className="w-full border bg-muted/30 ring-1 ring-foreground/10"
+            className="w-full border bg-muted/20 ring-0 ring-foreground/10"
             style={{ height }}
         >
             {mounted ? (

@@ -39,12 +39,12 @@ export function ModelInvocationExamples({
     const arg = byName && !/\s/.test(raw) ? raw : `"${raw}"`;
 
     return (
-        <Card>
-            <CardHeader>
-                <CardTitle className="text-base">
-                    {t.detail.modelInvocation}
-                </CardTitle>
-            </CardHeader>
+        <Card className={'rounded-sm'}>
+            {/*<CardHeader>*/}
+            {/*    <CardTitle className="text-base">*/}
+            {/*        {t.detail.modelInvocation}*/}
+            {/*    </CardTitle>*/}
+            {/*</CardHeader>*/}
             <CardContent className="space-y-3 pt-0">
                 <div className="flex items-start gap-2 text-sm">
                     <ModelInvocationBadge

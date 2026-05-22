@@ -60,7 +60,7 @@ export default async function SkillDetailPage({
         : null;
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             <div className="space-y-3">
                 <div className="flex flex-wrap items-center gap-3">
                     <h1 className="text-2xl font-bold tracking-tight">{skill.name}</h1>
@@ -71,7 +71,7 @@ export default async function SkillDetailPage({
                 )}
             </div>
 
-            <Card className="min-w-0">
+            <Card className="min-w-0 rounded-sm">
                 <CardHeader className="flex-row items-center justify-between space-y-0">
                     <CardAction>
                         <MetaRow label={t.detail.lastModified}>
@@ -108,7 +108,7 @@ export default async function SkillDetailPage({
             </Card>
 
             {pipeline.steps.length >= 2 && (
-                <Card>
+                <Card className={'rounded-sm'}>
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2 text-base">
                             <Workflow className="h-4 w-4" /> {t.detail.pipeline}
@@ -132,8 +132,24 @@ export default async function SkillDetailPage({
                 disabled={skill.disableModelInvocation}
             />
 
-            <div className="grid items-start gap-6 sm:grid-cols-2 xl:grid-cols-3">
-                <Card>
+            <Card className={'rounded-sm'}>
+                <CardHeader>
+                    <CardTitle className="text-base">
+                        {t.detail.locationOnDisk}
+                    </CardTitle>
+                </CardHeader>
+                <CardContent className="pt-0">
+                    <div className="flex items-start gap-2">
+                        <code className="min-w-0 flex-1 break-all rounded-none bg-secondary p-2 text-xs">
+                            {skill.path}
+                        </code>
+                        <CopyButton value={skill.path} />
+                    </div>
+                </CardContent>
+            </Card>
+
+            <div className="grid items-start gap-6 sm:grid-cols-2 xl:grid-cols-2">
+                <Card className={'rounded-sm'}>
                     <CardHeader>
                         <CardTitle className="text-base">{t.detail.details}</CardTitle>
                     </CardHeader>
@@ -198,8 +214,22 @@ export default async function SkillDetailPage({
                     </CardContent>
                 </Card>
 
+                {skill.project && (
+                    <Card className={'rounded-sm'}>
+                        <CardHeader>
+                            <CardTitle className="text-base">{t.detail.project}</CardTitle>
+                        </CardHeader>
+                        <CardContent className="pt-0">
+                            <div className="text-sm">{skill.project.name}</div>
+                            <p className="mt-1 break-all font-mono text-xs text-muted-foreground">
+                                {skill.project.path}
+                            </p>
+                        </CardContent>
+                    </Card>
+                )}
+
                 {skill.plugin && (
-                    <Card>
+                    <Card className={'rounded-sm'}>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2 text-base">
                                 <Package className="h-4 w-4" /> {t.detail.plugin}
@@ -230,35 +260,6 @@ export default async function SkillDetailPage({
                     </Card>
                 )}
 
-                {skill.project && (
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="text-base">{t.detail.project}</CardTitle>
-                        </CardHeader>
-                        <CardContent className="pt-0">
-                            <div className="text-sm">{skill.project.name}</div>
-                            <p className="mt-1 break-all font-mono text-xs text-muted-foreground">
-                                {skill.project.path}
-                            </p>
-                        </CardContent>
-                    </Card>
-                )}
-
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="text-base">
-                            {t.detail.locationOnDisk}
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className="pt-0">
-                        <div className="flex items-start gap-2">
-                            <code className="min-w-0 flex-1 break-all rounded-none bg-secondary p-2 text-xs">
-                                {skill.path}
-                            </code>
-                            <CopyButton value={skill.path} />
-                        </div>
-                    </CardContent>
-                </Card>
             </div>
         </div>
     );

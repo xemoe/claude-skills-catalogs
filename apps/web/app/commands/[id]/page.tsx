@@ -65,7 +65,7 @@ export default async function CommandDetailPage({
     }`;
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             <div className="space-y-3">
                 <div className="flex flex-wrap items-center gap-3">
                     <h1 className="font-mono text-2xl font-bold tracking-tight">
@@ -84,7 +84,7 @@ export default async function CommandDetailPage({
                 </div>
             </div>
 
-            <Card className="min-w-0">
+            <Card className="min-w-0 rounded-sm">
                 <CardHeader className="flex-row items-center justify-between space-y-0">
                     <CardAction>
                         <MetaRow label={t.detail.lastModified}>
@@ -122,7 +122,7 @@ export default async function CommandDetailPage({
             </Card>
 
             {pipeline.steps.length >= 2 && (
-                <Card>
+                <Card className={'rounded-sm'}>
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2 text-base">
                             <Workflow className="h-4 w-4" /> {t.detail.pipeline}
@@ -146,8 +146,24 @@ export default async function CommandDetailPage({
                 disabled={command.disableModelInvocation}
             />
 
-            <div className="grid items-start gap-6 sm:grid-cols-2 xl:grid-cols-3">
-                <Card>
+            <Card className={'rounded-sm'}>
+                <CardHeader>
+                    <CardTitle className="text-base">
+                        {t.detail.locationOnDisk}
+                    </CardTitle>
+                </CardHeader>
+                <CardContent className="pt-0">
+                    <div className="flex items-start gap-2">
+                        <code className="min-w-0 flex-1 break-all rounded-none bg-secondary p-2 text-xs">
+                            {command.path}
+                        </code>
+                        <CopyButton value={command.path} />
+                    </div>
+                </CardContent>
+            </Card>
+
+            <div className="grid items-start gap-6 grid-cols-2">
+                <Card className={'rounded-sm'}>
                     <CardHeader>
                         <CardTitle className="text-base">{t.detail.details}</CardTitle>
                     </CardHeader>
@@ -219,7 +235,7 @@ export default async function CommandDetailPage({
                 </Card>
 
                 {command.plugin && (
-                    <Card>
+                    <Card className={'rounded-sm'}>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2 text-base">
                                 <Package className="h-4 w-4" /> {t.detail.plugin}
@@ -251,7 +267,7 @@ export default async function CommandDetailPage({
                 )}
 
                 {command.project && (
-                    <Card>
+                    <Card className={'rounded-sm'}>
                         <CardHeader>
                             <CardTitle className="text-base">{t.detail.project}</CardTitle>
                         </CardHeader>
@@ -264,21 +280,6 @@ export default async function CommandDetailPage({
                     </Card>
                 )}
 
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="text-base">
-                            {t.detail.locationOnDisk}
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className="pt-0">
-                        <div className="flex items-start gap-2">
-                            <code className="min-w-0 flex-1 break-all rounded-none bg-secondary p-2 text-xs">
-                                {command.path}
-                            </code>
-                            <CopyButton value={command.path} />
-                        </div>
-                    </CardContent>
-                </Card>
             </div>
         </div>
     );
