@@ -1,18 +1,19 @@
 # Roadmap
 
-This document plans the next three releases of the Claude Skills Catalog. It is the
+This document plans the next four releases of the Claude Skills Catalog. It is the
 source of truth for *what* is being built and *why*; implementation details live in
 the code and in [CLAUDE.md](CLAUDE.md).
 
 **Current state** — every package is at version `0.1.0`, but the repository has no
 git tag, no release, and no continuous integration. The first milestone closes that
-gap; the two that follow add user-facing features.
+gap; the three that follow add user-facing features.
 
 | Milestone | Theme | Items |
 |---|---|---|
 | [v0.1.0](#milestone-v010--ci--first-release) | Ship what exists, safely | CI pipeline, first tagged release |
 | [v0.2.0](#milestone-v020--usecase-guideline-page) | Onboarding | `/usecase` guideline page |
 | [v0.3.0](#milestone-v030--discover-popular-skills--commands) | Discovery | Discover skill + command, plus a `/discover` page |
+| [v0.4.0](#milestone-v040--hooks-catalog-page) | Hooks visibility | `/hooks` page cataloguing configured Claude Code hooks |
 
 Task boxes (`- [ ]`) are unchecked until the work lands.
 
@@ -245,11 +246,90 @@ and `vendor/`), exactly like every other page in the catalog.
 
 ---
 
+## Milestone v0.4.0 — `/hooks` catalog page
+
+### 5. `/hooks` — Claude Code hooks catalog
+
+**Goal.** Add a new in-app page at the route `/hooks` that scans the machine for
+configured Claude Code **hooks** and lists them the way the Skills and Commands
+catalogs already list skills and commands — which hook runs, on which event, with
+what matcher and command, in which settings file, and when that file last changed.
+
+**Why.** Hooks are shell commands wired into Claude Code's lifecycle events; they run
+automatically and invisibly, and they are configured by hand across several
+`settings.json` files — personal, project, project-local, and plugin. There is no
+single place to see every hook active on a machine, so a stale or surprising hook is
+easy to forget and hard to audit. The catalog already answers "what is deployed" for
+skills and commands; hooks are the third Claude Code artifact it should make visible.
+
+**Clarification.** This is a **web route** in `apps/web` (a sibling of `/skills`,
+`/commands`, `/analytic`, `/graph`, `/sources`) — *not* a Claude Code slash command,
+and distinct from Claude Code's own built-in `/hooks` configuration menu. Like every
+page in this catalog it is **read-only**: it displays the hooks it finds and never
+adds, edits, or removes them (see "Out of scope").
+
+**Background — what a Claude Code hook is.** A hook is an entry under the `hooks` key
+of a `settings.json` file. Each lifecycle event — `PreToolUse`, `PostToolUse`,
+`UserPromptSubmit`, `Notification`, `Stop`, `SubagentStop`, `SessionStart`,
+`SessionEnd`, `PreCompact` — maps to a list of matcher groups, and each group carries
+one or more `{ "type": "command", "command": "…" }` entries. A single settings file
+can therefore declare many individual hooks.
+
+**Deliverables.**
+
+*`packages/core` — the scanner (server-only):*
+
+- `packages/core/src/hook-scanner.ts` — `scanHooks()`, the single entry point, mirroring `scanSkills()` / `scanCommands()`.
+- `packages/core/src/hook-parser.ts` — reads the `hooks` object out of a `settings.json` file and flattens it into individual hook records. Must tolerate malformed or partial JSON the way `skill-parser.ts` tolerates malformed YAML.
+- `Hook` and `HookScanResult` types added to `packages/core/src/types.ts`.
+- Settings-file locations centralized in `packages/core/src/claude-paths.ts`, alongside the existing OS-specific path logic.
+
+*`apps/web` — the UI:*
+
+- `apps/web/app/hooks/page.tsx` and `apps/web/app/hooks/[id]/page.tsx` — dynamic Server Components, following `apps/web/app/commands/page.tsx` and `commands/[id]/page.tsx`.
+- `apps/web/components/hooks-explorer.tsx` — the stateful client component (search / filter / sort), mirroring `commands-explorer.tsx`.
+- `apps/web/app/api/hooks/route.ts` — returns the scan result as JSON, like `/api/skills` and `/api/commands`; honours `?force=1`.
+- A `/hooks` link added to `LINKS` in `apps/web/components/main-nav.tsx`, and the Rescan button extended to force-refresh hooks too.
+- New `nav.hooks` + `hooksPage` keys in **both** `apps/web/lib/i18n/dictionaries/en.ts` and `th.ts`.
+
+**How the scan works.**
+
+- Resolve the settings roots: personal `~/.claude/settings.json`; per-project `.claude/settings.json` and `.claude/settings.local.json` for the known projects in `~/.claude.json` plus the current working directory; and each installed plugin's hooks.
+- Parse the `hooks` object from each file and flatten it into one record per `{ event, matcher, command }`, tagged with its scope (`personal | plugin | project | local`), its source settings file, and that file's last-modified time.
+- Classify and deduplicate consistently with the skill scan, and return a `HookScanResult` (shape in `types.ts`) — cached in-process for 8 seconds with a `{ force: true }` bypass.
+
+**Tasks.**
+
+- [ ] Add the `Hook` / `HookScanResult` types and the settings-file paths to `packages/core`.
+- [ ] Write `hook-parser.ts` — flatten the `hooks` object and recover gracefully from malformed JSON.
+- [ ] Write `hook-scanner.ts` — `scanHooks()` with the 8-second cache, mirroring `scanCommands()`.
+- [ ] Build the `/hooks` list page, the `/hooks/[id]` detail page, and `hooks-explorer.tsx`.
+- [ ] Add the `/api/hooks` route and wire hooks into the Rescan button.
+- [ ] Add the nav link and the `en` / `th` dictionary entries.
+- [ ] Document the hook scan pipeline in `CLAUDE.md` alongside the skill and command pipelines.
+- [ ] Verify the page renders in both locales and in light and dark themes, with a helpful empty state when no hooks are configured.
+
+**Acceptance criteria.**
+
+- `/hooks` is reachable from the main navigation and renders in English and Thai.
+- It lists every hook configured in personal, plugin, project, and project-local settings, each showing its event, matcher, command, scope, source file, and last-changed time.
+- A machine with no hooks configured shows a clear empty state, not an error.
+- A malformed `settings.json` does not crash the scan — the page degrades gracefully.
+- The web app makes no network calls; `npm run build` stays green.
+
+**Notes & risks.**
+
+- `settings.json` files hold much more than hooks — permissions, env, model, and so on. The parser must read **only** the `hooks` key and ignore everything else.
+- `settings.local.json` is git-ignored and may contain machine-specific commands. Display it like any other scope; the catalog is a local tool and never transmits what it scans.
+- Hooks have no git provenance the way skills do — a hook's "source" is the settings file that declares it, so the source column resolves to a file path and scope rather than to a GitHub repo.
+
+---
+
 ## Sequencing & dependencies
 
 1. **Item 1 (CI) first.** It gates everything — item 2 should not tag a release until CI is green, and items 3–4 benefit from CI checking their changes.
 2. **Item 2 (release) closes v0.1.0**, immediately after CI is green. Ship the catalog as it stands today.
-3. **Items 3 and 4 are independent** of each other and can proceed in parallel after v0.1.0. Each ships as its own release (v0.2.0, v0.3.0), re-exercising the release process from item 2.
+3. **Items 3, 4, and 5 are independent** of each other and can proceed in parallel after v0.1.0. Each ships as its own release (v0.2.0, v0.3.0, v0.4.0), re-exercising the release process from item 2.
 4. **Within item 4**, the Claude Code side (4a) defines the results-manifest schema that the `/discover` page (4b) reads. Pin that schema first so the two halves can be built in parallel; 4b is otherwise testable with a hand-written sample manifest.
 
 ## Out of scope (future ideas)
@@ -257,3 +337,4 @@ and `vendor/`), exactly like every other page in the catalog.
 - Wiring up ESLint and adding a lint gate to CI.
 - Adding an automated test suite (there is none today; `npm run build` is the only correctness gate).
 - Publishing packages to npm (the packages are intentionally `private`).
+- Editing hooks — or any other `settings.json` content — from the web app; `/hooks` (item 5), like every page in the catalog, is read-only.
