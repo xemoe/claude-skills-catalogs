@@ -41,19 +41,19 @@ can land on `main` unnoticed. CI must exist before there is a release to protect
 
 **Build job.**
 
-- [ ] Trigger on `push` and `pull_request` against `main`.
-- [ ] Run a matrix of `ubuntu-latest` and `windows-latest` — the scanner has OS-specific path logic in `packages/core/src/claude-paths.ts`, so both targets must compile.
-- [ ] `actions/setup-node@v4`, Node 22 LTS, with the npm cache enabled.
-- [ ] Install with `npm ci --prefix packages/core && npm ci --prefix apps/web` — lockfiles exist in both packages, so `npm ci` is reproducible. (`npm run install:all` uses `npm install`; CI should prefer `ci`.)
-- [ ] Run `npm run build`. This is the project's type-correctness gate — the Next.js Turbopack build type-checks both `apps/web` and the imported `packages/core` sources.
+- [x] Trigger on `push` and `pull_request` against `main`.
+- [x] Run a matrix of `ubuntu-latest` and `windows-latest` — the scanner has OS-specific path logic in `packages/core/src/claude-paths.ts`, so both targets must compile.
+- [x] `actions/setup-node@v4`, Node 22 LTS, with the npm cache enabled.
+- [x] Install with `npm ci --prefix packages/core && npm ci --prefix apps/web` — lockfiles exist in both packages, so `npm ci` is reproducible. (`npm run install:all` uses `npm install`; CI should prefer `ci`.)
+- [x] Run `npm run build`. This is the project's type-correctness gate — the Next.js Turbopack build type-checks both `apps/web` and the imported `packages/core` sources.
 
 **Security job.**
 
-- [ ] `npm audit --audit-level=high` in `packages/core` and `apps/web` (the root has no dependencies). Start with `continue-on-error: true`, then make it blocking once the baseline is clean.
-- [ ] CodeQL analysis for `javascript-typescript`, on push, PR, and a weekly schedule.
-- [ ] `actions/dependency-review-action` on pull requests — blocks a PR that introduces a known-vulnerable dependency.
-- [ ] Secret scanning — rely on GitHub's native secret scanning if the repo is public; otherwise add a `gitleaks` step.
-- [ ] `.github/dependabot.yml` watching the `npm` ecosystem in `/packages/core` and `/apps/web`, plus the `github-actions` ecosystem in `/`.
+- [x] `npm audit --audit-level=high` in `packages/core` and `apps/web` (the root has no dependencies). Start with `continue-on-error: true`, then make it blocking once the baseline is clean.
+- [x] CodeQL analysis for `javascript-typescript`, on push, PR, and a weekly schedule.
+- [x] `actions/dependency-review-action` on pull requests — blocks a PR that introduces a known-vulnerable dependency. (Required enabling Dependabot vulnerability alerts on the repo via `PUT /repos/.../vulnerability-alerts` so the action could read the dependency graph.)
+- [x] Secret scanning — repo is public, so GitHub's built-in partner-pattern secret scanning is automatically on.
+- [x] `.github/dependabot.yml` watching the `npm` ecosystem in `/packages/core` and `/apps/web`, plus the `github-actions` ecosystem in `/`.
 
 **Acceptance criteria.**
 
@@ -80,11 +80,11 @@ about *cutting* the release: changelog, tag, GitHub Release.
 
 **Tasks.**
 
-- [ ] Add `CHANGELOG.md` (Keep a Changelog format) with a `0.1.0` entry covering the shipped feature set: skills scan, commands scan, the Skills / Commands / Analytics / Graph / Sources views, the JSON API, i18n (en/th), light/dark theme, vendored-skill installation, and the apps/web + packages/core monorepo.
-- [ ] Pre-release check: CI is green on `main` (depends on item 1), `README.md` and `CLAUDE.md` are accurate, and the version is `0.1.0` in the root, `apps/web`, and `packages/core` `package.json` files.
-- [ ] Tag the release: `git tag -a v0.1.0` on `main` and push the tag.
-- [ ] Create the GitHub Release for `v0.1.0` with notes derived from `CHANGELOG.md`.
-- [ ] *(Optional)* Add `.github/workflows/release.yml`, triggered on `v*` tags, that builds the project and creates the GitHub Release automatically (e.g. via `softprops/action-gh-release`).
+- [x] Add `CHANGELOG.md` (Keep a Changelog format) with a `0.1.0` entry covering the shipped feature set: skills scan, commands scan, the Skills / Commands / Analytics / Graph / Sources views, the JSON API, i18n (en/th), light/dark theme, vendored-skill installation, and the apps/web + packages/core monorepo.
+- [x] Pre-release check: CI is green on `main` (depends on item 1), `README.md` and `CLAUDE.md` are accurate, and the version is `0.1.0` in the root, `apps/web`, and `packages/core` `package.json` files.
+- [x] Tag the release: `git tag -a v0.1.0` on `main` and push the tag.
+- [x] Create the GitHub Release for `v0.1.0` with notes derived from `CHANGELOG.md`. Published at <https://github.com/xemoe/skills-lector/releases/tag/v0.1.0>.
+- [x] *(Optional)* Add `.github/workflows/release.yml`, triggered on `v*` tags, that builds the project and creates the GitHub Release automatically (e.g. via `softprops/action-gh-release`).
 
 **Acceptance criteria.**
 
