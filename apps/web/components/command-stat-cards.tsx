@@ -1,6 +1,6 @@
 "use client";
 
-import { FolderGit2, Package, SquareTerminal, User } from "lucide-react";
+import { Bot, Package, SquareSlash, SquareTerminal } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import type { CommandScanResult } from "@lector/core/types";
 import { useT } from "@/lib/i18n/context";
@@ -13,11 +13,10 @@ export function CommandStatCards({ result }: { result: CommandScanResult }) {
     const distinctPlugins = new Set(
         commands.filter((c) => c.plugin).map((c) => c.plugin!.name),
     ).size;
-    const personalCommands = commands.filter((c) => c.scope === "personal");
-    const projectCommands = commands.filter((c) => c.scope === "project");
-    const distinctProjects = new Set(
-        commands.filter((c) => c.project).map((c) => c.project!.path),
-    ).size;
+    const modelInvocableCommands = commands.filter(
+        (c) => !c.disableModelInvocation,
+    );
+    const slashOnlyCommands = commands.filter((c) => c.disableModelInvocation);
 
     const cards = [
         {
@@ -33,16 +32,16 @@ export function CommandStatCards({ result }: { result: CommandScanResult }) {
             Icon: Package,
         },
         {
-            label: t.stats.personal,
-            value: personalCommands.length,
-            sub: t.stats.availableEverywhere,
-            Icon: User,
+            label: t.explorer.invocationModel,
+            value: modelInvocableCommands.length,
+            sub: t.stats.modelInvocableSub,
+            Icon: Bot,
         },
         {
-            label: t.stats.project,
-            value: projectCommands.length,
-            sub: t.stats.projectsCount(distinctProjects),
-            Icon: FolderGit2,
+            label: t.explorer.invocationSlashOnly,
+            value: slashOnlyCommands.length,
+            sub: t.stats.slashOnlySub,
+            Icon: SquareSlash,
         },
     ];
 

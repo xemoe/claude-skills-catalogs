@@ -132,18 +132,12 @@ export const th: Dictionary = {
     stats: {
         totalSkills: "สกิลทั้งหมด",
         fromPlugins: "จากปลั๊กอิน",
-        fromGitHub: "จาก GitHub",
-        localOnly: "ในเครื่องเท่านั้น",
         totalCommands: "คำสั่งทั้งหมด",
-        personal: "ส่วนตัว",
-        project: "โปรเจ็กต์",
-        notTrackedInGit: "ไม่ได้ติดตามใน git",
-        availableEverywhere: "ใช้ได้ทุกที่",
+        modelInvocableSub: "Claude เรียกใช้เองได้",
+        slashOnlySub: "เรียกผ่านสแลชเท่านั้น",
         acrossLocations: (count) => `จาก ${count} ตำแหน่งที่สแกน`,
         pluginsInstalled: (count) => `ติดตั้งปลั๊กอิน ${count} รายการ`,
         pluginsShort: (count) => `${count} ปลั๊กอิน`,
-        repositories: (count) => `${count} รีโพซิทอรี`,
-        projectsCount: (count) => `${count} โปรเจ็กต์`,
     },
 
     analyticsPage: {

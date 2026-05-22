@@ -1,6 +1,6 @@
 "use client";
 
-import { Boxes, FolderOpen, Github, Package } from "lucide-react";
+import { Bot, Boxes, Package, SquareSlash } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import type { ScanResult } from "@lector/core/types";
 import { useT } from "@/lib/i18n/context";
@@ -13,9 +13,8 @@ export function StatCards({ result }: { result: ScanResult }) {
     const distinctPlugins = new Set(
         skills.filter((s) => s.plugin).map((s) => s.plugin!.name),
     ).size;
-    const githubSkills = skills.filter((s) => s.source.kind === "github");
-    const distinctRepos = new Set(githubSkills.map((s) => s.source.label)).size;
-    const localSkills = skills.filter((s) => s.source.kind === "local");
+    const modelInvocableSkills = skills.filter((s) => !s.disableModelInvocation);
+    const slashOnlySkills = skills.filter((s) => s.disableModelInvocation);
 
     const cards = [
         {
@@ -31,16 +30,16 @@ export function StatCards({ result }: { result: ScanResult }) {
             Icon: Package,
         },
         {
-            label: t.stats.fromGitHub,
-            value: githubSkills.length,
-            sub: t.stats.repositories(distinctRepos),
-            Icon: Github,
+            label: t.explorer.invocationModel,
+            value: modelInvocableSkills.length,
+            sub: t.stats.modelInvocableSub,
+            Icon: Bot,
         },
         {
-            label: t.stats.localOnly,
-            value: localSkills.length,
-            sub: t.stats.notTrackedInGit,
-            Icon: FolderOpen,
+            label: t.explorer.invocationSlashOnly,
+            value: slashOnlySkills.length,
+            sub: t.stats.slashOnlySub,
+            Icon: SquareSlash,
         },
     ];
 

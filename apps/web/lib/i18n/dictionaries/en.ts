@@ -138,23 +138,15 @@ export const en = {
     stats: {
         totalSkills: "Total Skills",
         fromPlugins: "From Plugins",
-        fromGitHub: "From GitHub",
-        localOnly: "Local Only",
         totalCommands: "Total Commands",
-        personal: "Personal",
-        project: "Project",
-        notTrackedInGit: "not tracked in git",
-        availableEverywhere: "available everywhere",
+        modelInvocableSub: "Claude can auto-invoke",
+        slashOnlySub: "slash command only",
         acrossLocations: (count: number) =>
             `across ${count} scanned location${count === 1 ? "" : "s"}`,
         pluginsInstalled: (count: number) =>
             `${count} plugin${count === 1 ? "" : "s"} installed`,
         pluginsShort: (count: number) =>
             `${count} plugin${count === 1 ? "" : "s"}`,
-        repositories: (count: number) =>
-            `${count} repositor${count === 1 ? "y" : "ies"}`,
-        projectsCount: (count: number) =>
-            `${count} project${count === 1 ? "" : "s"}`,
     },
 
     analyticsPage: {
