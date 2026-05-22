@@ -34,7 +34,7 @@ import { SourceBadge } from "@/components/source-badge";
 import { CountBadge } from "@/components/count-badge";
 import { formatDate } from "@/lib/utils";
 import { useT } from "@/lib/i18n/context";
-import type { Command, CommandScope } from "@catalog/core/types";
+import type { Command, CommandScope } from "@lector/core/types";
 
 type SortKey = "updated" | "name";
 type ScopeFilter = "all" | CommandScope;

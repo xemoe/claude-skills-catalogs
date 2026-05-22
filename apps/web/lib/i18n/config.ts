@@ -7,7 +7,7 @@ export const LOCALES: readonly Locale[] = ["en", "th"];
 export const DEFAULT_LOCALE: Locale = "en";
 
 /** Cookie that persists the chosen locale so server components can read it. */
-export const LOCALE_COOKIE = "skills-catalog-locale";
+export const LOCALE_COOKIE = "skills-lector-locale";
 
 /** Short labels for the language switcher. */
 export const LOCALE_LABELS: Record<Locale, string> = {

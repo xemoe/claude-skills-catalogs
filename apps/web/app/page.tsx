@@ -2,7 +2,7 @@ import { AlertTriangle } from "lucide-react";
 import { StatCards } from "@/components/stat-cards";
 import { SkillsExplorer } from "@/components/skills-explorer";
 import { InlineCode } from "@/components/inline-code";
-import { scanSkills } from "@catalog/core/scanner";
+import { scanSkills } from "@lector/core/scanner";
 import { formatDate } from "@/lib/utils";
 import { getServerI18n } from "@/lib/i18n/server";
 import type { Dictionary } from "@/lib/i18n/dictionaries";
@@ -19,7 +19,7 @@ function EmptyState({ claudeHome, t }: { claudeHome: string; t: Dictionary }) {
                 {t.dashboard.empty2}
                 <InlineCode>extraRoots</InlineCode>
                 {t.dashboard.empty3}
-                <InlineCode>skills-catalog.config.json</InlineCode>
+                <InlineCode>skills-lector.config.json</InlineCode>
                 {t.dashboard.empty4}
             </p>
         </div>

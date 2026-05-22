@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { scanSkills } from "@catalog/core/scanner";
+import { scanSkills } from "@lector/core/scanner";
 import { SkillSidebar } from "@/components/skill-sidebar";
 
 export const dynamic = "force-dynamic";

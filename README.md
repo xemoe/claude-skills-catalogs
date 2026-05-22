@@ -1,4 +1,4 @@
-# Claude Skills Catalog
+# Skills Lector
 
 A local web app that scans your machine for deployed **Claude Skills** and slash commands and shows them in a browser dashboard — what is installed, where it came from, and when it last changed.
 
@@ -30,7 +30,7 @@ This is a **monorepo**:
 | Agent / Cowork session skills | Plugin |
 | `<project>/.claude/skills` (projects from `~/.claude.json`) | Project |
 | `apps/web/sample-skills/` (bundled with this repo) | Local |
-| Any directory listed in `skills-catalog.config.json` | Custom |
+| Any directory listed in `skills-lector.config.json` | Custom |
 
 ## Requirements
 
@@ -40,6 +40,8 @@ This is a **monorepo**:
 ## Getting started
 
 ```bash
+git clone https://github.com/xemoe/skills-lector.git
+cd skills-lector
 npm run install:all   # installs packages/core and apps/web
 npm run dev
 ```
@@ -61,7 +63,7 @@ Run these from the repo root; the root `package.json` delegates each into `apps/
 
 All configuration is optional.
 
-- **`skills-catalog.config.json`** — copy `apps/web/skills-catalog.config.example.json` to `apps/web/skills-catalog.config.json` and edit it. Add directories to scan via `extraRoots`, and toggle `includeProjectSkills` / `includeCoworkSkills`. This file is git-ignored.
+- **`skills-lector.config.json`** — copy `apps/web/skills-lector.config.example.json` to `apps/web/skills-lector.config.json` and edit it. Add directories to scan via `extraRoots`, and toggle `includeProjectSkills` / `includeCoworkSkills`. This file is git-ignored.
 - **`SKILLS_SCAN_ROOTS`** — environment variable; a `;`- or `,`-separated list of extra directories to scan.
 - **`CLAUDE_CONFIG_DIR`** — environment variable; overrides the default `~/.claude` location.
 

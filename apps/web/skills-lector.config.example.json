@@ -1,5 +1,5 @@
 {
-    "_comment": "Copy this file to skills-catalog.config.json to customize scanning. All fields are optional.",
+    "_comment": "Copy this file to skills-lector.config.json to customize scanning. All fields are optional.",
     "extraRoots": [
         "C:/Users/you/my-skills",
         "/Users/you/dev/shared-skills"

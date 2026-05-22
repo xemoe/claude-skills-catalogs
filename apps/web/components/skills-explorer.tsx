@@ -34,7 +34,7 @@ import { SourceBadge } from "@/components/source-badge";
 import { CountBadge } from "@/components/count-badge";
 import { formatDate } from "@/lib/utils";
 import { useT } from "@/lib/i18n/context";
-import type { Skill, SkillType } from "@catalog/core/types";
+import type { Skill, SkillType } from "@lector/core/types";
 
 type SortKey = "updated" | "name" | "usage";
 type TypeFilter = "all" | SkillType;

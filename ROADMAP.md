@@ -1,6 +1,6 @@
 # Roadmap
 
-This document plans the next four releases of the Claude Skills Catalog. It is the
+This document plans the next four releases of Skills Lector. It is the
 source of truth for *what* is being built and *why*; implementation details live in
 the code and in [CLAUDE.md](CLAUDE.md).
 
@@ -193,7 +193,7 @@ and `vendor/`), exactly like every other page in the catalog.
 
 - Query the GitHub REST search API (`GET /search/repositories`) with several queries — `topic:claude-skills`, `topic:claude-code`, `"claude skills" in:name,description`, etc.
 - Aggregate results, deduplicate by repository, sort by star count, take the top 10.
-- Write the results manifest (proposed path `.discover/results.json` at the repo root; git-ignored like `skills-catalog.config.json`, since it is a local discovery cache).
+- Write the results manifest (proposed path `.discover/results.json` at the repo root; git-ignored like `skills-lector.config.json`, since it is a local discovery cache).
 - Cross-check each repo against `.gitmodules` / `vendor/` and record which are already vendored.
 - Ask the user to confirm, then `git submodule add … vendor/<name>` for the chosen repos. Hand off to `install-vendor-skill` for the `vendor/` → install step.
 

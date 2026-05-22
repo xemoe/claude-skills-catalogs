@@ -2,7 +2,7 @@
 
 import { ExternalLink, FolderOpen, GitBranch, Github } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { SkillSource } from "@catalog/core/types";
+import type { SkillSource } from "@lector/core/types";
 
 export function SourceBadge({
     source,

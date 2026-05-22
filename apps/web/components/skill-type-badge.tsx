@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import type { SkillType } from "@catalog/core/types";
+import type { SkillType } from "@lector/core/types";
 import { SKILL_TYPE_META } from "@/components/skill-type";
 import { useT } from "@/lib/i18n/context";
 

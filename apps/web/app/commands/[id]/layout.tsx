@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { scanCommands } from "@catalog/core/command-scanner";
+import { scanCommands } from "@lector/core/command-scanner";
 import { CommandSidebar } from "@/components/command-sidebar";
 
 export const dynamic = "force-dynamic";

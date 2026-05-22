@@ -9,7 +9,7 @@ import { CountBadge } from "@/components/count-badge";
 import { SKILL_TYPE_META } from "@/components/skill-type";
 import { cn } from "@/lib/utils";
 import { useT } from "@/lib/i18n/context";
-import type { Skill, SkillType } from "@catalog/core/types";
+import type { Skill, SkillType } from "@lector/core/types";
 
 const TYPE_ORDER: SkillType[] = ["personal", "plugin", "project", "local"];
 

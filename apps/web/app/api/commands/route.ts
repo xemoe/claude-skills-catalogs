@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { scanCommands } from "@catalog/core/command-scanner";
+import { scanCommands } from "@lector/core/command-scanner";
 
 export const dynamic = "force-dynamic";
 

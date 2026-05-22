@@ -9,7 +9,7 @@ import { CountBadge } from "@/components/count-badge";
 import { SKILL_TYPE_META } from "@/components/skill-type";
 import { cn } from "@/lib/utils";
 import { useT } from "@/lib/i18n/context";
-import type { Command, CommandScope } from "@catalog/core/types";
+import type { Command, CommandScope } from "@lector/core/types";
 
 const SCOPE_ORDER: CommandScope[] = ["personal", "plugin", "project"];
 

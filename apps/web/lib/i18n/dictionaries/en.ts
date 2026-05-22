@@ -1,4 +1,4 @@
-import type { ScanRootLabelKey, SkillType } from "@catalog/core/types";
+import type { ScanRootLabelKey, SkillType } from "@lector/core/types";
 
 /**
  * The English dictionary is the canonical shape — `Dictionary` is `typeof en`,
@@ -6,12 +6,12 @@ import type { ScanRootLabelKey, SkillType } from "@catalog/core/types";
  */
 export const en = {
     meta: {
-        title: "Claude Skills Catalog",
+        title: "Skills Lector",
         description: "Browse and inspect deployed Claude Skills on this machine.",
     },
 
     nav: {
-        brand: "Claude Skills Catalog",
+        brand: "Skills Lector",
         skills: "Skills",
         commands: "Commands",
         analytics: "Analytics",

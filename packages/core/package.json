@@ -1,5 +1,5 @@
 {
-    "name": "@catalog/core",
+    "name": "@lector/core",
     "version": "0.1.0",
     "private": true,
     "description": "Server-side filesystem scanners for Claude Skills and slash commands, plus the shared data model. Consumed by apps/web.",

@@ -2,7 +2,7 @@
 
 import { Boxes, FolderOpen, Github, Package } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import type { ScanResult } from "@catalog/core/types";
+import type { ScanResult } from "@lector/core/types";
 import { useT } from "@/lib/i18n/context";
 
 export function StatCards({ result }: { result: ScanResult }) {

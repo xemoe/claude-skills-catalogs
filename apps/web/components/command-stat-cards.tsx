@@ -2,7 +2,7 @@
 
 import { FolderGit2, Package, SquareTerminal, User } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import type { CommandScanResult } from "@catalog/core/types";
+import type { CommandScanResult } from "@lector/core/types";
 import { useT } from "@/lib/i18n/context";
 
 export function CommandStatCards({ result }: { result: CommandScanResult }) {

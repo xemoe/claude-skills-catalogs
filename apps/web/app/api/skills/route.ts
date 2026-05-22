@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { scanSkills } from "@catalog/core/scanner";
+import { scanSkills } from "@lector/core/scanner";
 
 export const dynamic = "force-dynamic";
 

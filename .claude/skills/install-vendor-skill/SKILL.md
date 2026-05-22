@@ -75,5 +75,5 @@ Then re-run `install <name> --force` for any skill you had already installed, so
 ## Notes
 
 - Installed skills are plain copies: editing a copy does not change the vendored source, and updating a submodule does not change an already-installed copy.
-- Each install writes a `.vendor-source.json` marker into the installed copy, recording the origin repo, the path within it, and the pinned commit. The Skills Catalog reads this marker so an installed skill shows its real GitHub source instead of a bare local path.
+- Each install writes a `.vendor-source.json` marker into the installed copy, recording the origin repo, the path within it, and the pinned commit. Skills Lector reads this marker so an installed skill shows its real GitHub source instead of a bare local path.
 - `list` reads each skill's frontmatter directly from `vendor/`; a skill does not have to be installed to appear there.

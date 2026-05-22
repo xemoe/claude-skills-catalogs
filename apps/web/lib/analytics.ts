@@ -1,6 +1,6 @@
-import { scanActivity } from "@catalog/core/activity";
-import { scanCommands } from "@catalog/core/command-scanner";
-import { scanSkills } from "@catalog/core/scanner";
+import { scanActivity } from "@lector/core/activity";
+import { scanCommands } from "@lector/core/command-scanner";
+import { scanSkills } from "@lector/core/scanner";
 import { formatRelativeTime } from "./utils";
 import { type Locale, DEFAULT_LOCALE } from "./i18n/config";
 import { getDictionary } from "./i18n/dictionaries";

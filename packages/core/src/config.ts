@@ -16,9 +16,9 @@ const DEFAULT: CatalogConfig = {
     includeCoworkSkills: true,
 };
 
-/** Reads skills-catalog.config.json from the project root, if present. */
+/** Reads skills-lector.config.json from the project root, if present. */
 export function loadConfig(): CatalogConfig {
-    const file = path.join(process.cwd(), "skills-catalog.config.json");
+    const file = path.join(process.cwd(), "skills-lector.config.json");
     let fromFile: Partial<CatalogConfig> = {};
     try {
         const j = JSON.parse(fs.readFileSync(file, "utf8"));

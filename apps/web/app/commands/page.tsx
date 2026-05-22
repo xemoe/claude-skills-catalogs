@@ -2,7 +2,7 @@ import { AlertTriangle } from "lucide-react";
 import { CommandStatCards } from "@/components/command-stat-cards";
 import { CommandsExplorer } from "@/components/commands-explorer";
 import { InlineCode } from "@/components/inline-code";
-import { scanCommands } from "@catalog/core/command-scanner";
+import { scanCommands } from "@lector/core/command-scanner";
 import { formatDate } from "@/lib/utils";
 import { getServerI18n } from "@/lib/i18n/server";
 import type { Dictionary } from "@/lib/i18n/dictionaries";

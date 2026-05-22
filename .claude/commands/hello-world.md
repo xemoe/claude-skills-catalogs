@@ -5,7 +5,7 @@ argument-hint: "[name]"
 
 # Hello World
 
-This is a sample slash command bundled with **Claude Skills Catalog**. It exists
+This is a sample slash command bundled with **Skills Lector**. It exists
 so the Commands catalog has something to display out of the box and so you can
 see how a command `.md` file is structured.
 

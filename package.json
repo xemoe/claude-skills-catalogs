@@ -1,8 +1,12 @@
 {
-    "name": "claude-skills-catalog",
+    "name": "skills-lector",
     "version": "0.1.0",
     "private": true,
-    "description": "Monorepo for the Claude Skills Catalog: the web app (apps/web) and the shared scanning engine (packages/core).",
+    "description": "Monorepo for Skills Lector: the web app (apps/web) and the shared scanning engine (packages/core).",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/xemoe/skills-lector.git"
+    },
     "scripts": {
         "dev": "cd apps/web && npm run dev",
         "build": "cd apps/web && npm run build",

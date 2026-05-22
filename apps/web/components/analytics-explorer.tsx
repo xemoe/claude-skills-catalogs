@@ -33,7 +33,7 @@ import type {
     CatalogGap,
     UsageStat,
 } from "@/lib/analytics";
-import type { SkillType } from "@catalog/core/types";
+import type { SkillType } from "@lector/core/types";
 
 const WINDOW_KEYS: ActivityWindow[] = ["4h", "1d", "1w", "all"];
 

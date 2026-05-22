@@ -1,4 +1,4 @@
-import type { SkillType } from "@catalog/core/types";
+import type { SkillType } from "@lector/core/types";
 
 /**
  * Per-type colour treatment. The display label lives in the i18n dictionary

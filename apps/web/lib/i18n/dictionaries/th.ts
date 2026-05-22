@@ -3,12 +3,12 @@ import type { Dictionary } from "./en";
 /** Thai translations — must match the shape of the English dictionary exactly. */
 export const th: Dictionary = {
     meta: {
-        title: "แคตตาล็อก Claude Skills",
+        title: "Skills Lector",
         description: "เรียกดูและตรวจสอบ Claude Skills ที่ติดตั้งบนเครื่องนี้",
     },
 
     nav: {
-        brand: "แคตตาล็อก Claude Skills",
+        brand: "Skills Lector",
         skills: "สกิล",
         commands: "คำสั่ง",
         analytics: "วิเคราะห์",

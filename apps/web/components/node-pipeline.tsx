@@ -14,7 +14,7 @@ import {
     type Node,
     type NodeProps,
 } from "@xyflow/react";
-import type { Pipeline } from "@catalog/core/pipeline";
+import type { Pipeline } from "@lector/core/pipeline";
 import { useT } from "@/lib/i18n/context";
 
 const NODE_W = 218;

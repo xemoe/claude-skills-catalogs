@@ -1,10 +1,10 @@
 import { notFound } from "next/navigation";
 import { FileText, Package, Workflow } from "lucide-react";
 import { Separator } from "@/components/ui/separator"
-import { getSkillById } from "@catalog/core/scanner";
-import { parseSkillMd } from "@catalog/core/skill-parser";
-import { extractPipeline } from "@catalog/core/pipeline";
-import { lastCommitDate } from "@catalog/core/git";
+import { getSkillById } from "@lector/core/scanner";
+import { parseSkillMd } from "@lector/core/skill-parser";
+import { extractPipeline } from "@lector/core/pipeline";
+import { lastCommitDate } from "@lector/core/git";
 import { Markdown } from "@/components/markdown";
 import { SkillMdViewer } from "@/components/skill-md-viewer";
 import { NodePipeline } from "@/components/node-pipeline";

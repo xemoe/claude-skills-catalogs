@@ -1,5 +1,5 @@
 {
-    "name": "@catalog/web",
+    "name": "@lector/web",
     "version": "0.1.0",
     "private": true,
     "description": "Web app to browse and manage deployed Claude Skills and slash commands.",

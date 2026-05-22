@@ -5,7 +5,7 @@ description: A minimal example skill that demonstrates the SKILL.md format. Use 
 
 # Hello World
 
-This is a sample skill bundled with **Claude Skills Catalog**. It exists so the
+This is a sample skill bundled with **Skills Lector**. It exists so the
 dashboard has something to display out of the box and so you can see how a
 `SKILL.md` file is structured.
 

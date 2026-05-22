@@ -4,12 +4,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-Claude Skills Catalog — a local Next.js web app that scans the machine for deployed Claude Skills (`SKILL.md` files) and slash commands and shows them in a browser dashboard: what is deployed, when it last changed, and where it came from (a GitHub repo or a local directory).
+Skills Lector — a local Next.js web app that scans the machine for deployed Claude Skills (`SKILL.md` files) and slash commands and shows them in a browser dashboard: what is deployed, when it last changed, and where it came from (a GitHub repo or a local directory).
 
 The repository is a **monorepo** with two packages:
 
 - **`apps/web`** — the Next.js web app (UI, pages, API routes, app-local helpers).
-- **`packages/core`** — the server-side scanning engine (filesystem scanners, parsers, git/source resolution, the shared data model). The app imports it as `@catalog/core/*`.
+- **`packages/core`** — the server-side scanning engine (filesystem scanners, parsers, git/source resolution, the shared data model). The app imports it as `@lector/core/*`.
 
 ## Monorepo layout
 
@@ -29,7 +29,7 @@ packages/core/          The shared scanning engine
 vendor/                 External skills repos as git submodules
 ```
 
-The root **deliberately does not use npm workspaces** — workspaces link packages with symlinks/junctions, which the exFAT volume cannot store (see below). Each package has its own `node_modules`; `apps/web` consumes `packages/core` through the TypeScript path alias `@catalog/core/*` (configured in `apps/web/tsconfig.json`), and `apps/web/next.config.mjs` sets `turbopack.root` to the monorepo root so Turbopack resolves the sibling package.
+The root **deliberately does not use npm workspaces** — workspaces link packages with symlinks/junctions, which the exFAT volume cannot store (see below). Each package has its own `node_modules`; `apps/web` consumes `packages/core` through the TypeScript path alias `@lector/core/*` (configured in `apps/web/tsconfig.json`), and `apps/web/next.config.mjs` sets `turbopack.root` to the monorepo root so Turbopack resolves the sibling package.
 
 ## Commands
 
@@ -87,7 +87,7 @@ Targets Windows and macOS — always use `os.homedir()` and `path`, never hardco
 
 ## Configuration
 
-- `skills-catalog.config.json` (git-ignored; template in `apps/web/skills-catalog.config.example.json`) or the `SKILLS_SCAN_ROOTS` env var add extra scan roots. The scanner reads the config from the current working directory — when started via the npm scripts that is `apps/web/`, so place a real `skills-catalog.config.json` there.
+- `skills-lector.config.json` (git-ignored; template in `apps/web/skills-lector.config.example.json`) or the `SKILLS_SCAN_ROOTS` env var add extra scan roots. The scanner reads the config from the current working directory — when started via the npm scripts that is `apps/web/`, so place a real `skills-lector.config.json` there.
 - `CLAUDE_CONFIG_DIR` overrides the `~/.claude` location.
 
 ## Vendored skills

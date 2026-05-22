@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ExternalLink, FolderOpen, GitBranch, Github, Package } from "lucide-react";
-import { scanSkills } from "@catalog/core/scanner";
+import { scanSkills } from "@lector/core/scanner";
 import {
     Card,
     CardContent,
@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/table";
 import { InlineCode } from "@/components/inline-code";
 import { getServerI18n } from "@/lib/i18n/server";
-import type { Skill, SourceKind } from "@catalog/core/types";
+import type { Skill, SourceKind } from "@lector/core/types";
 
 export const dynamic = "force-dynamic";
 
@@ -129,7 +129,7 @@ export default async function SourcesPage() {
                 </h2>
                 <p className="text-sm text-muted-foreground">
                     {t.sources.scanLocationsDesc1}
-                    <InlineCode>skills-catalog.config.json</InlineCode>
+                    <InlineCode>skills-lector.config.json</InlineCode>
                     {t.sources.scanLocationsDesc2}
                 </p>
                 <div className="ring-1 ring-foreground/10">
