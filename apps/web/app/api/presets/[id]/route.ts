@@ -55,6 +55,8 @@ export async function PATCH(
             { status: 400 },
         );
     }
+    const current = getPreset(id);
+    if (!current) return NextResponse.json({ error: "not_found" }, { status: 404 });
     try {
         const preset = updatePreset(id, parsed.data);
         return NextResponse.json({ preset });
