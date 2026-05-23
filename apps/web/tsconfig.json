@@ -5,6 +5,7 @@
         "plugins": [{ "name": "next" }],
         "paths": {
             "@lector/core/*": ["../../packages/core/src/*"],
+            "@lector/presets/*": ["../../packages/presets/src/*"],
             "@/*": ["./*"]
         }
     },

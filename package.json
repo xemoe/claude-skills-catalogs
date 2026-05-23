@@ -12,6 +12,6 @@
         "build": "cd apps/web && npm run build",
         "start": "cd apps/web && npm run start",
         "lint": "cd apps/web && npm run lint",
-        "install:all": "npm install --prefix packages/core && npm install --prefix apps/web"
+        "install:all": "npm install --prefix packages/core && npm install --prefix packages/presets && npm install --prefix apps/web"
     }
 }
