@@ -5,6 +5,7 @@
     "description": "Web app to browse and manage deployed Claude Skills and slash commands.",
     "scripts": {
         "dev": "cross-env NODE_OPTIONS=\"--require ./scripts/exfat-readlink-fix.cjs\" next dev --turbopack -p 4317",
+        "dev:autoport": "cross-env NODE_OPTIONS=\"--require ./scripts/exfat-readlink-fix.cjs\" next dev --turbopack",
         "build": "cross-env NODE_OPTIONS=\"--require ./scripts/exfat-readlink-fix.cjs\" next build --turbopack",
         "start": "cross-env NODE_OPTIONS=\"--require ./scripts/exfat-readlink-fix.cjs\" next start -p 4317",
         "lint": "next lint"

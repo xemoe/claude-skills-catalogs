@@ -6,6 +6,12 @@
             "runtimeExecutable": "npm",
             "runtimeArgs": ["run", "dev"],
             "port": 4317
+        },
+        {
+            "name": "skills-lector-test",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": ["run", "dev:autoport"],
+            "autoPort": true
         }
     ]
 }
