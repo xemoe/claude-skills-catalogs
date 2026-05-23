@@ -8,6 +8,7 @@ import { PresetCard } from "./preset-card";
 import { PresetWizard } from "./preset-wizard";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { PinnedPanel } from "./pinned-panel";
 
 export function PresetsExplorer() {
     const active = usePresetsList("active");
@@ -136,6 +137,7 @@ export function PresetsExplorer() {
                 </TabsContent>
             </Tabs>
 
+            <PinnedPanel />
         </div>
     );
 }
