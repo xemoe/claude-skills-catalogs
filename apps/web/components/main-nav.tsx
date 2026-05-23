@@ -11,6 +11,7 @@ const LINKS = [
     { href: "/analytic", key: "analytics" },
     { href: "/graph", key: "graph" },
     { href: "/sources", key: "sources" },
+    { href: "/usecase", key: "usecase" },
 ] as const;
 
 export function MainNav() {
