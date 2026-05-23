@@ -35,6 +35,9 @@ jobs:
       - name: Audit packages/core
         run: npm audit --audit-level=high --prefix packages/core
 
+      - name: Audit packages/presets
+        run: npm audit --audit-level=high --prefix packages/presets
+
       - name: Audit apps/web
         run: npm audit --audit-level=high --prefix apps/web
 

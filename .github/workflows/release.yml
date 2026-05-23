@@ -23,10 +23,14 @@ jobs:
           cache: npm
           cache-dependency-path: |
             packages/core/package-lock.json
+            packages/presets/package-lock.json
             apps/web/package-lock.json
 
       - name: Install packages/core
         run: npm ci --prefix packages/core
+
+      - name: Install packages/presets
+        run: npm ci --prefix packages/presets
 
       - name: Install apps/web
         run: npm ci --prefix apps/web
