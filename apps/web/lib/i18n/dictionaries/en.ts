@@ -651,7 +651,7 @@ That feature ships in **v0.3.0** — until it lands, browse the \`vendor/\` dire
         stepVendoredLabel: "Vendored skill (in this repo's vendor/):",
         stepPluginLabel: "Plugin skill from a marketplace:",
         stepPluginBody:
-            "Copy ~/.claude/plugins/cache/<marketplace>/<plugin>/<version>/skills/<name>/ to ~/.claude/skills/<name>/ , then click Rescan.",
+            "Copy skills/<name>/ (or commands/<name>.md) from ~/.claude/plugins/cache/<marketplace>/<plugin>/<version>/ to the matching path under ~/.claude/ , then click Rescan.",
         dismiss: "Dismiss",
         emptyPickerWithHidden: (count: number) =>
             `No personal-scope items yet — ${count} plugin item${count === 1 ? " is" : "s are"} hidden above.`,

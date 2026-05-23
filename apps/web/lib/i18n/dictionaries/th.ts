@@ -628,7 +628,7 @@ Keep the explanation tight — three short paragraphs at most.`,
         stepVendoredLabel: "Skill ใน vendor/ ของรีโพนี้:",
         stepPluginLabel: "Skill จาก plugin marketplace:",
         stepPluginBody:
-            "คัดลอก ~/.claude/plugins/cache/<marketplace>/<plugin>/<version>/skills/<name>/ ไปวางที่ ~/.claude/skills/<name>/ แล้วกด Rescan",
+            "คัดลอก skills/<name>/ (หรือ commands/<name>.md) จาก ~/.claude/plugins/cache/<marketplace>/<plugin>/<version>/ ไปวางที่พาธเดียวกันใต้ ~/.claude/ แล้วกด Rescan",
         dismiss: "ปิด",
         emptyPickerWithHidden: (count) =>
             `ยังไม่มีรายการ personal scope — มี ${count} รายการ plugin ถูกซ่อนอยู่ด้านบน`,
