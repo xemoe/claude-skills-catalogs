@@ -199,13 +199,13 @@ and `vendor/`), exactly like every other page in the catalog.
 
 **Tasks.**
 
-- [ ] Write the discovery helper script; tune the search queries (GitHub search for "claude skills" is noisy — prefer `topic:` filters).
-- [ ] Handle GitHub API auth: use `gh api` when the GitHub CLI is installed and authenticated (5000 req/hr); fall back to unauthenticated `fetch` (≈10 req/min for search) and degrade gracefully on rate limits.
-- [ ] Define and write the results manifest in a stable JSON schema the `/discover` page can consume.
-- [ ] Implement the confirm-then-clone step (`git submodule add`).
-- [ ] Author `SKILL.md` with a precise `description` so Claude triggers it on phrasings like "find popular Claude skills" / "discover skills on GitHub".
-- [ ] Author the `/discover-skills` command.
-- [ ] Document the skill, the command, and the manifest in `CLAUDE.md` alongside the existing vendored-skills section.
+- [x] Write the discovery helper script; tune the search queries (GitHub search for "claude skills" is noisy — prefer `topic:` filters).
+- [x] Handle GitHub API auth: use `gh api` when the GitHub CLI is installed and authenticated (5000 req/hr); fall back to unauthenticated `fetch` (≈10 req/min for search) and degrade gracefully on rate limits.
+- [x] Define and write the results manifest in a stable JSON schema the `/discover` page can consume.
+- [x] Implement the confirm-then-clone step (`git submodule add`).
+- [x] Author `SKILL.md` with a precise `description` so Claude triggers it on phrasings like "find popular Claude skills" / "discover skills on GitHub".
+- [x] Author the `/discover-skills` command.
+- [x] Document the skill, the command, and the manifest in `CLAUDE.md` alongside the existing vendored-skills section.
 
 #### 4b. Web side — the `/discover` page
 
@@ -224,11 +224,11 @@ and `vendor/`), exactly like every other page in the catalog.
 
 **Tasks.**
 
-- [ ] Build the `packages/core` manifest reader, including repo-root resolution.
-- [ ] Create the `/discover` route and page component.
-- [ ] Add the nav link and the `en` / `th` dictionary entries.
-- [ ] Build the "no discovery run yet" empty state.
-- [ ] Verify the page renders in both locales and in light and dark themes.
+- [x] Build the `packages/core` manifest reader, including repo-root resolution.
+- [x] Create the `/discover` route and page component.
+- [x] Add the nav link and the `en` / `th` dictionary entries.
+- [x] Build the "no discovery run yet" empty state.
+- [x] Verify the page renders in both locales and in light and dark themes.
 
 **Acceptance criteria.**
 

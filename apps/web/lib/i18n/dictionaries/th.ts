@@ -15,6 +15,7 @@ export const th: Dictionary = {
         graph: "กราฟ",
         sources: "แหล่งที่มา",
         usecase: "วิธีใช้",
+        discover: "ค้นพบ",
     },
 
     language: {
@@ -84,6 +85,46 @@ export const th: Dictionary = {
         empty2: " ของคำสั่งสแลชภายใต้ ",
         empty3: ", ปลั๊กอินที่ติดตั้ง, หรือไดเรกทอรี ",
         empty4: " ของโปรเจ็กต์ที่รู้จัก เพิ่มไฟล์คำสั่งแล้วกดสแกนใหม่",
+    },
+
+    discoverPage: {
+        title: "ค้นหาสกิลยอดนิยม",
+        subtitle:
+            "รีโพ Claude-Skills ยอดนิยมบน GitHub จัดอันดับตามจำนวนดาว รายการสร้างโดยสกิล discover-popular-skills ของ Claude Code และอ่านจากไฟล์ manifest ในเครื่อง — เว็บแอปไม่ได้เรียกออกเครือข่ายเลย",
+        emptyTitle: "ยังไม่เคยรันการค้นพบ",
+        empty1: "รันคำสั่งสแลช ",
+        empty2: " ใน Claude Code (หรือเรียกสกิล ",
+        empty3: ") เพื่อค้นหารีโพ Claude-Skills ที่ได้รับความนิยมที่สุดบน GitHub ผลลัพธ์อันดับ 10 อันดับแรกจะถูกบันทึกที่ ",
+        empty4: " ที่รูตของรีโพ และปรากฏที่นี่",
+        meta: {
+            discoveredAt: "ค้นพบเมื่อ",
+            auth: "การยืนยันตัวตน",
+            queries: "คำค้นหา",
+            entries: (count) => `${count} รีโพที่จัดอันดับ`,
+            authGh: "GitHub CLI (gh)",
+            authAnonymous: "fetch แบบไม่ยืนยันตัวตน",
+        },
+        rateLimited:
+            "GitHub จำกัดอัตราการเรียกอย่างน้อยหนึ่งคำค้นในการรันครั้งนี้ — การจัดอันดับอาจไม่ครบ ลอง gh auth login แล้วรัน /discover-skills อีกครั้ง",
+        readErrors: "ไม่สามารถ parse manifest ได้ครบถ้วน:",
+        colRank: "#",
+        colRepo: "รีโพซิทอรี",
+        colStars: "ดาว",
+        colTopics: "หัวข้อ",
+        colStatus: "สถานะ",
+        badgeVendored: "วางใน vendor แล้ว",
+        badgeNotVendored: "ยังไม่ได้วางใน vendor",
+        openRepo: "เปิดบน GitHub",
+        vendoredHint: (p) => `Submodule ที่ ${p}`,
+        actionsHeading: "ขั้นตอนถัดไป",
+        actionsBody:
+            "เลือกรีโพข้างบน แล้วเพิ่มเป็น git submodule จาก Claude Code จากนั้นติดตั้งสกิลของรีโพนั้นลงใน ~/.claude/skills/:",
+        cmdClone: "/discover-skills clone <repo-name>",
+        cmdInstall: "/vendor-install <skill-name>",
+        refreshHeading: "รีเฟรชการจัดอันดับ",
+        refreshBody:
+            "จำนวนดาวเปลี่ยนได้ รัน discover ใหม่เมื่อใดก็ได้เพื่อเขียนทับ manifest ด้วย top 10 ใหม่:",
+        cmdSearch: "/discover-skills",
     },
 
     usecasePage: {

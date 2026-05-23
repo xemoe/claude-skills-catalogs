@@ -75,9 +75,13 @@ Results are cached in-process for 8 seconds; pass `{ force: true }` to bypass.
 
 `scanCommands()` mirrors `scanSkills()` for Claude Code slash commands. It scans three kinds of root: personal `~/.claude/commands`, each installed plugin's `commands/` directory, and project `.claude/commands` dirs (known projects from `~/.claude.json` plus the current working directory). Every `.md` file is a command — its name is the path relative to the `commands/` dir, with subdirectories becoming a `:` namespace. Frontmatter is parsed by `command-parser.ts`; the lenient YAML helpers shared with `skill-parser.ts` live in `frontmatter.ts`. Returns a `CommandScanResult`; cached for 8 seconds like the skill scan.
 
+### Discover manifest reader — `packages/core/src/discover.ts`
+
+`readDiscoverManifest()` is the third reader, but it does not crawl the filesystem — it consumes a JSON file written by the `discover-popular-skills` Claude Code skill (see "Discover popular skills" below). It walks up from `cwd` to find the repo root (the web app's cwd is `apps/web/`), reads `.discover/results.json` if it exists, validates each entry leniently (a malformed row is reported in `errors` rather than crashing the read), then cross-references `.gitmodules` to annotate each entry with `vendored` / `vendorPath`. Returns a `DiscoverResult` (shape in `types.ts`); cached for 8 seconds, invalidated whenever the manifest's mtime changes. The manifest schema is `schemaVersion: 1`; bump that field on any breaking change to keep the skill and the reader in lockstep.
+
 ### UI data flow
 
-Pages are dynamic Server Components (`export const dynamic = "force-dynamic"`) that call `scanSkills()` / `scanCommands()` directly and hand plain, serializable data to client components — there is no client-side fetching for the initial render. `apps/web/components/skills-explorer.tsx` and `commands-explorer.tsx` are the stateful client components (search / filter / sort, all in-browser). The Skills catalog lives at `/` and `/skills/[id]`; the Commands catalog mirrors it at `/commands` and `/commands/[id]`. `apps/web/app/api/skills/route.ts` and `app/api/commands/route.ts` return the scan results as JSON; the Rescan button force-refreshes both with `?force=1` then calls `router.refresh()`.
+Pages are dynamic Server Components (`export const dynamic = "force-dynamic"`) that call `scanSkills()` / `scanCommands()` / `readDiscoverManifest()` directly and hand plain, serializable data to client components — there is no client-side fetching for the initial render. `apps/web/components/skills-explorer.tsx` and `commands-explorer.tsx` are the stateful client components (search / filter / sort, all in-browser). The Skills catalog lives at `/` and `/skills/[id]`; the Commands catalog mirrors it at `/commands` and `/commands/[id]`; the Discover view is a single page at `/discover`. `apps/web/app/api/skills/route.ts`, `app/api/commands/route.ts`, and `app/api/discover/route.ts` return the corresponding results as JSON; the Rescan button force-refreshes all three (plus activity) with `?force=1` then calls `router.refresh()`.
 
 `apps/web/lib/` holds the app-only modules that depend on React/Next or i18n and therefore stay out of `packages/core`: `analytics.ts` and `relations.ts` (view-model builders for the analytics and graph pages), `i18n/` (locale context + dictionaries), `theme.ts`, and `utils.ts` (the shadcn `cn` helper and locale-aware formatting).
 
@@ -97,6 +101,15 @@ External Claude Skills are pulled in as **git submodules under `vendor/`** (e.g.
 A project skill at `.claude/skills/install-vendor-skill/` owns the vendor workflow: list the skills in `vendor/`, install one into `~/.claude/skills/` (personal) or `.claude/skills/` (project), and add new submodules. Its helper script is `node .claude/skills/install-vendor-skill/scripts/vendor-skills.mjs <list|install|installed>`. Installing **copies** the skill directory — exFAT cannot store symlinks.
 
 The `/vendor-install` slash command (`.claude/commands/vendor-install.md`) is a thin shortcut over that script: run it bare to list vendored skills, or `/vendor-install <skill-name>` to install one.
+
+## Discover popular skills
+
+The discovery loop has two halves that integrate **only through a JSON file on disk** — the web app makes no GitHub calls.
+
+- **Claude Code side** — the `.claude/skills/discover-popular-skills/` skill (helper at `scripts/discover.mjs`) and its `/discover-skills` slash command. `node .claude/skills/discover-popular-skills/scripts/discover.mjs <search|clone|status>` queries the GitHub search API for the most popular Claude-Skills repositories, writes the ranked top 10 to `.discover/results.json` at the repo root, and on confirmation runs `git submodule add … vendor/<name>` for the chosen repos. It prefers `gh api` when the GitHub CLI is available (5000 req/hr); falls back to unauthenticated `fetch` (~10 req/min for search) and reports `rateLimited` in the manifest when GitHub throttles a run. The outbound network call lives **only** in this script — never in the Next.js server.
+- **Web side** — the `/discover` page in `apps/web` reads the manifest via `readDiscoverManifest()` and shows the ranked list with each entry marked *vendored* / *not vendored*. When no manifest exists yet (fresh clone, skill never run), it shows an empty state pointing the user at `/discover-skills`.
+
+`.discover/results.json` is git-ignored — it is a local discovery cache. Its shape is documented in the `DiscoverManifest` / `DiscoverEntry` types in `packages/core/src/types.ts`; the discover skill's `SKILL.md` carries the canonical JSON sample.
 
 ## Styling
 
