@@ -6,7 +6,7 @@ import {
 } from "@tanstack/react-query";
 import { getActiveState, listPresets } from "@lector/presets/presets";
 import { listPinned } from "@lector/presets/pinned";
-import { qk } from "@/components/presets/use-preset-queries";
+import { qk } from "@/components/presets/preset-query-keys";
 import { PresetsExplorer } from "@/components/presets/presets-explorer";
 import { getServerI18n } from "@/lib/i18n/server";
 

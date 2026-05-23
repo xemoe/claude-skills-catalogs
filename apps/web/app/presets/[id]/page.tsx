@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query";
 import { getPreset, listPresetItems } from "@lector/presets/presets";
 import { PresetDetailClient } from "@/components/presets/preset-detail-client";
-import { qk } from "@/components/presets/use-preset-queries";
+import { qk } from "@/components/presets/preset-query-keys";
 
 export const dynamic = "force-dynamic";
 

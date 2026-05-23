@@ -16,17 +16,10 @@ import type {
     ActiveState,
 } from "@lector/presets/types";
 
-// Query keys (single source of truth — used by both useQuery and invalidations)
-export const qk = {
-    presets: (status: "active" | "archived" | "all" = "active") =>
-        ["presets", { status }] as const,
-    preset: (id: number) => ["preset", id] as const,
-    activeState: () => ["active-preset"] as const,
-    pinned: (status: "active" | "archived" | "all" = "active") =>
-        ["pinned", { status }] as const,
-    applyLog: (presetId?: number) => ["apply-log", { presetId }] as const,
-    applyLogItems: (logId: number) => ["apply-log-items", logId] as const,
-};
+import { qk } from "./preset-query-keys";
+
+// Re-export so existing client-side imports keep working.
+export { qk };
 
 async function jsonFetch<T>(url: string, init?: RequestInit): Promise<T> {
     const res = await fetch(url, init);
