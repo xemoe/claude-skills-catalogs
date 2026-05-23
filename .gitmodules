@@ -1,3 +1,9 @@
 [submodule "vendor/9arm-skills"]
 	path = vendor/9arm-skills
 	url = git@github.com:thananon/9arm-skills.git
+[submodule "vendor/gstack"]
+	path = vendor/gstack
+	url = https://github.com/garrytan/gstack.git
+[submodule "vendor/ui-ux-pro-max-skill"]
+	path = vendor/ui-ux-pro-max-skill
+	url = https://github.com/nextlevelbuilder/ui-ux-pro-max-skill.git

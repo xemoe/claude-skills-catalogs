@@ -143,3 +143,70 @@ export interface CommandScanResult {
     errors: string[];
     durationMs: number;
 }
+
+/**
+ * A single GitHub repository ranked by the discover skill. Stored verbatim in
+ * the on-disk manifest (.discover/results.json) — keep field names stable.
+ */
+export interface DiscoverEntry {
+    /** 1-based rank within the manifest (1 = top). */
+    rank: number;
+    /** GitHub "owner/repo". */
+    fullName: string;
+    owner: string;
+    /** Bare repo name (the part after the slash in fullName). */
+    name: string;
+    htmlUrl: string;
+    cloneUrl: string;
+    description: string;
+    stars: number;
+    topics: string[];
+    defaultBranch: string;
+    /** ISO timestamp of the repo's last push, when GitHub returns it. */
+    pushedAt?: string;
+}
+
+/**
+ * Persisted shape of .discover/results.json. The discover skill writes this;
+ * the /discover web page reads it. Schema is versioned so we can evolve it
+ * safely — bump schemaVersion on any breaking field change.
+ */
+export interface DiscoverManifest {
+    schemaVersion: 1;
+    /** ISO timestamp of when the discover run completed. */
+    discoveredAt: string;
+    /** Search queries that produced this set (for transparency in the UI). */
+    queries: string[];
+    /** Which auth path the discover skill used. */
+    auth: "gh" | "anonymous";
+    /** Whether the GitHub API rate-limited the run (manifest may be partial). */
+    rateLimited?: boolean;
+    entries: DiscoverEntry[];
+}
+
+/** A `DiscoverEntry` annotated with vendored status, computed at read time. */
+export interface DiscoverItem extends DiscoverEntry {
+    /** True when a submodule under vendor/ already tracks this repo. */
+    vendored: boolean;
+    /** vendor/<name> path when vendored, else undefined. */
+    vendorPath?: string;
+}
+
+/** Result returned by the manifest reader to the /discover page. */
+export interface DiscoverResult {
+    /** Resolved repo root the reader walked from. */
+    repoRoot: string;
+    /** Absolute path to the manifest file. */
+    manifestPath: string;
+    /** True when the manifest file exists on disk. */
+    manifestExists: boolean;
+    /** Parsed manifest, when one exists. */
+    manifest?: DiscoverManifest;
+    /** Ranked items with vendored status, empty when no manifest. */
+    items: DiscoverItem[];
+    /** ISO timestamp of when the reader ran. */
+    scannedAt: string;
+    /** Non-fatal errors during read (e.g. malformed manifest). */
+    errors: string[];
+    durationMs: number;
+}

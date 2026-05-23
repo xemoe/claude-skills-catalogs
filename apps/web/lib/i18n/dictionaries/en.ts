@@ -18,6 +18,7 @@ export const en = {
         graph: "Graph",
         sources: "Sources",
         usecase: "Usecase",
+        discover: "Discover",
     },
 
     language: {
@@ -90,6 +91,47 @@ export const en = {
         empty2: " files were discovered under ",
         empty3: ", installed plugins, or known project ",
         empty4: " directories. Add a command file and press Rescan.",
+    },
+
+    discoverPage: {
+        title: "Discover popular skills",
+        subtitle:
+            "Popular Claude-Skills repositories on GitHub, ranked by star count. The list is produced by the discover-popular-skills Claude Code skill and read from a local manifest — the web app makes no network calls.",
+        emptyTitle: "No discovery run yet",
+        empty1: "Run the ",
+        empty2: " slash command in Claude Code (or invoke the ",
+        empty3: " skill) to search GitHub for the most popular Claude-Skills repositories. The ranked top 10 lands at ",
+        empty4: " at the repo root and appears here.",
+        meta: {
+            discoveredAt: "Discovered",
+            auth: "Auth",
+            queries: "Queries",
+            entries: (count: number) =>
+                `${count} ranked repositor${count === 1 ? "y" : "ies"}`,
+            authGh: "GitHub CLI (gh)",
+            authAnonymous: "Unauthenticated fetch",
+        },
+        rateLimited:
+            "GitHub rate-limited at least one query during this run — the ranking may be partial. Authenticate with gh and re-run /discover-skills for a complete list.",
+        readErrors: "The manifest could not be fully parsed:",
+        colRank: "#",
+        colRepo: "Repository",
+        colStars: "Stars",
+        colTopics: "Topics",
+        colStatus: "Status",
+        badgeVendored: "Vendored",
+        badgeNotVendored: "Not vendored",
+        openRepo: "Open on GitHub",
+        vendoredHint: (p: string) => `Submodule at ${p}`,
+        actionsHeading: "What next",
+        actionsBody:
+            "Pick a repo above and vendor it as a git submodule from Claude Code, then install one of its skills into ~/.claude/skills/:",
+        cmdClone: "/discover-skills clone <repo-name>",
+        cmdInstall: "/vendor-install <skill-name>",
+        refreshHeading: "Refresh the ranking",
+        refreshBody:
+            "Star counts move. Re-run discover any time to overwrite the manifest with a fresh top 10:",
+        cmdSearch: "/discover-skills",
     },
 
     usecasePage: {

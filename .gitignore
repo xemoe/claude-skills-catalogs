@@ -31,6 +31,9 @@ next-env.d.ts
 skills-lector.config.json
 .claude/settings.local.json
 
+# discover skill output (cached top-10 GitHub results)
+.discover/
+
 # editors
 .idea/
 .vscode/
