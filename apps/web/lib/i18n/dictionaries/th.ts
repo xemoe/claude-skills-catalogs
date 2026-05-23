@@ -14,6 +14,7 @@ export const th: Dictionary = {
         analytics: "วิเคราะห์",
         graph: "กราฟ",
         sources: "แหล่งที่มา",
+        usecase: "วิธีใช้",
     },
 
     language: {
@@ -83,6 +84,137 @@ export const th: Dictionary = {
         empty2: " ของคำสั่งสแลชภายใต้ ",
         empty3: ", ปลั๊กอินที่ติดตั้ง, หรือไดเรกทอรี ",
         empty4: " ของโปรเจ็กต์ที่รู้จัก เพิ่มไฟล์คำสั่งแล้วกดสแกนใหม่",
+    },
+
+    usecasePage: {
+        title: "เริ่มต้นใช้งาน Skills Lector",
+        subtitle:
+            "Claude Skills และคำสั่งสแลชคืออะไร อยู่ที่ไหน และจะใช้ Skills Lector จัดการมันอย่างไร",
+        tocTitle: "ในหน้านี้",
+        toc: {
+            concepts: "แนวคิด",
+            locations: "อยู่ที่ไหน",
+            catalogTour: "อ่าน Skills Lector",
+            examples: "ตัวอย่างใช้งาน",
+            faq: "คำถามที่พบบ่อย",
+        },
+        concepts: {
+            heading: "แนวคิด",
+            body: `**Claude Skills** และ **คำสั่งสแลช** เป็นสองวิธีในการสอน Claude Code ให้รู้จักเวิร์กโฟลว์ที่นำกลับมาใช้ได้ ทั้งคู่เป็นไฟล์ข้อความธรรมดาบนดิสก์ของคุณ และทั้งคู่คือสิ่งที่ Skills Lector สแกนหา
+
+**Claude Skill** คือไดเรกทอรีที่มีไฟล์ \`SKILL.md\` ภายใน frontmatter จะประกาศ \`name\` และ \`description\` ของสกิล ส่วนเนื้อหาจะอธิบายว่า *เมื่อใด* ควรใช้และ *อย่างไร* Claude อ่าน description แล้วตัดสินใจเองว่าคำขอของผู้ใช้ตรงกับสกิลนี้หรือไม่ — นี่เรียกว่า **model invocation** สกิลยังสามารถระบุ \`disable-model-invocation: true\` เพื่อให้เรียกผ่านคำสั่งสแลชเท่านั้น
+
+**คำสั่งสแลช** คือไฟล์ \`.md\` เดี่ยวภายใต้ไดเรกทอรี \`commands/\` คุณเรียกใช้อย่างชัดเจนด้วยการพิมพ์ \`/<ชื่อ>\` ใน Claude Code frontmatter สามารถระบุ \`description\`, \`argument-hint\`, และ \`allowed-tools\` ได้ ส่วนเนื้อหาจะกลายเป็น prompt ของเทิร์นนั้น — \`$ARGUMENTS\` จะถูกแทนที่ด้วยสิ่งที่ผู้ใช้พิมพ์หลังเครื่องหมายสแลช
+
+**ความแตกต่างหลักคือใครเป็นผู้เรียกใช้** Claude เลือกสกิลจากบริบทเอง ส่วนคุณเลือกคำสั่งโดยการพิมพ์ ทั้งคู่สามารถมาพร้อมสิทธิ์และเครื่องมือ และทั้งคู่สามารถอยู่ในขอบเขต personal, plugin, project, หรือ local ได้`,
+        },
+        locations: {
+            heading: "อยู่ที่ไหน",
+            body: `Skills Lector สแกนสี่ขอบเขตสำหรับสิ่งของแต่ละประเภท ขอบเขตคือสิ่งที่ป้าย **Type** บนทุกแถวบอกคุณ
+
+| ขอบเขต | พาธสกิล | พาธคำสั่ง | หมายเหตุ |
+|---|---|---|---|
+| **personal** | \`~/.claude/skills/<ชื่อ>/SKILL.md\` | \`~/.claude/commands/<ชื่อ>.md\` | ใช้ได้ในทุกเซสชัน Claude Code |
+| **plugin** | \`~/.claude/plugins/.../skills/...\` | \`~/.claude/plugins/.../commands/...\` | รวมมากับปลั๊กอินที่ติดตั้ง |
+| **project** | \`<repo>/.claude/skills/<ชื่อ>/SKILL.md\` | \`<repo>/.claude/commands/<ชื่อ>.md\` | จำกัดในโปรเจ็กต์ มักคอมมิตเข้าโปรเจ็กต์ |
+| **local** | \`sample-skills/\` ที่มากับแอปนี้ | — | ตัวอย่างที่มาด้วย ทำให้แดชบอร์ดไม่ว่าง |
+
+คุณสามารถชี้สแกนเนอร์ไปยังไดเรกทอรีเพิ่มเติมได้ด้วย \`skills-lector.config.json\` ที่วางคู่กับตำแหน่งที่รัน dev server หรือใช้ตัวแปรสภาพแวดล้อม \`SKILLS_SCAN_ROOTS\` ดูตำแหน่งทั้งหมดที่กำลังสแกนอยู่ได้ที่หน้า **Sources**`,
+        },
+        catalogTour: {
+            heading: "อ่าน Skills Lector",
+            body: `Skills Lector มีห้ามุมมอง สร้างจากการสแกนเดียวกันทั้งหมด ไม่มีมุมมองใดเรียกออกเครือข่าย — ทุกอย่างอ่านจากดิสก์ของคุณ
+
+- **Skills** (\`/\`) — ทุก \`SKILL.md\` ที่พบ พร้อมการค้นหา ตัวกรอง และหน้ารายละเอียดที่เรนเดอร์เนื้อหา markdown และบอกแหล่งที่มาของไฟล์
+- **Commands** (\`/commands\`) — ทุกคำสั่งสแลชที่พบ พร้อมความสามารถค้นหา/กรอง/จัดเรียงแบบเดียวกัน หน้ารายละเอียดแสดงรูปแบบการเรียก frontmatter และเนื้อหาทั้งหมด
+- **Analytics** (\`/analytic\`) — สกิลและคำสั่งที่คุณใช้จริง สร้างขึ้นใหม่จากทรานสคริปต์เซสชัน Claude Code ของคุณ มีประโยชน์ในการหาสิ่งที่คุณลืมว่าติดตั้งไว้
+- **Graph** (\`/graph\`) — สกิล คำสั่ง และปลั๊กอินหรือโปรเจ็กต์ที่บรรจุพวกมันเชื่อมโยงกันอย่างไร ฮับคือหน่วยที่บรรจุ ส่วนเส้นแสดงการอ้างอิงระหว่างสิ่งของ
+- **Sources** (\`/sources\`) — ต้นทางของแต่ละสกิล: มาจากรีโพ GitHub ปลั๊กอิน หรือไดเรกทอรีในเครื่อง พร้อมตารางของรูตที่สแกนทุกตำแหน่งบนเครื่องนี้
+
+ปุ่ม **Rescan** ที่มุมขวาบนรันทั้งสองการสแกนอีกครั้งและรีเฟรชทุกมุมมอง`,
+        },
+        examples: {
+            heading: "ตัวอย่างใช้งาน",
+            intro:
+                "สี่งานที่ทำได้ทันทีวันนี้ ตั้งแต่ไม่ต้องเขียนโค้ดเลย (ติดตั้ง) ไปจนถึงเขียนสกิลหรือคำสั่งขั้นต่ำเอง",
+            installVendor: {
+                heading: "1. ติดตั้งสกิลจาก vendor",
+                body: `รีโพนี้เก็บสกิลจากภายนอกเป็น **git submodule ภายใต้ \`vendor/\`** คำสั่งสแลช \`/vendor-install\` (อยู่ใน \`.claude/commands/\` ของรีโพนี้) ใช้ติดตั้งสกิลใดสกิลหนึ่งเข้าไปยังไดเรกทอรีสกิลส่วนตัวของคุณ ซึ่ง Claude Code จะตรวจพบ
+
+รันโดยไม่ใส่อาร์กิวเมนต์เพื่อดูรายการที่มี:`,
+                listInvocation: "/vendor-install",
+                installInvocation: "/vendor-install debug-mantra",
+                after: `เลือกชื่อสกิลจากรายการแล้วส่งเป็นอาร์กิวเมนต์ ค่าเริ่มต้นจะคัดลอกสกิลเข้า \`~/.claude/skills/\` (ขอบเขต personal ใช้ได้ทุกที่) ส่งคำว่า \`project\` เป็นอาร์กิวเมนต์ที่สองเพื่อติดตั้งเข้า \`.claude/skills/\` ของรีโพปัจจุบันแทน
+
+เมื่อติดตั้งเสร็จ กด **Rescan** ที่หัว Skills Lector — สกิลใหม่จะปรากฏในมุมมอง Skills`,
+            },
+            authorSkill: {
+                heading: "2. เขียนสกิลของคุณเอง",
+                body: `สกิลขั้นต่ำคือไดเรกทอรีที่มีไฟล์เดียว สร้าง \`~/.claude/skills/<ชื่อ>/SKILL.md\` แล้ววาง:`,
+                sampleLabel: "SKILL.md",
+                sample: `---
+name: greet-user
+description: Greet the user warmly by name when they say hello, hi, or otherwise open a conversation. Use this at the start of a new session or when the user explicitly asks to be greeted.
+---
+
+# Greet User
+
+When the user opens a conversation with a greeting (hello, hi, hey, สวัสดี, …), respond with a warm one-line greeting that uses their name if you know it, and then ask what they would like to work on.
+
+Do **not** trigger this skill mid-conversation — only on the opening turn or when the user explicitly asks for a greeting.`,
+                after: `ฟิลด์ \`description\` คือสิ่งที่ Claude อ่านเพื่อตัดสินใจ *เมื่อใด* จะเรียกใช้สกิล — ระบุวลีทริกเกอร์ให้เฉพาะเจาะจง ส่วนเนื้อหาคือสิ่งที่ Claude ทำตามเมื่อเลือกใช้แล้ว กด **Rescan** แล้วสกิลใหม่จะปรากฏใต้ขอบเขต **Personal**`,
+            },
+            authorCommand: {
+                heading: "3. เขียนคำสั่งสแลช",
+                body: `คำสั่งสแลชคือไฟล์เดี่ยว สร้าง \`~/.claude/commands/<ชื่อ>.md\` สำหรับคำสั่งส่วนตัว หรือ \`<repo>/.claude/commands/<ชื่อ>.md\` สำหรับคำสั่งระดับโปรเจ็กต์:`,
+                sampleLabel: "explain.md",
+                sample: `---
+description: Explain a function, file, or concept in this codebase in plain language.
+argument-hint: "[function-name|file-path|concept]"
+allowed-tools: Read, Grep, Glob
+---
+
+Explain **$ARGUMENTS** in plain language. Cover:
+
+1. What it does, in one sentence.
+2. Where it is used in this codebase (use Grep / Glob).
+3. Any non-obvious behaviour or edge cases worth knowing.
+
+Keep the explanation tight — three short paragraphs at most.`,
+                after: `ชื่อไฟล์จะกลายเป็นชื่อคำสั่ง: \`explain.md\` → \`/explain\` ไดเรกทอรีย่อยจะกลายเป็นเนมสเปซด้วย \`:\` เช่น \`docs/api.md\` คือ \`/docs:api\` \`$ARGUMENTS\` จะถูกแทนที่ด้วยสิ่งที่ตามหลังการเรียกสแลช ใช้ \`allowed-tools\` เพื่อประกาศว่าคำสั่งได้รับอนุญาตให้เรียกเครื่องมือของ Claude Code ตัวใดบ้าง`,
+            },
+            discover: {
+                heading: "4. หาสกิลยอดนิยมเพื่อติดตั้ง",
+                body: `หากยังไม่ทราบว่าควรติดตั้งสกิลใดดี หน้า \`/discover\` ที่กำลังจะมา และคำสั่ง \`/discover-skills\` ของ Claude Code จะจัดอันดับรีโพ Claude-Skills ที่ได้รับความนิยมที่สุดบน GitHub แล้วให้คุณโคลนเข้า \`vendor/\` ได้โดยตรง
+
+ฟีเจอร์นี้จะมาใน **v0.3.0** — จนกว่าจะมา ให้ดูไดเรกทอรี \`vendor/\` ของรีโพนี้สำหรับชุดสกิลที่คัดมาให้แล้ว และใช้ขั้นตอน **ติดตั้งสกิลจาก vendor** ข้างบน`,
+            },
+        },
+        faq: {
+            heading: "คำถามที่พบบ่อย",
+            items: [
+                {
+                    q: "เพิ่มสกิลแล้ว Skills Lector ไม่แสดง เพราะอะไร",
+                    a: "การสแกนถูกแคชไว้ 8 วินาที และหน้าเว็บเรนเดอร์ครั้งเดียวต่อคำขอ กด **Rescan** ที่มุมขวาบนเพื่อบังคับให้สแกนสกิลและคำสั่งใหม่ทั้งคู่ ถ้ายังไม่ปรากฏ ตรวจสอบว่าไฟล์อยู่ในขอบเขตใดขอบเขตหนึ่งที่อธิบายไว้ในหัวข้อ **อยู่ที่ไหน** และชื่อไดเรกทอรีตรงกับชื่อสกิลใน frontmatter",
+                },
+                {
+                    q: "สกิลกับคำสั่งสแลชต่างกันอย่างไร",
+                    a: "**ใครเป็นผู้เรียก** คำสั่งสแลชเรียกโดย *คุณ* พิมพ์ \`/<ชื่อ>\` ส่วนสกิลเรียกโดย *Claude* เมื่อคำขอของผู้ใช้ตรงกับ \`description\` ของสกิล ทั้งคู่สามารถมาพร้อมเครื่องมือและ prompt ความแตกต่างคือทริกเกอร์",
+                },
+                {
+                    q: "Skills Lector ส่งข้อมูลออกเครือข่ายไหม",
+                    a: "ไม่ส่ง Skills Lector อ่านไฟล์จากดิสก์ของคุณและเรนเดอร์ในเบราว์เซอร์ ไม่มีการเรียก HTTP ออกข้างนอก — หน้า **Sources** เชื่อมโยงไป GitHub แต่ผ่านแท็ก anchor ธรรมดาที่คุณคลิกเอง ฟีเจอร์ discover ใน **v0.3.0** จะเรียก GitHub แต่จากในสกิล Claude Code เท่านั้น ไม่ใช่จากตัว Skills Lector",
+                },
+                {
+                    q: "ถ้า SKILL.md มี frontmatter ผิดรูปแบบจะเป็นอย่างไร",
+                    a: "สแกนเนอร์ออกแบบมาให้ผ่อนปรนโดยตั้งใจ มันพยายามกู้ \`name\` และ \`description\` แม้จาก YAML ที่ผิดรูปแบบ และพาธใดที่อ่านไม่ได้เลยจะถูกรายงานในกล่อง **errors** ที่ด้านล่างของหน้า ไม่ใช่ทำให้การสแกนล้ม",
+                },
+                {
+                    q: "จะหยุดไม่ให้ Claude เรียกสกิลเองอย่างไร",
+                    a: "เพิ่ม \`disable-model-invocation: true\` ใน frontmatter ของสกิล หรือใช้คำสั่ง \`/set-model-invocation\` หากติดตั้งไว้ สกิลจะรันเฉพาะตอนที่คุณเรียกผ่านคำสั่งสแลชที่อ้างถึงมันเท่านั้น",
+                },
+            ],
+        },
     },
 
     explorer: {

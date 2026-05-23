@@ -17,6 +17,7 @@ export const en = {
         analytics: "Analytics",
         graph: "Graph",
         sources: "Sources",
+        usecase: "Usecase",
     },
 
     language: {
@@ -89,6 +90,137 @@ export const en = {
         empty2: " files were discovered under ",
         empty3: ", installed plugins, or known project ",
         empty4: " directories. Add a command file and press Rescan.",
+    },
+
+    usecasePage: {
+        title: "Getting started with Skills Lector",
+        subtitle:
+            "What Claude Skills and slash commands are, where they live, and how to use Skills Lector to manage them.",
+        tocTitle: "On this page",
+        toc: {
+            concepts: "Concepts",
+            locations: "Where they live",
+            catalogTour: "Reading Skills Lector",
+            examples: "Worked examples",
+            faq: "FAQ",
+        },
+        concepts: {
+            heading: "Concepts",
+            body: `**Claude Skills** and **slash commands** are two ways to teach Claude Code a reusable workflow. Both are plain text files on your disk, and both are what Skills Lector scans for.
+
+A **Claude Skill** is a directory containing a \`SKILL.md\` file. The frontmatter declares the skill's \`name\` and \`description\`; the body explains *when* to use it and *how*. Claude reads the description and decides on its own whether the user's request matches — this is called **model invocation**. A skill can also be marked \`disable-model-invocation: true\` to make it slash-only.
+
+A **slash command** is a single \`.md\` file under a \`commands/\` directory. You invoke it explicitly by typing \`/<name>\` in Claude Code. Its frontmatter can declare a \`description\`, an \`argument-hint\`, and \`allowed-tools\`; its body becomes the prompt for that turn — \`$ARGUMENTS\` is replaced with whatever the user typed after the slash.
+
+**The key difference is who triggers it.** Claude picks skills based on context; you pick commands by typing them. Both can ship with permissions and tooling, and both can live in personal, plugin, project, or local scope.`,
+        },
+        locations: {
+            heading: "Where they live",
+            body: `Skills Lector scans four scopes for each kind of artifact. The scope is what the **Type** badge on every row tells you.
+
+| Scope | Skills path | Commands path | Notes |
+|---|---|---|---|
+| **personal** | \`~/.claude/skills/<name>/SKILL.md\` | \`~/.claude/commands/<name>.md\` | Available in every Claude Code session |
+| **plugin** | \`~/.claude/plugins/.../skills/...\` | \`~/.claude/plugins/.../commands/...\` | Bundled with an installed plugin |
+| **project** | \`<repo>/.claude/skills/<name>/SKILL.md\` | \`<repo>/.claude/commands/<name>.md\` | Scoped to a project; usually committed |
+| **local** | bundled \`sample-skills/\` in this app | — | Examples shipped so the dashboard is never empty |
+
+You can point the scanner at extra directories with a \`skills-lector.config.json\` next to where you run the dev server, or with the \`SKILLS_SCAN_ROOTS\` environment variable. See the **Sources** view for the full list of locations being walked right now.`,
+        },
+        catalogTour: {
+            heading: "Reading Skills Lector",
+            body: `Skills Lector exposes five views, all built from the same scan. None of them call out to the network — everything is read from your disk.
+
+- **Skills** (\`/\`) — every \`SKILL.md\` discovered, with search, filters, and a detail page that renders the body markdown and shows where the file came from.
+- **Commands** (\`/commands\`) — every slash command discovered, with the same search/filter/sort behaviour. The detail page shows the full invocation, frontmatter, and body.
+- **Analytics** (\`/analytic\`) — which skills and commands you actually reach for, reconstructed from your Claude Code session transcripts. Useful for spotting things you forgot you installed.
+- **Graph** (\`/graph\`) — how skills, commands, and the plugins or projects that bundle them connect. Hubs are the bundling units; edges show references between artifacts.
+- **Sources** (\`/sources\`) — the upstream of each skill: which GitHub repository, plugin, or local directory it came from, and a table of every scan root on this machine.
+
+The **Rescan** button in the top-right runs both scans again and refreshes every view.`,
+        },
+        examples: {
+            heading: "Worked examples",
+            intro:
+                "Four concrete tasks you can do today, ranging from no-code (install) to a minimal authored skill or command.",
+            installVendor: {
+                heading: "1. Install a vendored skill",
+                body: `This repository keeps third-party skills as **git submodules under \`vendor/\`**. The \`/vendor-install\` slash command (which lives in this repo's \`.claude/commands/\`) installs one of them into your personal skills directory, where Claude Code will pick it up.
+
+Run it without arguments to list what is available:`,
+                listInvocation: "/vendor-install",
+                installInvocation: "/vendor-install debug-mantra",
+                after: `Pick a skill name from the listing and pass it as the argument. By default the skill is copied into \`~/.claude/skills/\` (personal scope, available everywhere); pass \`project\` as the second argument to install it into the current repo's \`.claude/skills/\` instead.
+
+Once installed, press **Rescan** in the Skills Lector header — the new skill appears in the Skills view.`,
+            },
+            authorSkill: {
+                heading: "2. Author your own skill",
+                body: `A minimal skill is a directory with one file. Create \`~/.claude/skills/<name>/SKILL.md\` and paste:`,
+                sampleLabel: "SKILL.md",
+                sample: `---
+name: greet-user
+description: Greet the user warmly by name when they say hello, hi, or otherwise open a conversation. Use this at the start of a new session or when the user explicitly asks to be greeted.
+---
+
+# Greet User
+
+When the user opens a conversation with a greeting (hello, hi, hey, สวัสดี, …), respond with a warm one-line greeting that uses their name if you know it, and then ask what they would like to work on.
+
+Do **not** trigger this skill mid-conversation — only on the opening turn or when the user explicitly asks for a greeting.`,
+                after: `The \`description\` field is the one Claude reads to decide *when* to trigger the skill — be specific about the trigger phrases. The body is what Claude follows once it has decided to use it. Press **Rescan** and the new skill shows up under **Personal** scope.`,
+            },
+            authorCommand: {
+                heading: "3. Author a slash command",
+                body: `A slash command is a single file. Create \`~/.claude/commands/<name>.md\` for a personal command, or \`<repo>/.claude/commands/<name>.md\` for a project-scoped one:`,
+                sampleLabel: "explain.md",
+                sample: `---
+description: Explain a function, file, or concept in this codebase in plain language.
+argument-hint: "[function-name|file-path|concept]"
+allowed-tools: Read, Grep, Glob
+---
+
+Explain **$ARGUMENTS** in plain language. Cover:
+
+1. What it does, in one sentence.
+2. Where it is used in this codebase (use Grep / Glob).
+3. Any non-obvious behaviour or edge cases worth knowing.
+
+Keep the explanation tight — three short paragraphs at most.`,
+                after: `The filename becomes the command name: \`explain.md\` → \`/explain\`. Subdirectories become a \`:\` namespace, so \`docs/api.md\` is \`/docs:api\`. \`$ARGUMENTS\` is replaced with whatever follows the slash invocation. Use \`allowed-tools\` to declare which Claude Code tools the command is permitted to invoke.`,
+            },
+            discover: {
+                heading: "4. Find popular skills to install",
+                body: `If you do not yet know which skills are worth installing, the upcoming \`/discover\` page and the \`/discover-skills\` Claude Code command will rank the most popular Claude-Skills repositories on GitHub and let you clone them straight into \`vendor/\`.
+
+That feature ships in **v0.3.0** — until it lands, browse the \`vendor/\` directory of this repository for the curated set of skills that come pre-vendored, and use the **install a vendored skill** flow above.`,
+            },
+        },
+        faq: {
+            heading: "FAQ",
+            items: [
+                {
+                    q: "I added a skill but Skills Lector does not show it. Why?",
+                    a: "The scan is cached for 8 seconds, and the page is rendered once per request. Press **Rescan** in the top-right; it force-refreshes both the skill and command scans. If it still does not appear, check that the file is at one of the scopes listed under **Where they live** above, and that the directory name matches the skill name in its frontmatter.",
+                },
+                {
+                    q: "What is the difference between a skill and a slash command?",
+                    a: "**Who triggers it.** A slash command is invoked by *you* typing \`/<name>\`. A skill is invoked by *Claude* when the user's request matches the skill's \`description\`. Both can carry tooling and prompts; the trigger is what differs.",
+                },
+                {
+                    q: "Does Skills Lector send anything to the network?",
+                    a: "No. Skills Lector reads files from your disk and renders them in the browser. It makes no outbound HTTP calls — the **Sources** view links to GitHub but only via plain anchor tags that you click yourself. The discover feature in **v0.3.0** will make a GitHub call, but only from the Claude Code skill, never from Skills Lector itself.",
+                },
+                {
+                    q: "What if my SKILL.md has malformed frontmatter?",
+                    a: "The scanner is deliberately lenient. It tries to recover \`name\` and \`description\` even from malformed YAML, and any path that cannot be read at all is reported in the **errors** drawer at the bottom of the page rather than crashing the scan.",
+                },
+                {
+                    q: "How do I stop Claude from auto-invoking a skill?",
+                    a: "Add \`disable-model-invocation: true\` to the skill's frontmatter, or use the \`/set-model-invocation\` slash command if you have it installed. The skill then runs only when you explicitly invoke it via a slash command that calls it.",
+                },
+            ],
+        },
     },
 
     explorer: {

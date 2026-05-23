@@ -134,11 +134,11 @@ The discover slash command is item 4.
 
 **Tasks.**
 
-- [ ] Create the route and page component.
-- [ ] Add the nav link and the `en` / `th` dictionary entries.
-- [ ] Write the guideline content; reuse `Markdown`, `InlineCode`, and `CopyButton` for code samples.
-- [ ] Add an in-page section nav / anchored table of contents — the page is long-form.
-- [ ] Verify the page renders in both locales and in light and dark themes.
+- [x] Create the route and page component.
+- [x] Add the nav link and the `en` / `th` dictionary entries.
+- [x] Write the guideline content; reuse `Markdown`, `InlineCode`, and `CopyButton` for code samples.
+- [x] Add an in-page section nav / anchored table of contents — the page is long-form.
+- [x] Verify the page renders in both locales and in light and dark themes.
 
 **Acceptance criteria.**
 
