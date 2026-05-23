@@ -1,6 +1,13 @@
 import { execFileSync } from "child_process";
 import fs from "fs";
 import path from "path";
+import {
+    clearMarketplaceCache,
+    findMarketplacePluginEntry,
+    findMarketplaceRoot,
+    readMarketplaceJson,
+    sourceFromMarketplaceEntry,
+} from "./marketplace";
 import type { SkillSource } from "./types";
 
 function git(repoRoot: string, args: string[]): string | null {
@@ -106,30 +113,63 @@ export function resolveSource(skillDir: string): SkillSource {
         if (fromProvenance) return fromProvenance;
     }
 
+    // Prefer a real git remote when one is present (e.g. cached plugins that
+    // were git-cloned still know their upstream). The marketplace fallback
+    // below covers the no-`.git` case.
     const repoRoot = findRepoRoot(skillDir);
+    if (repoRoot) {
+        const cached = remoteCache.get(repoRoot);
+        if (cached) return cached;
+        const remote =
+            git(repoRoot, ["remote", "get-url", "origin"]) ||
+            git(repoRoot, ["config", "--get", "remote.origin.url"]);
+        if (remote) {
+            const branch = git(repoRoot, ["rev-parse", "--abbrev-ref", "HEAD"]) ?? undefined;
+            const norm = normalizeGitUrl(remote);
+            const source: SkillSource = {
+                kind: norm.kind,
+                label: norm.label,
+                url: norm.url,
+                repoRoot,
+                branch,
+            };
+            remoteCache.set(repoRoot, source);
+            return source;
+        }
+    }
+
+    // No usable git remote — try the marketplace.json the plugin was distributed
+    // through. Claude Code downloads marketplaces via CDN (no .git on disk), so
+    // this is the only place an upstream URL survives for many plugins.
+    const marketplaceRoot = findMarketplaceRoot(skillDir);
+    if (marketplaceRoot) {
+        const data = readMarketplaceJson(marketplaceRoot);
+        if (data) {
+            const found = findMarketplacePluginEntry(skillDir, marketplaceRoot, data);
+            if (found) {
+                const fromMarketplace = sourceFromMarketplaceEntry(found.entry, data);
+                if (fromMarketplace) {
+                    if (repoRoot) {
+                        const branch = git(repoRoot, ["rev-parse", "--abbrev-ref", "HEAD"]) ?? undefined;
+                        const enriched: SkillSource = { ...fromMarketplace, repoRoot, branch };
+                        remoteCache.set(repoRoot, enriched);
+                        return enriched;
+                    }
+                    return fromMarketplace;
+                }
+            }
+        }
+    }
+
     if (!repoRoot) {
         // Not in a git repo — the "source" is the directory that contains the skill.
         return { kind: "local", label: path.dirname(skillDir) };
     }
 
-    const cached = remoteCache.get(repoRoot);
-    if (cached) return cached;
-
-    const remote =
-        git(repoRoot, ["remote", "get-url", "origin"]) ||
-        git(repoRoot, ["config", "--get", "remote.origin.url"]);
     const branch = git(repoRoot, ["rev-parse", "--abbrev-ref", "HEAD"]) ?? undefined;
-
-    let source: SkillSource;
-    if (remote) {
-        const norm = normalizeGitUrl(remote);
-        source = { kind: norm.kind, label: norm.label, url: norm.url, repoRoot, branch };
-    } else {
-        source = { kind: "local", label: repoRoot, repoRoot, branch };
-    }
-
-    remoteCache.set(repoRoot, source);
-    return source;
+    const fallback: SkillSource = { kind: "local", label: repoRoot, repoRoot, branch };
+    remoteCache.set(repoRoot, fallback);
+    return fallback;
 }
 
 /** Last commit date (ISO) that touched a given path, or null. */
@@ -140,4 +180,5 @@ export function lastCommitDate(repoRoot: string, targetPath: string): string | n
 /** Clears the per-repo remote cache (call before a forced rescan). */
 export function clearGitCache(): void {
     remoteCache.clear();
+    clearMarketplaceCache();
 }

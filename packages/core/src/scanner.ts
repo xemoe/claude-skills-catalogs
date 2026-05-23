@@ -10,6 +10,12 @@ import {
 } from "./claude-paths";
 import { type CatalogConfig, loadConfig } from "./config";
 import { clearGitCache, PROVENANCE_FILE, resolveSource } from "./git";
+import {
+    findMarketplacePluginEntry,
+    findMarketplaceRoot,
+    pluginInfoFromMarketplaceEntry,
+    readMarketplaceJson,
+} from "./marketplace";
 import { excerpt, parseSkillMd } from "./skill-parser";
 import type {
     PluginInfo,
@@ -149,6 +155,22 @@ function classify(skillMdPath: string): {
     if (pluginRoot) {
         const plugin = readPluginJson(pluginRoot);
         if (plugin) return { type: "plugin", plugin };
+    }
+
+    // Marketplace-bundled plugins may ship without their own plugin.json
+    // (e.g. session-report in claude-plugins-official). Synthesize a PluginInfo
+    // from the marketplace's plugins[] entry so the skill still classifies as
+    // a plugin and dedupes against any installed copy.
+    const marketplaceRoot = findMarketplaceRoot(skillDir);
+    if (marketplaceRoot) {
+        const data = readMarketplaceJson(marketplaceRoot);
+        if (data) {
+            const found = findMarketplacePluginEntry(skillDir, marketplaceRoot, data);
+            if (found) {
+                const plugin = pluginInfoFromMarketplaceEntry(found.entry, found.pluginRoot);
+                return { type: "plugin", plugin };
+            }
+        }
     }
 
     if (samePath(path.dirname(skillDir), personalSkillsDir())) {
