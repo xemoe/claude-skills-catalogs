@@ -11,6 +11,7 @@ export const th: Dictionary = {
         brand: "Skills Lector",
         skills: "สกิล",
         commands: "คำสั่ง",
+        hooks: "ฮุก",
         analytics: "วิเคราะห์",
         graph: "กราฟ",
         sources: "แหล่งที่มา",
@@ -85,6 +86,25 @@ export const th: Dictionary = {
         empty2: " ของคำสั่งสแลชภายใต้ ",
         empty3: ", ปลั๊กอินที่ติดตั้ง, หรือไดเรกทอรี ",
         empty4: " ของโปรเจ็กต์ที่รู้จัก เพิ่มไฟล์คำสั่งแล้วกดสแกนใหม่",
+    },
+
+    hooksPage: {
+        title: "ฮุกที่ตั้งค่าไว้",
+        subtitle:
+            "ทุก hook ของ Claude Code ที่ประกาศบนเครื่องนี้ — รันใน lifecycle event ใด ใช้คำสั่งอะไร และประกาศไว้ในไฟล์ settings ใด",
+        emptyTitle: "ไม่มี hook ที่ตั้งค่าไว้",
+        empty1: "ไม่พบรายการ ",
+        empty2: " ในไฟล์ settings ส่วนตัว ",
+        empty3: ", settings ของปลั๊กอิน, หรือไฟล์ ",
+        empty4: " ของโปรเจ็กต์ที่รู้จัก ตั้งค่า hook ผ่านเมนู /hooks ของ Claude Code (หรือแก้ settings.json ด้วยมือ) แล้วกดสแกนใหม่",
+        unnamedMatcher: "(ใด ๆ)",
+        exampleHeading: "เริ่มต้นเร็ว — ลองตัวอย่างนี้",
+        exampleIntro:
+            "ตัวอย่าง 5 hook ครอบคลุมทุกหมวดที่ stat cards ด้านบนนับ คัดลอก JSON แล้ววางลงในไฟล์ settings อันใดอันหนึ่งข้างล่าง จากนั้นกดสแกนใหม่",
+        exampleCopyLabel: "ตัวอย่าง settings.json",
+        exampleInstallPersonal: "ส่วนตัว (ทุกเซสชัน): ",
+        exampleInstallProject: "โปรเจ็กต์ (commit ได้): ",
+        exampleInstallLocal: "โปรเจ็กต์ในเครื่อง (git-ignored): ",
     },
 
     discoverPage: {
@@ -261,26 +281,36 @@ Keep the explanation tight — three short paragraphs at most.`,
     explorer: {
         searchSkills: "ค้นหาสกิล, ปลั๊กอิน, แหล่งที่มา…",
         searchCommands: "ค้นหาคำสั่ง, ปลั๊กอิน, แหล่งที่มา…",
+        searchHooks: "ค้นหา event, matcher, คำสั่ง…",
         tabAll: "ทั้งหมด",
         sortRecent: "อัปเดตล่าสุด",
         sortName: "ชื่อ (ก–ฮ)",
+        sortEvent: "Event (A–Z)",
         sortUsage: "ใช้บ่อยที่สุด",
         colSkill: "สกิล",
         colCommand: "คำสั่ง",
+        colHookCommand: "คำสั่ง",
+        colEvent: "Event",
+        colMatcher: "Matcher",
         colType: "ประเภท",
         colScope: "ขอบเขต",
         colSource: "แหล่งที่มา",
+        colSourceFile: "ไฟล์แหล่งที่มา",
         colUpdated: "อัปเดตล่าสุด",
         colUsed: "ใช้แล้ว",
         colInvocation: "การเรียกใช้",
         noSkillsMatch: "ไม่มีสกิลที่ตรงกับตัวกรอง",
         noCommandsMatch: "ไม่มีคำสั่งที่ตรงกับตัวกรอง",
+        noHooksMatch: "ไม่มี hook ที่ตรงกับตัวกรอง",
         showingSkills: (start, end, total) =>
             `แสดง ${start}–${end} จาก ${total} สกิล`,
         showingCommands: (start, end, total) =>
             `แสดง ${start}–${end} จาก ${total} คำสั่ง`,
+        showingHooks: (start, end, total) =>
+            `แสดง ${start}–${end} จาก ${total} hook`,
         emptySkills: (total) => `0 จาก ${total} สกิล`,
         emptyCommands: (total) => `0 จาก ${total} คำสั่ง`,
+        emptyHooks: (total) => `0 จาก ${total} hook`,
         pluginTitle: (name) => `ปลั๊กอิน: ${name}`,
         filterInvocation: "กรองตามการเรียกใช้",
         invocationAll: "การเรียกใช้ทั้งหมด",
@@ -289,6 +319,8 @@ Keep the explanation tight — three short paragraphs at most.`,
         invocationModelHint:
             "โมเดลเรียกได้ — Claude เรียกใช้เองได้อัตโนมัติ ไม่ต้องพิมพ์คำสั่งสแลช",
         invocationSlashOnlyHint: "สแลชเท่านั้น — Claude จะไม่เรียกใช้เอง",
+        filterEvent: "กรองตาม event",
+        allEvents: "ทุก event",
     },
 
     sidebar: {
@@ -306,9 +338,17 @@ Keep the explanation tight — three short paragraphs at most.`,
         totalSkills: "สกิลทั้งหมด",
         fromPlugins: "จากปลั๊กอิน",
         totalCommands: "คำสั่งทั้งหมด",
+        totalHooks: "Hook ทั้งหมด",
+        preToolUseCount: "PreToolUse",
+        postToolUseCount: "PostToolUse",
+        sessionEventsCount: "Event เซสชัน",
+        preToolUseSub: "ก่อนเครื่องมือทำงาน",
+        postToolUseSub: "หลังเครื่องมือทำงาน",
+        sessionEventsSub: "start, stop, prompt, …",
         modelInvocableSub: "Claude เรียกใช้เองได้",
         slashOnlySub: "เรียกผ่านสแลชเท่านั้น",
         acrossLocations: (count) => `จาก ${count} ตำแหน่งที่สแกน`,
+        acrossSettingsFiles: (count) => `จาก ${count} ไฟล์ settings`,
         pluginsInstalled: (count) => `ติดตั้งปลั๊กอิน ${count} รายการ`,
         pluginsShort: (count) => `${count} ปลั๊กอิน`,
     },
@@ -420,6 +460,12 @@ Keep the explanation tight — three short paragraphs at most.`,
                     return "รูตที่กำหนดเอง";
                 case "personalCommands":
                     return "คำสั่งส่วนตัว";
+                case "personalSettings":
+                    return "Settings ส่วนตัว";
+                case "projectSettings":
+                    return `Settings ของโปรเจ็กต์: ${arg ?? ""}`;
+                case "projectLocalSettings":
+                    return `Settings เฉพาะเครื่องของโปรเจ็กต์: ${arg ?? ""}`;
                 case "project":
                     return `โปรเจ็กต์: ${arg ?? ""}`;
                 case "plugin":
@@ -468,6 +514,15 @@ Keep the explanation tight — three short paragraphs at most.`,
         commandNoBody: "ไฟล์คำสั่งนี้ไม่มีเนื้อหา",
         commandUnreadable: "ไม่สามารถอ่านไฟล์คำสั่งนี้ได้",
         usedTimes: (count) => `${count}×`,
+        event: "Event",
+        matcher: "Matcher",
+        matcherAny: "ใด ๆ",
+        command: "คำสั่ง",
+        commandType: "ประเภท",
+        timeout: "Timeout",
+        timeoutSeconds: (s) => `${s} วินาที`,
+        sourceFile: "ไฟล์ Settings",
+        sourceFileSize: "ขนาดไฟล์",
     },
 
     viewer: {

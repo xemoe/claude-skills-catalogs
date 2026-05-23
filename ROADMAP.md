@@ -300,14 +300,14 @@ can therefore declare many individual hooks.
 
 **Tasks.**
 
-- [ ] Add the `Hook` / `HookScanResult` types and the settings-file paths to `packages/core`.
-- [ ] Write `hook-parser.ts` — flatten the `hooks` object and recover gracefully from malformed JSON.
-- [ ] Write `hook-scanner.ts` — `scanHooks()` with the 8-second cache, mirroring `scanCommands()`.
-- [ ] Build the `/hooks` list page, the `/hooks/[id]` detail page, and `hooks-explorer.tsx`.
-- [ ] Add the `/api/hooks` route and wire hooks into the Rescan button.
-- [ ] Add the nav link and the `en` / `th` dictionary entries.
-- [ ] Document the hook scan pipeline in `CLAUDE.md` alongside the skill and command pipelines.
-- [ ] Verify the page renders in both locales and in light and dark themes, with a helpful empty state when no hooks are configured.
+- [x] Add the `Hook` / `HookScanResult` types and the settings-file paths to `packages/core`.
+- [x] Write `hook-parser.ts` — flatten the `hooks` object and recover gracefully from malformed JSON.
+- [x] Write `hook-scanner.ts` — `scanHooks()` with the 8-second cache, mirroring `scanCommands()`.
+- [x] Build the `/hooks` list page, the `/hooks/[id]` detail page, and `hooks-explorer.tsx`.
+- [x] Add the `/api/hooks` route and wire hooks into the Rescan button.
+- [x] Add the nav link and the `en` / `th` dictionary entries.
+- [x] Document the hook scan pipeline in `CLAUDE.md` alongside the skill and command pipelines.
+- [x] Verify the page renders in both locales and in light and dark themes, with a helpful empty state when no hooks are configured.
 
 **Acceptance criteria.**
 

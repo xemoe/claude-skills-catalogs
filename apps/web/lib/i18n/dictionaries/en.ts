@@ -14,6 +14,7 @@ export const en = {
         brand: "Skills Lector",
         skills: "Skills",
         commands: "Commands",
+        hooks: "Hooks",
         analytics: "Analytics",
         graph: "Graph",
         sources: "Sources",
@@ -91,6 +92,25 @@ export const en = {
         empty2: " files were discovered under ",
         empty3: ", installed plugins, or known project ",
         empty4: " directories. Add a command file and press Rescan.",
+    },
+
+    hooksPage: {
+        title: "Configured Hooks",
+        subtitle:
+            "Every Claude Code hook declared on this machine — which lifecycle event it runs on, what command it executes, and which settings file declares it.",
+        emptyTitle: "No hooks configured",
+        empty1: "No ",
+        empty2: " entries were found in personal ",
+        empty3: ", plugin settings, or any known project's ",
+        empty4: " files. Configure a hook with Claude Code's /hooks menu (or by hand-editing settings.json), then press Rescan.",
+        unnamedMatcher: "(any)",
+        exampleHeading: "Quick start — try this example",
+        exampleIntro:
+            "Five sample hooks covering every category the stat cards above track. Copy the JSON into one of the settings files below, then press Rescan.",
+        exampleCopyLabel: "example settings.json",
+        exampleInstallPersonal: "Personal (every session): ",
+        exampleInstallProject: "Project (committed): ",
+        exampleInstallLocal: "Project-local (git-ignored): ",
     },
 
     discoverPage: {
@@ -268,26 +288,36 @@ That feature ships in **v0.3.0** — until it lands, browse the \`vendor/\` dire
     explorer: {
         searchSkills: "Search skills, plugins, sources…",
         searchCommands: "Search commands, plugins, sources…",
+        searchHooks: "Search events, matchers, commands…",
         tabAll: "All",
         sortRecent: "Recently updated",
         sortName: "Name (A–Z)",
+        sortEvent: "Event (A–Z)",
         sortUsage: "Most used",
         colSkill: "Skill",
         colCommand: "Command",
+        colHookCommand: "Command",
+        colEvent: "Event",
+        colMatcher: "Matcher",
         colType: "Type",
         colScope: "Scope",
         colSource: "Source",
+        colSourceFile: "Source file",
         colUpdated: "Last updated",
         colUsed: "Used",
         colInvocation: "Invocation",
         noSkillsMatch: "No skills match your filters.",
         noCommandsMatch: "No commands match your filters.",
+        noHooksMatch: "No hooks match your filters.",
         showingSkills: (start: number, end: number, total: number) =>
             `Showing ${start}–${end} of ${total} skills`,
         showingCommands: (start: number, end: number, total: number) =>
             `Showing ${start}–${end} of ${total} commands`,
+        showingHooks: (start: number, end: number, total: number) =>
+            `Showing ${start}–${end} of ${total} hooks`,
         emptySkills: (total: number) => `0 of ${total} skills`,
         emptyCommands: (total: number) => `0 of ${total} commands`,
+        emptyHooks: (total: number) => `0 of ${total} hooks`,
         pluginTitle: (name: string) => `Plugin: ${name}`,
         filterInvocation: "Filter by invocation",
         invocationAll: "All invocation",
@@ -296,6 +326,8 @@ That feature ships in **v0.3.0** — until it lands, browse the \`vendor/\` dire
         invocationModelHint:
             "Model-invocable — Claude can invoke this automatically, no slash command needed",
         invocationSlashOnlyHint: "Slash-only — Claude will not auto-invoke it",
+        filterEvent: "Filter by event",
+        allEvents: "All events",
     },
 
     sidebar: {
@@ -313,10 +345,19 @@ That feature ships in **v0.3.0** — until it lands, browse the \`vendor/\` dire
         totalSkills: "Total Skills",
         fromPlugins: "From Plugins",
         totalCommands: "Total Commands",
+        totalHooks: "Total Hooks",
+        preToolUseCount: "PreToolUse",
+        postToolUseCount: "PostToolUse",
+        sessionEventsCount: "Session events",
+        preToolUseSub: "before tools run",
+        postToolUseSub: "after tools run",
+        sessionEventsSub: "start, stop, prompt, …",
         modelInvocableSub: "Claude can auto-invoke",
         slashOnlySub: "slash command only",
         acrossLocations: (count: number) =>
             `across ${count} scanned location${count === 1 ? "" : "s"}`,
+        acrossSettingsFiles: (count: number) =>
+            `across ${count} settings file${count === 1 ? "" : "s"}`,
         pluginsInstalled: (count: number) =>
             `${count} plugin${count === 1 ? "" : "s"} installed`,
         pluginsShort: (count: number) =>
@@ -442,6 +483,12 @@ That feature ships in **v0.3.0** — until it lands, browse the \`vendor/\` dire
                     return "Custom root";
                 case "personalCommands":
                     return "Personal commands";
+                case "personalSettings":
+                    return "Personal settings";
+                case "projectSettings":
+                    return `Project settings: ${arg ?? ""}`;
+                case "projectLocalSettings":
+                    return `Project local settings: ${arg ?? ""}`;
                 case "project":
                     return `Project: ${arg ?? ""}`;
                 case "plugin":
@@ -490,6 +537,15 @@ That feature ships in **v0.3.0** — until it lands, browse the \`vendor/\` dire
         commandNoBody: "This command file has no body content.",
         commandUnreadable: "This command file could not be read.",
         usedTimes: (count: number) => `${count}×`,
+        event: "Event",
+        matcher: "Matcher",
+        matcherAny: "any",
+        command: "Command",
+        commandType: "Type",
+        timeout: "Timeout",
+        timeoutSeconds: (s: number) => `${s} s`,
+        sourceFile: "Settings file",
+        sourceFileSize: "File size",
     },
 
     viewer: {

@@ -26,6 +26,26 @@ export function pluginsDir(): string {
     return path.join(claudeHome(), "plugins");
 }
 
+/** Personal Claude Code settings: ~/.claude/settings.json */
+export function personalSettingsPath(): string {
+    return path.join(claudeHome(), "settings.json");
+}
+
+/** Project-scoped Claude Code settings: <project>/.claude/settings.json */
+export function projectSettingsPath(projectRoot: string): string {
+    return path.join(projectRoot, ".claude", "settings.json");
+}
+
+/** Project-local Claude Code settings (git-ignored): <project>/.claude/settings.local.json */
+export function projectLocalSettingsPath(projectRoot: string): string {
+    return path.join(projectRoot, ".claude", "settings.local.json");
+}
+
+/** Plugin-bundled Claude Code settings: <pluginRoot>/settings.json */
+export function pluginSettingsPath(pluginRoot: string): string {
+    return path.join(pluginRoot, "settings.json");
+}
+
 /** OS-specific application support directory. */
 export function appConfigDir(): string {
     if (process.platform === "win32") {

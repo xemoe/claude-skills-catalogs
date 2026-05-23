@@ -8,6 +8,7 @@ import { useT } from "@/lib/i18n/context";
 const LINKS = [
     { href: "/", key: "skills" },
     { href: "/commands", key: "commands" },
+    { href: "/hooks", key: "hooks" },
     { href: "/analytic", key: "analytics" },
     { href: "/graph", key: "graph" },
     { href: "/sources", key: "sources" },

@@ -71,6 +71,9 @@ export type ScanRootLabelKey =
     | "sampleSkills"
     | "customRoot"
     | "personalCommands"
+    | "personalSettings"
+    | "projectSettings"
+    | "projectLocalSettings"
     | "project"
     | "plugin";
 
@@ -135,6 +138,63 @@ export interface Command {
 
 export interface CommandScanResult {
     commands: Command[];
+    roots: ScanRoot[];
+    /** ISO timestamp of when the scan ran. */
+    scannedAt: string;
+    claudeHome: string;
+    platform: string;
+    errors: string[];
+    durationMs: number;
+}
+
+/** Lifecycle events Claude Code can wire a hook to. */
+export type HookEvent =
+    | "PreToolUse"
+    | "PostToolUse"
+    | "UserPromptSubmit"
+    | "Notification"
+    | "Stop"
+    | "SubagentStop"
+    | "SessionStart"
+    | "SessionEnd"
+    | "PreCompact";
+
+/**
+ * Where a hook is declared. `personal`, `plugin`, `project` mirror Skill/Command
+ * semantics; `local` is the project-scoped `.claude/settings.local.json` file
+ * (git-ignored, machine-specific).
+ */
+export type HookScope = "personal" | "plugin" | "project" | "local";
+
+export interface Hook {
+    /** Stable id derived from scope + event + matcher + command + index. */
+    id: string;
+    /** Lifecycle event the hook is wired to. */
+    event: HookEvent;
+    /** Matcher string; empty string means "match every invocation of this event". */
+    matcher: string;
+    /** Hook entry type — almost always "command". */
+    type: string;
+    /** Shell command the hook runs. */
+    command: string;
+    /** Timeout in seconds, when the settings file declares one. */
+    timeout?: number;
+    scope: HookScope;
+    /** Absolute path to the settings file that declares this hook. */
+    sourcePath: string;
+    /** ISO timestamp — the source settings file's mtime. */
+    lastUpdated: string;
+    /** Size of the source settings file in bytes (the whole file). */
+    sourceSizeBytes: number;
+    source: SkillSource;
+    plugin?: PluginInfo;
+    project?: ProjectInfo;
+    /** 0-based index within the matcher group, so adjacent duplicates stay distinct. */
+    indexInGroup: number;
+}
+
+export interface HookScanResult {
+    hooks: Hook[];
     roots: ScanRoot[];
     /** ISO timestamp of when the scan ran. */
     scannedAt: string;
