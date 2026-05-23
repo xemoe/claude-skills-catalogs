@@ -640,6 +640,22 @@ That feature ships in **v0.3.0** — until it lands, browse the \`vendor/\` dire
         copied: "Copied",
         copyRaw: (file: string) => `Copy raw ${file} to clipboard`,
     },
+
+    pluginScopeNotice: {
+        headerWithCount: (count: number) =>
+            `${count} plugin-scope item${count === 1 ? "" : "s"} hidden — they can't be added to presets.`,
+        headerGeneric: "Plugin-scope items can't be added to presets.",
+        body: "Preset apply writes to ~/.claude/skills/ only. Plugin frontmatter would be overwritten by the next plugin update.",
+        showSteps: "Show install steps",
+        stepsIntro: "To make a skill selectable in presets, install it into personal scope:",
+        stepVendoredLabel: "Vendored skill (in this repo's vendor/):",
+        stepPluginLabel: "Plugin skill from a marketplace:",
+        stepPluginBody:
+            "Copy ~/.claude/plugins/cache/<marketplace>/<plugin>/<version>/skills/<name>/ to ~/.claude/skills/<name>/ , then click Rescan.",
+        dismiss: "Dismiss",
+        emptyPickerWithHidden: (count: number) =>
+            `No personal-scope items yet — ${count} plugin item${count === 1 ? " is" : "s are"} hidden above.`,
+    },
 };
 
 export type Dictionary = typeof en;
