@@ -18,6 +18,7 @@ This is a **monorepo**:
 - **Freshness & usage** — shows when each skill was last modified and how often it has been used (read from `~/.claude.json`).
 - **Skill detail view** — renders the full `SKILL.md` plus metadata: plugin info, source repository, branch, size, and file count.
 - **Sources view** — skills grouped by plugin, repository, and directory.
+- **Skills + Commands presets** — bundle skills and commands per workflow ("debugging", "frontend-design", ...). Activating a preset toggles each item's `disable-model-invocation` frontmatter in the personal scope. See `/presets` in the app.
 - **JSON API** — `GET /api/skills` returns the full scan result.
 - **Cross-platform** — Windows and macOS.
 
@@ -87,6 +88,10 @@ apps/web/            The Next.js app
 packages/core/       Shared scanning engine — SKILL.md/command parsers,
   src/               git/source resolution, the data model
 ```
+
+## Skills + Commands presets
+
+The `/presets` page is the first mutating feature in the catalog. A preset is a named bundle of skills and/or slash commands associated with a workflow ("debugging", "frontend-design", etc.). Activating a preset writes `disable-model-invocation: false` into the frontmatter of each bundled item in your personal scope and sets `disable-model-invocation: true` for items that were previously active but are not in the new preset. Every activation is written to an audit trail viewable at `/presets/log`. The preset engine lives in `packages/presets`; the web UI is under `apps/web/app/presets/`. An onboarding wizard on the empty `/presets` page walks through creating a first preset.
 
 ## Note: running on an exFAT volume
 

@@ -7,6 +7,59 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-05-23
+
+Skills + Commands presets — the first mutating feature in the catalog.
+Bundle skills and commands per workflow, switch between them in one
+click, with an audit trail.
+
+### Added
+
+- **Preset engine** — `packages/presets/src/`, the only mutating surface
+  in the project. SQLite (better-sqlite3) at `~/.skills-lector/presets.db`
+  stores preset definitions, items, pinned items, an apply audit trail,
+  and a singleton active-preset row. Schema migrations are forward-only
+  and idempotent. The bare `applyPreset()` function reads preset + pinned
+  state, scans personal-scope items via `packages/core`, computes a diff
+  with the pure `computeApplyDiff()`, then writes each item's
+  `disable-model-invocation` frontmatter atomically (temp file +
+  rename — exFAT-safe).
+- **`/presets` catalog UI** — list page with active card and pinned
+  panel, empty-state onboarding wizard, standalone `/presets/new` wizard,
+  `/presets/[id]` detail with add/remove items, archive/unarchive, and a
+  dry-run confirmation dialog before every activate. `/presets/log`
+  surfaces the apply audit trail with expandable per-item detail.
+- **TanStack Query** — first use in the project. Used exclusively under
+  `/presets/*`; existing catalog pages keep their Server-Component
+  pattern. `apps/web/app/providers.tsx` wraps the root layout.
+- **SSE progress** — `POST /api/presets/[id]/activate/stream` emits
+  per-phase events (scanning / enabling / disabling / logging / done).
+  UI uses simple JSON for < 4 changes; switches to the SSE stream + a
+  progress modal at or above the threshold.
+- **Soft delete only** — presets and pinned items have an `archived_at`
+  column; the UI exposes Active/Archived tabs and no hard-delete path.
+- **`Presets` nav link** added between `Hooks` and `Analytics`. Bilingual
+  `nav.presets` + full `presetsPage` content in `en` and `th` dictionaries.
+
+### Architecture
+
+- New `packages/presets` package consumed by `apps/web` via TS path
+  alias `@lector/presets/*`. `packages/core` stays read-only.
+- New env-var overrides: `SKILLS_LECTOR_PRESETS_DB` (DB file path),
+  `SKILLS_LECTOR_PERSONAL_ROOT` (apply target root). Both also overridable
+  via `skills-lector.config.json`. For tests against a fake `~/.claude`,
+  set `CLAUDE_CONFIG_DIR` to the same root so the `packages/core`
+  scanner matches the apply target.
+- Crash recovery is implicit — fs is the source of truth; the next apply
+  recomputes the diff from current state and converges.
+
+### Documentation
+
+- `CLAUDE.md` documents the preset engine pipeline alongside the skill,
+  command, and hook pipelines.
+- `docs/superpowers/specs/2026-05-23-skills-commands-preset-design.md` is
+  the design spec.
+
 ## [0.4.0] - 2026-05-23
 
 Hooks visibility — the catalog gains a third scanner so every Claude Code
@@ -188,7 +241,8 @@ two parallel filesystem scanners, with no external network calls.
   and the vendored-skills workflow.
 - `ROADMAP.md` plans v0.1.0 through v0.4.0.
 
-[Unreleased]: https://github.com/xemoe/skills-lector/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/xemoe/skills-lector/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/xemoe/skills-lector/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/xemoe/skills-lector/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/xemoe/skills-lector/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/xemoe/skills-lector/compare/v0.1.0...v0.2.0

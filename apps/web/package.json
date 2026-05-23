@@ -1,6 +1,6 @@
 {
     "name": "@lector/web",
-    "version": "0.4.0",
+    "version": "0.5.0",
     "private": true,
     "description": "Web app to browse and manage deployed Claude Skills and slash commands.",
     "scripts": {
