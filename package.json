@@ -1,6 +1,6 @@
 {
     "name": "skills-lector",
-    "version": "0.1.0",
+    "version": "0.4.0",
     "private": true,
     "description": "Monorepo for Skills Lector: the web app (apps/web) and the shared scanning engine (packages/core).",
     "repository": {
