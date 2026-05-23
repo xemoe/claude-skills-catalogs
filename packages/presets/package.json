@@ -1,0 +1,17 @@
+{
+    "name": "@lector/presets",
+    "version": "0.5.0",
+    "private": true,
+    "description": "Preset engine — SQLite-backed bundles of skills + commands that can be activated to toggle disable-model-invocation in the personal scope. The only mutating surface in the project.",
+    "type": "module",
+    "dependencies": {
+        "better-sqlite3": "^11.5.0",
+        "gray-matter": "^4.0.3",
+        "zod": "^3.23.8"
+    },
+    "devDependencies": {
+        "@types/better-sqlite3": "^7.6.12",
+        "@types/node": "^22.10.7",
+        "typescript": "^5.7.3"
+    }
+}
