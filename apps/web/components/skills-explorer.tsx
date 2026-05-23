@@ -35,6 +35,7 @@ import { SKILL_TYPE_META } from "@/components/skill-type";
 import { SourceBadge } from "@/components/source-badge";
 import { CountBadge } from "@/components/count-badge";
 import { ModelInvocationBadge } from "@/components/model-invocation-badge";
+import { PluginScopeNotice } from "@/components/plugin-scope-notice";
 import { formatDate } from "@/lib/utils";
 import { useT } from "@/lib/i18n/context";
 import type { Skill, SkillType } from "@lector/core/types";
@@ -219,6 +220,8 @@ export function SkillsExplorer({ skills }: { skills: Skill[] }) {
                     </SelectContent>
                 </Select>
             </div>
+
+            {typeFilter === "plugin" ? <PluginScopeNotice /> : null}
 
             <div className="ring-1 ring-foreground/10">
                 <Table>
