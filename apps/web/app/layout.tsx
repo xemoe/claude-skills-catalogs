@@ -9,6 +9,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { LanguageProvider } from "@/lib/i18n/context";
 import { getServerI18n } from "@/lib/i18n/server";
 import { THEME_COOKIE, DEFAULT_THEME, isTheme } from "@/lib/theme";
+import { Providers } from "./providers";
 
 const raleway = Raleway({ subsets: ["latin"], variable: "--font-raleway" });
 const notoSansThai = Noto_Sans_Thai({
@@ -45,15 +46,17 @@ export default async function RootLayout({
             )}
         >
             <body className="flex min-h-screen flex-col font-sans antialiased">
-                <LowPolyBackground />
-                <LanguageProvider initialLocale={locale}>
-                    <TooltipProvider>
-                        <SiteHeader initialTheme={theme} />
-                        <main className="container mx-auto w-full max-w-7xl flex-1 border-x bg-background px-4 py-8 dark:bg-background/74 dark:backdrop-blur">
-                            {children}
-                        </main>
-                    </TooltipProvider>
-                </LanguageProvider>
+                <Providers>
+                    <LowPolyBackground />
+                    <LanguageProvider initialLocale={locale}>
+                        <TooltipProvider>
+                            <SiteHeader initialTheme={theme} />
+                            <main className="container mx-auto w-full max-w-7xl flex-1 border-x bg-background px-4 py-8 dark:bg-background/74 dark:backdrop-blur">
+                                {children}
+                            </main>
+                        </TooltipProvider>
+                    </LanguageProvider>
+                </Providers>
             </body>
         </html>
     );
