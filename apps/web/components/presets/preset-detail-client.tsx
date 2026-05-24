@@ -17,6 +17,8 @@ import { ActivateProgressModal } from "./activate-progress-modal";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import type { ApplyResult, ItemKind } from "@lector/presets/types";
+import { PresetItemCard } from "./preset-item-card";
+import type { EnrichedPresetItem } from "@lector/presets/enrich";
 
 const STREAM_THRESHOLD = 4;
 
@@ -38,8 +40,8 @@ export function PresetDetailClient({ presetId }: { presetId: number }) {
     if (!detail.data) return null;
     const { preset, items } = detail.data;
 
-    const skills = items.filter((i) => i.kind === "skill");
-    const commands = items.filter((i) => i.kind === "command");
+    const skills = items.filter((i): i is EnrichedPresetItem => i.kind === "skill");
+    const commands = items.filter((i): i is EnrichedPresetItem => i.kind === "command");
 
     async function onActivate() {
         const dry = await activate.mutateAsync({ id: presetId, dryRun: true });
@@ -100,8 +102,9 @@ export function PresetDetailClient({ presetId }: { presetId: number }) {
                         </Button>
                     ) : null}
                 </div>
-                <ItemList
+                <PresetItemGrid
                     items={skills}
+                    presetId={presetId}
                     onRemove={(kind, id) => removeItem.mutate({ presetId, kind, identifier: id })}
                     disabled={!!preset.archivedAt}
                 />
@@ -109,8 +112,9 @@ export function PresetDetailClient({ presetId }: { presetId: number }) {
 
             <section className="space-y-2">
                 <h2 className="text-base font-semibold">Commands ({commands.length})</h2>
-                <ItemList
+                <PresetItemGrid
                     items={commands}
+                    presetId={presetId}
                     onRemove={(kind, id) => removeItem.mutate({ presetId, kind, identifier: id })}
                     disabled={!!preset.archivedAt}
                 />
@@ -150,28 +154,31 @@ export function PresetDetailClient({ presetId }: { presetId: number }) {
     );
 }
 
-function ItemList({
+function PresetItemGrid({
     items,
+    presetId,
     onRemove,
     disabled,
 }: {
-    items: Array<{ kind: ItemKind; identifier: string }>;
+    items: EnrichedPresetItem[];
+    presetId: number;
     onRemove: (kind: ItemKind, identifier: string) => void;
     disabled: boolean;
 }) {
-    if (items.length === 0) return <p className="text-sm text-muted-foreground">None yet.</p>;
+    if (items.length === 0) {
+        return <p className="text-sm text-muted-foreground">None yet.</p>;
+    }
     return (
-        <ul className="divide-y rounded-xs border text-sm">
+        <div className="grid gap-3 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
             {items.map((i) => (
-                <li key={`${i.kind}::${i.identifier}`} className="flex items-center justify-between p-2">
-                    <span className="font-mono">{i.identifier}</span>
-                    {!disabled ? (
-                        <Button size="sm" variant="ghost" onClick={() => onRemove(i.kind, i.identifier)}>
-                            &times;
-                        </Button>
-                    ) : null}
-                </li>
+                <PresetItemCard
+                    key={`${i.kind}::${i.identifier}`}
+                    item={i}
+                    presetId={presetId}
+                    onRemove={() => onRemove(i.kind, i.identifier)}
+                    disabled={disabled}
+                />
             ))}
-        </ul>
+        </div>
     );
 }
