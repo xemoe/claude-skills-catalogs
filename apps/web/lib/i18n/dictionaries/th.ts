@@ -164,6 +164,9 @@ export const th: Dictionary = {
             recentActivations: "ประวัติการเปิดใช้ล่าสุด",
             archivedBanner: "พรีเซ็ตนี้ถูกเก็บถาวร — อ่านอย่างเดียว ต้องนำกลับก่อนจึงจะแก้ไขหรือเปิดใช้ได้",
             missingBadge: "ไม่พบในเครื่อง",
+            removeItem: "ลบออกจาก preset",
+            openSkill: "เปิด skill",
+            openCommand: "เปิด command",
         },
         activate: {
             title: (name: string) => `สลับไป "${name}"?`,
@@ -406,6 +409,8 @@ Keep the explanation tight — three short paragraphs at most.`,
         invocationSlashOnlyHint: "สแลชเท่านั้น — Claude จะไม่เรียกใช้เอง",
         filterEvent: "กรองตาม event",
         allEvents: "ทุก event",
+        filterPreset: "กรองตาม preset",
+        presetAll: "ทุก preset",
     },
 
     sidebar: {
@@ -608,6 +613,7 @@ Keep the explanation tight — three short paragraphs at most.`,
         timeoutSeconds: (s) => `${s} วินาที`,
         sourceFile: "ไฟล์ Settings",
         sourceFileSize: "ขนาดไฟล์",
+        backToPreset: (name) => `กลับไปยัง preset "${name}" ใน explorer`,
     },
 
     viewer: {

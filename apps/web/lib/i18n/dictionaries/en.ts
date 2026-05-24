@@ -170,6 +170,9 @@ export const en = {
             recentActivations: "Recent activations",
             archivedBanner: "This preset is archived — read-only. Unarchive to edit or activate.",
             missingBadge: "missing on disk",
+            removeItem: "Remove from preset",
+            openSkill: "Open skill",
+            openCommand: "Open command",
         },
         activate: {
             title: (name: string) => `Switch to "${name}"?`,
@@ -413,6 +416,8 @@ That feature ships in **v0.3.0** — until it lands, browse the \`vendor/\` dire
         invocationSlashOnlyHint: "Slash-only — Claude will not auto-invoke it",
         filterEvent: "Filter by event",
         allEvents: "All events",
+        filterPreset: "Filter by preset",
+        presetAll: "All presets",
     },
 
     sidebar: {
@@ -631,6 +636,7 @@ That feature ships in **v0.3.0** — until it lands, browse the \`vendor/\` dire
         timeoutSeconds: (s: number) => `${s} s`,
         sourceFile: "Settings file",
         sourceFileSize: "File size",
+        backToPreset: (name: string) => `Back to preset "${name}" in explorer`,
     },
 
     viewer: {
