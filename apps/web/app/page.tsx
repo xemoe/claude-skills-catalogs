@@ -35,9 +35,13 @@ export default async function DashboardPage({
 }) {
     const { t } = await getServerI18n();
     const { preset: presetParam } = await searchParams;
-    const initialPresetId = parsePresetId(presetParam);
     const result = scanSkills();
     const membership = loadPresetMembership();
+    const rawPresetId = parsePresetId(presetParam);
+    const initialPresetId =
+        rawPresetId != null && membership.presets.some((p) => p.id === rawPresetId)
+            ? rawPresetId
+            : null;
 
     return (
         <div className="space-y-4">

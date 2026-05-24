@@ -2,16 +2,20 @@
 "use client";
 
 import Link from "next/link";
-import { Package, X } from "lucide-react";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { FolderOpen, GitBranch, Github, Package, X } from "lucide-react";
+import {
+    Card,
+    CardAction,
+    CardContent,
+    CardHeader,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { SkillTypeDot } from "@/components/skill-type-dot";
-import { SourceBadge } from "@/components/source-badge";
 import { ModelInvocationBadge } from "@/components/model-invocation-badge";
 import { formatDate } from "@/lib/utils";
 import { useT } from "@/lib/i18n/context";
-import type { SkillType } from "@lector/core/types";
+import type { SkillSource, SkillType } from "@lector/core/types";
 import type { EnrichedPresetItem } from "@lector/presets/enrich";
 
 type Props = {
@@ -27,7 +31,7 @@ export function PresetItemCard({ item, presetId, onRemove, disabled }: Props) {
     if (item.missing) {
         return (
             <Card className="rounded-md shadow-none opacity-60 border-dashed">
-                <CardHeader className="flex-row items-center justify-between space-y-0 pb-2">
+                <CardHeader className="pb-2">
                     <div className="flex items-center gap-2">
                         <span className="font-mono text-xs text-muted-foreground">
                             {item.kind}
@@ -37,10 +41,12 @@ export function PresetItemCard({ item, presetId, onRemove, disabled }: Props) {
                         </Badge>
                     </div>
                     {!disabled && (
-                        <RemoveButton
-                            onRemove={onRemove}
-                            label={t.presetsPage.detail.removeItem}
-                        />
+                        <CardAction>
+                            <RemoveButton
+                                onRemove={onRemove}
+                                label={t.presetsPage.detail.removeItem}
+                            />
+                        </CardAction>
                     )}
                 </CardHeader>
                 <CardContent className="pt-0 text-sm">
@@ -75,16 +81,18 @@ export function PresetItemCard({ item, presetId, onRemove, disabled }: Props) {
         <Link href={href} className="block">
             <span className="sr-only">{srLabel}</span>
             <Card className="rounded-md shadow-none transition-colors hover:bg-accent/40">
-                <CardHeader className="flex-row items-center justify-between space-y-0 pb-2">
+                <CardHeader className="pb-2">
                     <div className="flex items-center gap-2">
                         <SkillTypeDot type={type as SkillType} />
                         <ModelInvocationBadge disabled={disableModelInvocation} />
                     </div>
                     {!disabled && (
-                        <RemoveButton
-                            onRemove={onRemove}
-                            label={t.presetsPage.detail.removeItem}
-                        />
+                        <CardAction>
+                            <RemoveButton
+                                onRemove={onRemove}
+                                label={t.presetsPage.detail.removeItem}
+                            />
+                        </CardAction>
                     )}
                 </CardHeader>
                 <CardContent className="space-y-1 pt-0">
@@ -96,12 +104,12 @@ export function PresetItemCard({ item, presetId, onRemove, disabled }: Props) {
                     )}
                     <div className="flex items-center gap-2 pt-1 text-xs text-muted-foreground">
                         {plugin && source.kind === "local" ? (
-                            <span className="inline-flex items-center gap-1">
+                            <span className="inline-flex min-w-0 items-center gap-1">
                                 <Package className="h-3 w-3 shrink-0 text-purple-600" />
                                 <span className="truncate">{plugin.name}</span>
                             </span>
                         ) : (
-                            <SourceBadge source={source} />
+                            <SourceLabel source={source} />
                         )}
                         <span aria-hidden>·</span>
                         <span className="tabular-nums">{formatDate(lastUpdated)}</span>
@@ -109,6 +117,24 @@ export function PresetItemCard({ item, presetId, onRemove, disabled }: Props) {
                 </CardContent>
             </Card>
         </Link>
+    );
+}
+
+function SourceLabel({ source }: { source: SkillSource }) {
+    const Icon =
+        source.kind === "github"
+            ? Github
+            : source.kind === "git"
+              ? GitBranch
+              : FolderOpen;
+    return (
+        <span
+            title={source.label}
+            className="inline-flex min-w-0 items-center gap-1.5"
+        >
+            <Icon className="h-3 w-3 shrink-0" />
+            <span className="truncate">{source.label}</span>
+        </span>
     );
 }
 
