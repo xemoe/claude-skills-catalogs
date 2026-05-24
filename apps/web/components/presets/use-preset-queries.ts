@@ -15,6 +15,7 @@ import type {
     ApplyLog,
     ActiveState,
 } from "@lector/presets/types";
+import type { EnrichedPresetItem } from "@lector/presets/enrich";
 
 import { qk } from "./preset-query-keys";
 
@@ -46,7 +47,9 @@ export function usePreset(id: number) {
     return useQuery({
         queryKey: qk.preset(id),
         queryFn: () =>
-            jsonFetch<{ preset: Preset; items: PresetItem[] }>(`/api/presets/${id}`),
+            jsonFetch<{ preset: Preset; items: EnrichedPresetItem[] }>(
+                `/api/presets/${id}`,
+            ),
     });
 }
 

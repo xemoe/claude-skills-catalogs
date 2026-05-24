@@ -2,6 +2,7 @@
 import { notFound } from "next/navigation";
 import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query";
 import { getPreset, listPresetItems } from "@lector/presets/presets";
+import { enrichPresetItems } from "@lector/presets/enrich";
 import { PresetDetailClient } from "@/components/presets/preset-detail-client";
 import { qk } from "@/components/presets/preset-query-keys";
 
@@ -18,9 +19,10 @@ export default async function PresetDetailPage({
     const preset = getPreset(id);
     if (!preset) return notFound();
     const items = listPresetItems(id);
+    const enriched = await enrichPresetItems(items);
 
     const qc = new QueryClient();
-    qc.setQueryData(qk.preset(id), { preset, items });
+    qc.setQueryData(qk.preset(id), { preset, items: enriched });
 
     return (
         <div className="space-y-6 px-5 py-0">
