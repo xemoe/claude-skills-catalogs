@@ -17,6 +17,7 @@ import { formatDate } from "@/lib/utils";
 import { useT } from "@/lib/i18n/context";
 import type { SkillSource, SkillType } from "@lector/core/types";
 import type { EnrichedPresetItem } from "@lector/presets/enrich";
+import {SKILL_TYPE_META} from "@/components/skill-type";
 
 type Props = {
     item: EnrichedPresetItem;
@@ -24,6 +25,13 @@ type Props = {
     onRemove: () => void;
     disabled: boolean;
 };
+
+const borderByType = {
+    'personal': '',
+    'plugin': '',
+    'project': '',
+    'local': ''
+}
 
 export function PresetItemCard({ item, presetId, onRemove, disabled }: Props) {
     const t = useT();
@@ -74,16 +82,15 @@ export function PresetItemCard({ item, presetId, onRemove, disabled }: Props) {
             : item.command.disableModelInvocation;
     const source = item.kind === "skill" ? item.skill.source : item.command.source;
     const plugin = item.kind === "skill" ? item.skill.plugin : item.command.plugin;
-    const lastUpdated =
-        item.kind === "skill" ? item.skill.lastUpdated : item.command.lastUpdated;
+    const lastUpdated = item.kind === "skill" ? item.skill.lastUpdated : item.command.lastUpdated;
+    const typeBorder = SKILL_TYPE_META[type].border;
 
     return (
         <Link href={href} className="block">
             <span className="sr-only">{srLabel}</span>
-            <Card className="rounded-md shadow-none transition-colors hover:bg-accent/40">
-                <CardHeader className="pb-2">
-                    <div className="flex items-center gap-2">
-                        <SkillTypeDot type={type as SkillType} />
+            <Card className={`rounded-sm shadow-none transition-colors hover:bg-accent/40 border-t-2 ${typeBorder}`}>
+                <CardHeader className="pb-0">
+                    <div className="flex items-center">
                         <ModelInvocationBadge disabled={disableModelInvocation} />
                     </div>
                     {!disabled && (

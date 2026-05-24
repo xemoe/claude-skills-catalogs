@@ -17,7 +17,7 @@ export function SkillTypeBadge({
     return (
         <span
             className={cn(
-                "inline-flex items-center rounded-none border px-2 py-0.5 text-xs font-medium",
+                "inline-flex items-center rounded-xs border px-2 py-0.5 text-xs font-medium",
                 meta.badge,
                 className,
             )}

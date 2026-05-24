@@ -18,7 +18,7 @@ export function ModelInvocationBadge({
 }) {
     const t = useT();
     const chip =
-        "inline-flex items-center gap-1 rounded-none border py-0.5 text-xs font-medium";
+        "inline-flex items-center gap-1 rounded-sm border py-1 text-xs font-medium";
 
     if (disabled === true) {
         return (

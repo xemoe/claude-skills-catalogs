@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { ChevronLeft, FileText, Package, Workflow } from "lucide-react";
+import { ChevronRight, FileText, Package, Workflow } from "lucide-react";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator"
 import { getSkillById } from "@lector/core/scanner";
@@ -70,23 +70,30 @@ export default async function SkillDetailPage({
 
     return (
         <div className="space-y-4">
-            {preset && (
-                <Link
-                    href={`/?preset=${preset.id}`}
-                    className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
-                >
-                    <ChevronLeft className="h-3.5 w-3.5" />
-                    {t.detail.backToPreset(preset.name)}
-                </Link>
-            )}
+
             <div className="space-y-3">
-                <div className="flex flex-wrap items-center gap-3">
-                    <h1 className="text-2xl font-bold tracking-tight">{skill.name}</h1>
-                    <SkillTypeBadge type={skill.type} />
+                <div className="flex items-center justify-between">
+                    <div className="flex flex-wrap items-center gap-3">
+                        <h1 className="text-2xl font-bold tracking-tight">{skill.name}</h1>
+                        <SkillTypeBadge type={skill.type} />
+                    </div>
+                    {preset && (
+                        <div className="">
+                            <Link
+                                href={`/?preset=${preset.id}`}
+                                className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+                            >
+                                {t.detail.backToPreset(preset.name)}
+                                <ChevronRight className="h-3.5 w-3.5" />
+                            </Link>
+                        </div>
+                    )}
                 </div>
+
                 {skill.description?.trim() && (
                     <SkillDescription description={skill.description} />
                 )}
+
             </div>
 
             <Card className="min-w-0 rounded-sm">

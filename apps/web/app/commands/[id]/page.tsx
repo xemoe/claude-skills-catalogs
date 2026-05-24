@@ -1,22 +1,22 @@
 import path from "path";
-import { notFound } from "next/navigation";
-import { ChevronLeft, FileText, Package, Workflow } from "lucide-react";
+import {notFound} from "next/navigation";
+import {ChevronRight, FileText, Package, Workflow} from "lucide-react";
 import Link from "next/link";
-import { Separator } from "@/components/ui/separator";
-import { getCommandById } from "@lector/core/command-scanner";
-import { parseCommandMd } from "@lector/core/command-parser";
-import { extractPipeline } from "@lector/core/pipeline";
-import { stripBom } from "@lector/core/frontmatter";
-import { lastCommitDate } from "@lector/core/git";
-import { Markdown } from "@/components/markdown";
-import { SkillMdViewer } from "@/components/skill-md-viewer";
-import { NodePipeline } from "@/components/node-pipeline";
-import { SkillDescription } from "@/components/skill-description";
-import { SkillTypeBadge } from "@/components/skill-type-badge";
-import { SourceBadge } from "@/components/source-badge";
-import { ModelInvocationBadge } from "@/components/model-invocation-badge";
-import { ModelInvocationExamples } from "@/components/model-invocation-examples";
-import { CopyButton } from "@/components/copy-button";
+import {Separator} from "@/components/ui/separator";
+import {getCommandById} from "@lector/core/command-scanner";
+import {parseCommandMd} from "@lector/core/command-parser";
+import {extractPipeline} from "@lector/core/pipeline";
+import {stripBom} from "@lector/core/frontmatter";
+import {lastCommitDate} from "@lector/core/git";
+import {Markdown} from "@/components/markdown";
+import {SkillMdViewer} from "@/components/skill-md-viewer";
+import {NodePipeline} from "@/components/node-pipeline";
+import {SkillDescription} from "@/components/skill-description";
+import {SkillTypeBadge} from "@/components/skill-type-badge";
+import {SourceBadge} from "@/components/source-badge";
+import {ModelInvocationBadge} from "@/components/model-invocation-badge";
+import {ModelInvocationExamples} from "@/components/model-invocation-examples";
+import {CopyButton} from "@/components/copy-button";
 import {
     Card,
     CardAction,
@@ -24,17 +24,17 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { formatBytes, formatDate, formatRelativeTime } from "@/lib/utils";
-import { getServerI18n } from "@/lib/i18n/server";
-import { getPreset } from "@lector/presets/presets";
-import { parsePresetId } from "@/lib/preset-query";
+import {formatBytes, formatDate, formatRelativeTime} from "@/lib/utils";
+import {getServerI18n} from "@/lib/i18n/server";
+import {getPreset} from "@lector/presets/presets";
+import {parsePresetId} from "@/lib/preset-query";
 
 export const dynamic = "force-dynamic";
 
 function MetaRow({
-    label,
-    children,
-}: {
+                     label,
+                     children,
+                 }: {
     label: string;
     children: React.ReactNode;
 }) {
@@ -47,15 +47,15 @@ function MetaRow({
 }
 
 export default async function CommandDetailPage({
-    params,
-    searchParams,
-}: {
+                                                    params,
+                                                    searchParams,
+                                                }: {
     params: Promise<{ id: string }>;
     searchParams: Promise<{ preset?: string }>;
 }) {
-    const { id } = await params;
-    const { preset: presetParam } = await searchParams;
-    const { t, locale } = await getServerI18n();
+    const {id} = await params;
+    const {preset: presetParam} = await searchParams;
+    const {t, locale} = await getServerI18n();
     const command = getCommandById(id);
     if (!command) notFound();
 
@@ -75,31 +75,32 @@ export default async function CommandDetailPage({
 
     return (
         <div className="space-y-4">
-            {preset && (
-                <Link
-                    href={`/commands?preset=${preset.id}`}
-                    className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
-                >
-                    <ChevronLeft className="h-3.5 w-3.5" />
-                    {t.detail.backToPreset(preset.name)}
-                </Link>
-            )}
+
             <div className="space-y-3">
-                <div className="flex flex-wrap items-center gap-3">
-                    <h1 className="font-mono text-2xl font-bold tracking-tight">
-                        /{command.name}
-                    </h1>
-                    <SkillTypeBadge type={command.scope} />
+                <div className="flex items-center justify-between">
+                    <div className="flex flex-wrap items-center gap-3">
+                        <h1 className="font-mono text-2xl font-bold tracking-tight">
+                            /{command.name}
+                        </h1>
+                        <SkillTypeBadge type={command.scope}/>
+                    </div>
+                    {preset && (
+                        <div className="">
+                            <Link
+                                href={`/commands?preset=${preset.id}`}
+                                className="flex inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+                            >
+                                {t.detail.backToPreset(preset.name)}
+                                <ChevronRight className="h-3.5 w-3.5" />
+                            </Link>
+                        </div>
+                    )}
                 </div>
+                
                 {command.description?.trim() && (
-                    <SkillDescription description={command.description} />
+                    <SkillDescription description={command.description}/>
                 )}
-                <div className="flex items-start gap-2">
-                    <code className="min-w-0 flex-1 break-all rounded-none bg-secondary p-2 font-mono text-xs">
-                        {invocation}
-                    </code>
-                    <CopyButton value={invocation} />
-                </div>
+
             </div>
 
             <Card className="min-w-0 rounded-sm">
@@ -112,10 +113,10 @@ export default async function CommandDetailPage({
                         </MetaRow>
                     </CardAction>
                     <CardTitle className="flex items-center gap-2 text-2xl">
-                        <FileText className="h-4 w-4" /> {fileName}
+                        <FileText className="h-4 w-4"/> {fileName}
                     </CardTitle>
                 </CardHeader>
-                <Separator className="border-b border-dotted border-gray-200" />
+                <Separator className="border-b border-dotted border-gray-200"/>
                 <CardContent>
                     {rawCommandMd ? (
                         <SkillMdViewer
@@ -123,7 +124,7 @@ export default async function CommandDetailPage({
                             copyLabel={fileName}
                             preview={
                                 parsed.body ? (
-                                    <Markdown content={parsed.body} />
+                                    <Markdown content={parsed.body}/>
                                 ) : (
                                     <p className="text-sm text-muted-foreground">
                                         {t.detail.commandNoBody}
@@ -143,7 +144,7 @@ export default async function CommandDetailPage({
                 <Card className={'rounded-sm'}>
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2 text-base">
-                            <Workflow className="h-4 w-4" /> {t.detail.pipeline}
+                            <Workflow className="h-4 w-4"/> {t.detail.pipeline}
                             <span className="text-xs font-normal text-muted-foreground">
                                 {pipeline.kind === "steps"
                                     ? t.detail.workflowSteps
@@ -152,7 +153,7 @@ export default async function CommandDetailPage({
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="pt-0">
-                        <NodePipeline pipeline={pipeline} />
+                        <NodePipeline pipeline={pipeline}/>
                     </CardContent>
                 </Card>
             )}
@@ -175,7 +176,7 @@ export default async function CommandDetailPage({
                         <code className="min-w-0 flex-1 break-all rounded-none bg-secondary p-2 text-xs">
                             {command.path}
                         </code>
-                        <CopyButton value={command.path} />
+                        <CopyButton value={command.path}/>
                     </div>
                 </CardContent>
             </Card>
@@ -189,7 +190,7 @@ export default async function CommandDetailPage({
                         <div className="divide-y">
                             <MetaRow label={t.detail.source}>
                                 <span className="flex min-w-0 items-center justify-end gap-1">
-                                    <SourceBadge source={command.source} />
+                                    <SourceBadge source={command.source}/>
                                     <CopyButton
                                         value={command.source.url ?? command.source.label}
                                         size="icon-xs"
@@ -256,7 +257,7 @@ export default async function CommandDetailPage({
                     <Card className={'rounded-sm'}>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2 text-base">
-                                <Package className="h-4 w-4" /> {t.detail.plugin}
+                                <Package className="h-4 w-4"/> {t.detail.plugin}
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="pt-0">
