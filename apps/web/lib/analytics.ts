@@ -1,6 +1,7 @@
 import { scanActivity } from "@lector/core/activity";
 import { scanCommands } from "@lector/core/command-scanner";
 import { scanSkills } from "@lector/core/scanner";
+import { listPresetItems } from "@lector/presets/presets";
 import { formatRelativeTime } from "./utils";
 import { type Locale, DEFAULT_LOCALE } from "./i18n/config";
 import { getDictionary } from "./i18n/dictionaries";
@@ -81,6 +82,7 @@ let cache: {
     at: number;
     locale: Locale;
     project: string;
+    presetId: number | null;
 } | null = null;
 
 /** Skill identity — the last namespace segment, lowercased (plugin prefix dropped). */
@@ -128,15 +130,22 @@ interface Group {
  * lists, a recent-activity heatmap, and which skills/commands have gone unused.
  */
 export function buildAnalytics(
-    opts: { force?: boolean; locale?: Locale; project?: string } = {},
+    opts: {
+        force?: boolean;
+        locale?: Locale;
+        project?: string;
+        presetId?: number | null;
+    } = {},
 ): Analytics {
     const locale = opts.locale ?? DEFAULT_LOCALE;
     const project = opts.project ?? "";
+    const presetId = opts.presetId ?? null;
     if (
         !opts.force &&
         cache &&
         cache.locale === locale &&
         cache.project === project &&
+        cache.presetId === presetId &&
         Date.now() - cache.at < CACHE_TTL_MS
     ) {
         return cache.analytics;
@@ -157,14 +166,45 @@ export function buildAnalytics(
         ),
     ].sort((a, b) => a.localeCompare(b));
 
+    // Preset filter — restrict the catalog to items that belong to the preset.
+    // Presets target personal-scope by identifier; we match against the catalog
+    // entry's `name` (the same field stored in preset_items.identifier).
+    let presetSkillNames: Set<string> | null = null;
+    let presetCommandNames: Set<string> | null = null;
+    if (presetId != null) {
+        try {
+            const items = listPresetItems(presetId);
+            presetSkillNames = new Set();
+            presetCommandNames = new Set();
+            for (const item of items) {
+                if (item.kind === "skill") presetSkillNames.add(item.identifier);
+                else presetCommandNames.add(item.identifier);
+            }
+        } catch {
+            // Preset DB is unavailable — fall back to no preset filter rather
+            // than crash the analytics page.
+            presetSkillNames = null;
+            presetCommandNames = null;
+        }
+    }
+
     // When a project is selected, only that project's catalog entries — and the
-    // activity that resolves to them — feed the aggregation.
-    const skills = project
+    // activity that resolves to them — feed the aggregation. Preset filter
+    // composes on top of the project filter.
+    let skills = project
         ? allSkills.filter((s) => s.project?.name === project)
         : allSkills;
-    const commands = project
+    if (presetSkillNames) {
+        const set = presetSkillNames;
+        skills = skills.filter((s) => set.has(s.name));
+    }
+    let commands = project
         ? allCommands.filter((c) => c.project?.name === project)
         : allCommands;
+    if (presetCommandNames) {
+        const set = presetCommandNames;
+        commands = commands.filter((c) => set.has(c.name));
+    }
 
     // Catalog lookup keys — let a slash invocation resolve to skill vs command.
     const skillKeySet = new Set(skills.map((s) => skillId(s.name)));
@@ -189,14 +229,14 @@ export function buildAnalytics(
 
         const matchKey = kind === "skill" ? skillId(ev.name) : cmdId(ev.name);
         if (!matchKey) continue;
-        // With a project filter active, drop activity that doesn't resolve to one
-        // of the project's catalog entries.
-        if (project) {
-            const inProject =
+        // With a project or preset filter active, drop activity that doesn't
+        // resolve to one of the filtered catalog entries.
+        if (project || presetId != null) {
+            const inScope =
                 kind === "skill"
                     ? skillKeySet.has(matchKey)
                     : commandKeySet.has(matchKey);
-            if (!inProject) continue;
+            if (!inScope) continue;
         }
         const display = kind === "skill" ? matchKey : `/${matchKey}`;
         const identity = `${kind}\u0000${matchKey}`;
@@ -344,6 +384,6 @@ export function buildAnalytics(
         projects,
     };
 
-    cache = { analytics, at: Date.now(), locale, project };
+    cache = { analytics, at: Date.now(), locale, project, presetId };
     return analytics;
 }

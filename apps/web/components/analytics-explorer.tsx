@@ -11,6 +11,7 @@ import {
     CircleSlash,
     Clock,
     Folder,
+    Layers,
     SquareTerminal,
     Target,
     type LucideIcon,
@@ -34,6 +35,12 @@ import type {
     UsageStat,
 } from "@/lib/analytics";
 import type { SkillType } from "@lector/core/types";
+import type { Preset } from "@lector/presets/types";
+
+type PresetFilter = {
+    presets: Preset[];
+    initialPresetId: number | null;
+};
 
 const WINDOW_KEYS: ActivityWindow[] = ["4h", "1d", "1w", "all"];
 
@@ -215,10 +222,12 @@ export function AnalyticsExplorer({
     analytics,
     projects,
     selectedProject,
+    presetFilter,
 }: {
     analytics: Analytics;
     projects: string[];
     selectedProject: string;
+    presetFilter?: PresetFilter;
 }) {
     const t = useT();
     const router = useRouter();
@@ -228,15 +237,27 @@ export function AnalyticsExplorer({
     const projectValue = projects.includes(selectedProject)
         ? selectedProject
         : "all";
+    const presetValue =
+        presetFilter && presetFilter.initialPresetId != null
+            ? String(presetFilter.initialPresetId)
+            : "all";
+
+    const pushFilters = (nextProject: string, nextPreset: string) => {
+        const params = new URLSearchParams();
+        if (nextProject !== "all") params.set("project", nextProject);
+        if (nextPreset !== "all") params.set("preset", nextPreset);
+        const qs = params.toString();
+        startTransition(() => {
+            router.push(qs ? `/analytic?${qs}` : "/analytic");
+        });
+    };
 
     const onProjectChange = (value: string) => {
-        startTransition(() => {
-            router.push(
-                value === "all"
-                    ? "/analytic"
-                    : `/analytic?project=${encodeURIComponent(value)}`,
-            );
-        });
+        pushFilters(value, presetValue);
+    };
+
+    const onPresetChange = (value: string) => {
+        pushFilters(projectValue, value);
     };
 
     const rank = (a: UsageStat, b: UsageStat) =>
@@ -264,25 +285,51 @@ export function AnalyticsExplorer({
         <div
             className={`space-y-6 transition-opacity ${isPending ? "opacity-60" : ""}`}
         >
-            {projects.length > 0 && (
-                <div className="flex items-center justify-end gap-2">
-                    <Select value={projectValue} onValueChange={onProjectChange}>
-                        <SelectTrigger
-                            className="gap-1.5 lg:w-[220px]"
-                            aria-label={t.common.filterByProject}
-                        >
-                            <Folder className="h-3.5 w-3.5 shrink-0 opacity-70" />
-                            <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="all">{t.common.allProjects}</SelectItem>
-                            {projects.map((p) => (
-                                <SelectItem key={p} value={p}>
-                                    {p}
+            {(projects.length > 0 ||
+                (presetFilter && presetFilter.presets.length > 0)) && (
+                <div className="flex flex-wrap items-center justify-end gap-2">
+                    {presetFilter && presetFilter.presets.length > 0 && (
+                        <Select value={presetValue} onValueChange={onPresetChange}>
+                            <SelectTrigger
+                                className="gap-1.5 lg:w-[200px]"
+                                aria-label={t.explorer.filterPreset}
+                            >
+                                <Layers className="h-3.5 w-3.5 shrink-0 opacity-70" />
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">
+                                    {t.explorer.presetAll}
                                 </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
+                                {presetFilter.presets.map((p) => (
+                                    <SelectItem key={p.id} value={String(p.id)}>
+                                        {p.name}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    )}
+                    {projects.length > 0 && (
+                        <Select value={projectValue} onValueChange={onProjectChange}>
+                            <SelectTrigger
+                                className="gap-1.5 lg:w-[220px]"
+                                aria-label={t.common.filterByProject}
+                            >
+                                <Folder className="h-3.5 w-3.5 shrink-0 opacity-70" />
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">
+                                    {t.common.allProjects}
+                                </SelectItem>
+                                {projects.map((p) => (
+                                    <SelectItem key={p} value={p}>
+                                        {p}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    )}
                 </div>
             )}
 
