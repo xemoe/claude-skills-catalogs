@@ -617,4 +617,20 @@ Keep the explanation tight — three short paragraphs at most.`,
         copied: "คัดลอกแล้ว",
         copyRaw: (file) => `คัดลอก ${file} ต้นฉบับไปยังคลิปบอร์ด`,
     },
+
+    pluginScopeNotice: {
+        headerWithCount: (count) =>
+            `รายการประเภท plugin ${count} รายการถูกซ่อน — เพิ่มเข้า preset ไม่ได้`,
+        headerGeneric: "รายการประเภท plugin เพิ่มเข้า preset ไม่ได้",
+        body: "Preset เขียนข้อมูลที่ ~/.claude/skills/ เท่านั้น ถ้าแก้ frontmatter ของ plugin อัปเดต plugin ครั้งถัดไปจะเขียนทับ",
+        showSteps: "ดูวิธีติดตั้ง",
+        stepsIntro: "ติดตั้ง skill เข้า personal scope เพื่อให้เลือกใน preset ได้:",
+        stepVendoredLabel: "Skill ใน vendor/ ของรีโพนี้:",
+        stepPluginLabel: "Skill จาก plugin marketplace:",
+        stepPluginBody:
+            "คัดลอก skills/<name>/ (หรือ commands/<name>.md) จาก ~/.claude/plugins/cache/<marketplace>/<plugin>/<version>/ ไปวางที่พาธเดียวกันใต้ ~/.claude/ แล้วกด Rescan",
+        dismiss: "ปิด",
+        emptyPickerWithHidden: (count) =>
+            `ยังไม่มีรายการ personal scope — มี ${count} รายการ plugin ถูกซ่อนอยู่ด้านบน`,
+    },
 };

@@ -11,6 +11,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { PluginScopeNotice } from "@/components/plugin-scope-notice";
+import { useT } from "@/lib/i18n/context";
 import type { ItemKind } from "@lector/presets/types";
 
 type AvailableItem = {
@@ -38,6 +40,8 @@ export function PresetItemPicker({
     const [items, setItems] = useState<AvailableItem[] | null>(null);
     const [search, setSearch] = useState("");
     const [selected, setSelected] = useState<Set<string>>(new Set());
+    const [hiddenCount, setHiddenCount] = useState(0);
+    const t = useT();
 
     useEffect(() => {
         if (!open) return;
@@ -46,6 +50,7 @@ export function PresetItemPicker({
                 initiallySelected.map((s) => `${s.kind}::${s.identifier}`),
             ),
         );
+        setHiddenCount(0);
         // Fetch personal-scope items from existing catalog endpoints
         Promise.all([
             fetch("/api/skills").then((r) => r.json()),
@@ -70,8 +75,12 @@ export function PresetItemPicker({
                 description?: string;
             }>;
             const merged: AvailableItem[] = [];
+            let hidden = 0;
             for (const s of skills) {
-                // Skills use "type" field; personal type = "personal"
+                if (s.type === "plugin") {
+                    hidden += 1;
+                    continue;
+                }
                 if (s.type !== "personal") continue;
                 merged.push({
                     kind: "skill",
@@ -81,6 +90,10 @@ export function PresetItemPicker({
                 });
             }
             for (const c of commands) {
+                if (c.scope === "plugin") {
+                    hidden += 1;
+                    continue;
+                }
                 if (c.scope !== "personal") continue;
                 merged.push({
                     kind: "command",
@@ -90,6 +103,7 @@ export function PresetItemPicker({
                 });
             }
             setItems(merged);
+            setHiddenCount(hidden);
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [open]);
@@ -131,6 +145,9 @@ export function PresetItemPicker({
                     <SheetTitle>{title}</SheetTitle>
                 </SheetHeader>
                 <div className="mt-4 space-y-3 px-4">
+                    {hiddenCount > 0 ? (
+                        <PluginScopeNotice count={hiddenCount} />
+                    ) : null}
                     <Input
                         placeholder="Search…"
                         value={search}
@@ -143,7 +160,9 @@ export function PresetItemPicker({
                             </p>
                         ) : filtered.length === 0 ? (
                             <p className="p-4 text-sm text-muted-foreground">
-                                No items in personal scope.
+                                {hiddenCount > 0
+                                    ? t.pluginScopeNotice.emptyPickerWithHidden(hiddenCount)
+                                    : "No items in personal scope."}
                             </p>
                         ) : (
                             <ul className="divide-y">

@@ -9,6 +9,7 @@ import { listPinned } from "@lector/presets/pinned";
 import { qk } from "@/components/presets/preset-query-keys";
 import { PresetsExplorer } from "@/components/presets/presets-explorer";
 import { getServerI18n } from "@/lib/i18n/server";
+import { PluginScopeNotice } from "@/components/plugin-scope-notice";
 
 export const dynamic = "force-dynamic";
 
@@ -39,6 +40,7 @@ export default async function PresetsPage() {
                     {t.presetsPage.subtitle}
                 </p>
             </div>
+            <PluginScopeNotice dismissKey="presets-index" />
             <HydrationBoundary state={dehydrate(queryClient)}>
                 <PresetsExplorer />
             </HydrationBoundary>
