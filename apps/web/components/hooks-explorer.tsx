@@ -19,6 +19,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { IconSelectTrigger } from "@/components/icon-select-trigger";
 import {
     Table,
     TableBody,
@@ -123,6 +124,11 @@ export function HooksExplorer({ hooks }: { hooks: Hook[] }) {
         });
     }, [hooks, query, scopeFilter, eventFilter, sort]);
 
+    const sortLabel: Record<SortKey, string> = {
+        updated: t.explorer.sortRecent,
+        event: t.explorer.sortEvent,
+    };
+
     const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
     const currentPage = Math.min(page, totalPages);
     const paged = useMemo(
@@ -204,10 +210,11 @@ export function HooksExplorer({ hooks }: { hooks: Hook[] }) {
                         setPage(1);
                     }}
                 >
-                    <SelectTrigger className="gap-1.5 lg:w-[180px]">
-                        <ArrowUpDown className="h-3.5 w-3.5 shrink-0 opacity-70" />
-                        <SelectValue />
-                    </SelectTrigger>
+                    <IconSelectTrigger
+                        icon={<ArrowUpDown />}
+                        label={t.explorer.sortBy}
+                        currentValue={sortLabel[sort]}
+                    />
                     <SelectContent>
                         <SelectItem value="updated">{t.explorer.sortRecent}</SelectItem>
                         <SelectItem value="event">{t.explorer.sortEvent}</SelectItem>

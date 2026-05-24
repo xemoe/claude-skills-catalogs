@@ -22,6 +22,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { IconSelectTrigger } from "@/components/icon-select-trigger";
 import {
     Table,
     TableBody,
@@ -132,6 +133,16 @@ export function CommandsExplorer({
         });
     }, [commands, query, scopeFilter, projectFilter, invocationFilter, presetId, membership, sort]);
 
+    const invocationLabel: Record<InvocationFilter, string> = {
+        all: t.explorer.invocationAll,
+        model: t.explorer.invocationModel,
+        "slash-only": t.explorer.invocationSlashOnly,
+    };
+    const sortLabel: Record<SortKey, string> = {
+        updated: t.explorer.sortRecent,
+        name: t.explorer.sortName,
+    };
+
     const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
     const currentPage = Math.min(page, totalPages);
     const paged = useMemo(
@@ -212,13 +223,11 @@ export function CommandsExplorer({
                         setPage(1);
                     }}
                 >
-                    <SelectTrigger
-                        className="gap-1.5 lg:w-[180px] rounded-sm"
-                        aria-label={t.explorer.filterInvocation}
-                    >
-                        <Sparkles className="h-3.5 w-3.5 shrink-0 opacity-70" />
-                        <SelectValue />
-                    </SelectTrigger>
+                    <IconSelectTrigger
+                        icon={<Sparkles />}
+                        label={t.explorer.filterInvocation}
+                        currentValue={invocationLabel[invocationFilter]}
+                    />
                     <SelectContent>
                         <SelectItem value="all">
                             {t.explorer.invocationAll}
@@ -269,10 +278,11 @@ export function CommandsExplorer({
                         setPage(1);
                     }}
                 >
-                    <SelectTrigger className="gap-1.5 lg:w-[180px] rounded-sm">
-                        <ArrowUpDown className="h-3.5 w-3.5 shrink-0 opacity-70" />
-                        <SelectValue />
-                    </SelectTrigger>
+                    <IconSelectTrigger
+                        icon={<ArrowUpDown />}
+                        label={t.explorer.sortBy}
+                        currentValue={sortLabel[sort]}
+                    />
                     <SelectContent>
                         <SelectItem value="updated">{t.explorer.sortRecent}</SelectItem>
                         <SelectItem value="name">{t.explorer.sortName}</SelectItem>

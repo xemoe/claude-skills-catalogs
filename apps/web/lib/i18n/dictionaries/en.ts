@@ -378,6 +378,7 @@ That feature ships in **v0.3.0** — until it lands, browse the \`vendor/\` dire
         searchCommands: "Search commands, plugins, sources…",
         searchHooks: "Search events, matchers, commands…",
         tabAll: "All",
+        sortBy: "Sort by",
         sortRecent: "Recently updated",
         sortName: "Name (A–Z)",
         sortEvent: "Event (A–Z)",
