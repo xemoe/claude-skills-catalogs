@@ -31,7 +31,7 @@ export default async function PresetsPage() {
     });
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4 px-5 py-0">
             <div>
                 <h1 className="text-2xl font-bold tracking-tight">
                     {t.presetsPage.title}
@@ -40,7 +40,7 @@ export default async function PresetsPage() {
                     {t.presetsPage.subtitle}
                 </p>
             </div>
-            <PluginScopeNotice dismissKey="presets-index" />
+            <PluginScopeNotice/>
             <HydrationBoundary state={dehydrate(queryClient)}>
                 <PresetsExplorer />
             </HydrationBoundary>

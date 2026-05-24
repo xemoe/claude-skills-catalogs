@@ -29,7 +29,7 @@ export function RescanButton() {
     }
 
     return (
-        <Button variant="outline" size="sm" onClick={rescan} disabled={busy}>
+        <Button className={'rounded-sm'} variant="outline" size="sm" onClick={rescan} disabled={busy}>
             <RefreshCw className={cn(busy && "animate-spin")} />
             {busy ? t.actions.scanning : t.actions.rescan}
         </Button>

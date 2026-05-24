@@ -12,12 +12,8 @@ export function LanguageSwitcher() {
         <div
             role="group"
             aria-label={t.language.label}
-            className="flex items-center rounded-none border"
+            className="flex items-center rounded-sm border"
         >
-            <Languages
-                className="ml-1.5 h-3.5 w-3.5 shrink-0 text-muted-foreground"
-                aria-hidden
-            />
             {LOCALES.map((l) => (
                 <button
                     key={l}

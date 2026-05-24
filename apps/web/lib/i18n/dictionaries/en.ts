@@ -107,7 +107,7 @@ export const en = {
         unnamedMatcher: "(any)",
         exampleHeading: "Quick start — try this example",
         exampleIntro:
-            "Five sample hooks covering every category the stat cards above track. Copy the JSON into one of the settings files below, then press Rescan.",
+            "Sample hooks covering every category the stat cards above track. Copy the JSON into one of the settings files below, then press Rescan.",
         exampleCopyLabel: "example settings.json",
         exampleInstallPersonal: "Personal (every session): ",
         exampleInstallProject: "Project (committed): ",

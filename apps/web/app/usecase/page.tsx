@@ -33,7 +33,7 @@ function TableOfContents({ t }: { t: Dictionary }) {
     return (
         <nav
             aria-label={t.usecasePage.tocTitle}
-            className="rounded-none border bg-secondary/20 p-4"
+            className="rounded-sm border bg-secondary/20 p-4"
         >
             <div className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                 <BookOpen className="h-3.5 w-3.5" />

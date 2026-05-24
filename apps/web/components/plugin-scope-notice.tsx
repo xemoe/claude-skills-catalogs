@@ -59,7 +59,7 @@ export function PluginScopeNotice({ count, dismissKey }: Props) {
     }
 
     return (
-        <div className="relative rounded-none border bg-muted/40 p-3 text-sm">
+        <div className="relative rounded-sm border border-amber-400  dark:border-amber-300 bg-amber-100/30 dark:bg-amber-400 p-3 text-sm text-black dark:text-black/90">
             {dismissKey ? (
                 <Button
                     variant="ghost"
@@ -72,14 +72,14 @@ export function PluginScopeNotice({ count, dismissKey }: Props) {
                 </Button>
             ) : null}
             <div className="flex items-start gap-2 pr-7">
-                <Info className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+                <Info className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground dark:text-black/90" />
                 <div className="space-y-1">
                     <p className="font-medium">{header}</p>
-                    <p className="text-muted-foreground">
+                    <p className="text-muted-foreground dark:text-black/90">
                         {t.pluginScopeNotice.body}
                     </p>
                     <details className="mt-2 text-xs">
-                        <summary className="cursor-pointer select-none text-muted-foreground hover:text-foreground">
+                        <summary className="cursor-pointer select-none text-muted-foreground dark:text-black/90 hover:text-foreground">
                             {t.pluginScopeNotice.showSteps}
                         </summary>
                         <div className="mt-2 space-y-2 border-l-2 pl-3">
@@ -102,7 +102,7 @@ export function PluginScopeNotice({ count, dismissKey }: Props) {
                                 <p className="font-medium">
                                     {t.pluginScopeNotice.stepPluginLabel}
                                 </p>
-                                <p className="mt-1 text-muted-foreground">
+                                <p className="mt-1 text-muted-foreground dark:text-black/90">
                                     {t.pluginScopeNotice.stepPluginBody}
                                 </p>
                             </div>

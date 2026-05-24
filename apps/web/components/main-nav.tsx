@@ -32,7 +32,7 @@ export function MainNav() {
                         key={link.href}
                         href={link.href}
                         className={cn(
-                            "whitespace-nowrap rounded-none px-3 py-1.5 transition-colors",
+                            "whitespace-nowrap rounded-xs px-3 py-1.5 transition-colors",
                             active
                                 ? "bg-accent font-semibold text-foreground"
                                 : "text-muted-foreground hover:bg-accent hover:text-foreground",

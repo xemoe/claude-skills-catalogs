@@ -23,6 +23,7 @@ export function ThemeToggle({ initialTheme }: { initialTheme: Theme }) {
 
     return (
         <Button
+            className="rounded-sm"
             variant="outline"
             size="icon-sm"
             onClick={toggle}

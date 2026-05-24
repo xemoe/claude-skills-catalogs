@@ -45,13 +45,13 @@ export default async function RootLayout({
                 theme === "dark" && "dark",
             )}
         >
-            <body className="flex min-h-screen flex-col font-sans antialiased">
+            <body className="flex min-h-screen flex-col font-sans antialiased gap-4">
                 <Providers>
                     <LowPolyBackground />
                     <LanguageProvider initialLocale={locale}>
                         <TooltipProvider>
                             <SiteHeader initialTheme={theme} />
-                            <main className="container mx-auto w-full max-w-7xl flex-1 border-x bg-background px-4 py-8 dark:bg-background/74 dark:backdrop-blur">
+                            <main className="container mx-auto w-full max-w-7xl flex-1 border border-1 border-stone-500/30 bg-background px-4 py-8 dark:bg-background/74 dark:backdrop-blur rounded-sm shadow-md">
                                 {children}
                             </main>
                         </TooltipProvider>

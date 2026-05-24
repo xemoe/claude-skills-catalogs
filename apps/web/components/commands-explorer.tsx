@@ -121,7 +121,7 @@ export function CommandsExplorer({ commands }: { commands: Command[] }) {
                             setQuery(e.target.value);
                             setPage(1);
                         }}
-                        className="pl-8"
+                        className="pl-8 rounded-sm"
                     />
                 </div>
                 <Tabs
@@ -138,8 +138,8 @@ export function CommandsExplorer({ commands }: { commands: Command[] }) {
                                 <CountBadge
                                     className={
                                         key === "all"
-                                            ? undefined
-                                            : SKILL_TYPE_META[key].text
+                                            ? 'text-lg'
+                                            : `${SKILL_TYPE_META[key].text} text-lg`
                                     }
                                 >
                                     {counts[key]}
@@ -157,7 +157,7 @@ export function CommandsExplorer({ commands }: { commands: Command[] }) {
                         }}
                     >
                         <SelectTrigger
-                            className="gap-1.5 lg:w-[180px]"
+                            className="gap-1.5 lg:w-[180px] rounded-sm"
                             aria-label={t.common.filterByProject}
                         >
                             <Folder className="h-3.5 w-3.5 shrink-0 opacity-70" />
@@ -181,7 +181,7 @@ export function CommandsExplorer({ commands }: { commands: Command[] }) {
                     }}
                 >
                     <SelectTrigger
-                        className="gap-1.5 lg:w-[180px]"
+                        className="gap-1.5 lg:w-[180px] rounded-sm"
                         aria-label={t.explorer.filterInvocation}
                     >
                         <Sparkles className="h-3.5 w-3.5 shrink-0 opacity-70" />
@@ -206,7 +206,7 @@ export function CommandsExplorer({ commands }: { commands: Command[] }) {
                         setPage(1);
                     }}
                 >
-                    <SelectTrigger className="gap-1.5 lg:w-[180px]">
+                    <SelectTrigger className="gap-1.5 lg:w-[180px] rounded-sm">
                         <ArrowUpDown className="h-3.5 w-3.5 shrink-0 opacity-70" />
                         <SelectValue />
                     </SelectTrigger>
@@ -307,10 +307,11 @@ export function CommandsExplorer({ commands }: { commands: Command[] }) {
                         : t.explorer.emptyCommands(commands.length)}
                 </p>
                 {totalPages > 1 && (
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-4">
                         <Button
-                            variant="outline"
                             size="sm"
+                            variant="outline"
+                            className={'rounded-sm'}
                             disabled={currentPage <= 1}
                             onClick={() => setPage(currentPage - 1)}
                         >
@@ -321,8 +322,9 @@ export function CommandsExplorer({ commands }: { commands: Command[] }) {
                             {t.common.page(currentPage, totalPages)}
                         </span>
                         <Button
-                            variant="outline"
                             size="sm"
+                            variant="outline"
+                            className={'rounded-sm'}
                             disabled={currentPage >= totalPages}
                             onClick={() => setPage(currentPage + 1)}
                         >

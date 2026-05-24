@@ -55,7 +55,7 @@ const EXAMPLE_HOOKS_JSON = `{
 
 function EmptyState({ t }: { t: Dictionary }) {
     return (
-        <div className="rounded-none border border-dashed p-8 sm:p-12">
+        <div className="rounded-none border border-dashed p-8 sm:p-12 rounded-sm">
             <div className="text-center">
                 <h3 className="text-base font-medium">{t.hooksPage.emptyTitle}</h3>
                 <p className="mx-auto mt-2 max-w-lg text-sm text-muted-foreground">

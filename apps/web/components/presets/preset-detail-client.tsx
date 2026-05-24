@@ -74,9 +74,10 @@ export function PresetDetailClient({ presetId }: { presetId: number }) {
                         <Button onClick={() => unarchive.mutate(presetId)}>Unarchive</Button>
                     ) : (
                         <>
-                            <Button onClick={onActivate}>Activate</Button>
+                            <Button className="rounded-sm" onClick={onActivate}>Activate</Button>
                             <Button
                                 variant="outline"
+                                className="rounded-xs"
                                 onClick={() => {
                                     archive.mutate(presetId, {
                                         onSuccess: () => router.push("/presets"),
@@ -94,7 +95,7 @@ export function PresetDetailClient({ presetId }: { presetId: number }) {
                 <div className="flex items-center justify-between">
                     <h2 className="text-base font-semibold">Skills ({skills.length})</h2>
                     {!preset.archivedAt ? (
-                        <Button variant="outline" size="sm" onClick={() => setPickerOpen(true)}>
+                        <Button variant="outline" size="sm" className="rounded-sm" onClick={() => setPickerOpen(true)}>
                             + Add from catalog
                         </Button>
                     ) : null}
@@ -160,7 +161,7 @@ function ItemList({
 }) {
     if (items.length === 0) return <p className="text-sm text-muted-foreground">None yet.</p>;
     return (
-        <ul className="divide-y rounded-none border text-sm">
+        <ul className="divide-y rounded-xs border text-sm">
             {items.map((i) => (
                 <li key={`${i.kind}::${i.identifier}`} className="flex items-center justify-between p-2">
                     <span className="font-mono">{i.identifier}</span>
