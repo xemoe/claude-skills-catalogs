@@ -512,10 +512,15 @@ That feature ships in **v0.3.0** — until it lands, browse the \`vendor/\` dire
     graphPage: {
         title: "Relationship Graph",
         subtitle:
-            "How your deployed skills and commands fit together — clustered around the plugin or project that bundles them, and linked wherever one names another.",
+            "How the skills and commands in your active preset fit together — clustered around the plugin or project that bundles them, and linked wherever one names another.",
+        activePresetLabel: "Active preset:",
+        noActivePresetTitle: "No active preset",
+        noActivePresetDesc:
+            "The graph only renders the skills and commands in your active preset — full-catalogue graphs are too heavy to draw. Activate a preset to see its relationships.",
+        noActivePresetCta: "Manage presets",
         emptyTitle: "Nothing to graph yet",
         empty1:
-            "No skills or commands were discovered, so there are no relationships to draw. Deploy a skill or add a command file, then press ",
+            "The active preset has no items deployed under personal scope, so there are no relationships to draw. Add items to the preset, then press ",
         empty2: ".",
         statsLine: (
             skills: number,
