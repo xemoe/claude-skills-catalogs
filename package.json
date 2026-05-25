@@ -10,8 +10,11 @@
     "scripts": {
         "dev": "cd apps/web && npm run dev",
         "dev:autoport": "cd apps/web && npm run dev:autoport",
+        "dev:portless": "cd apps/web && npm run dev:portless",
         "build": "cd apps/web && npm run build",
         "start": "cd apps/web && npm run start",
+        "start:autoport": "cd apps/web && npm run start:autoport",
+        "start:portless": "cd apps/web && npm run start:portless",
         "lint": "cd apps/web && npm run lint",
         "install:all": "npm install --prefix packages/core && npm install --prefix packages/presets && npm install --prefix apps/web"
     }

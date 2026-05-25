@@ -38,13 +38,21 @@ Run from the repo root (the root `package.json` delegates each script into `apps
 ```bash
 npm run install:all   # install deps for packages/core and apps/web
 npm run dev           # dev server (Turbopack) — http://localhost:4317
+npm run dev:autoport  # dev server on the next free port (no fixed -p)
+npm run dev:portless  # dev server behind portless — https://lector-dev.local
 npm run build         # production build (Turbopack); also runs the TypeScript type-check
 npm start             # serve the production build on :4317
+npm run start:autoport  # production server on the next free port
+npm run start:portless  # production server behind portless — https://lector-prod.local
 ```
 
 After a fresh clone, run `npm run install:all` — a plain root `npm install` only covers the orchestrator, which has no dependencies. You can also run `dev`/`build`/`start` directly inside `apps/web`.
 
 There is no test suite. `npm run build` is the type-correctness check; `npm run dev` is the normal feedback loop. (`npm run lint` exists but ESLint is not configured.)
+
+### Portless (HTTPS local URLs)
+
+`dev:portless` and `start:portless` wrap the autoport variants with [portless](https://github.com/vercel-labs/portless), giving the app stable HTTPS URLs without a fixed port. Two distinct app names (`lector-dev`, `lector-prod`) keep dev and prod from colliding when both are running. The proxy itself must already be running (`portless proxy start`) and the local CA trusted once (`portless trust`). On this machine portless runs in LAN mode, so the URLs use the **`.local`** TLD (resolvable from other devices on the same WiFi) — not `.localhost`. Don't disable LAN mode.
 
 ## Critical: exFAT build constraint
 
