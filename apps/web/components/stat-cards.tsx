@@ -2,12 +2,17 @@
 
 import { Bot, Boxes, Package, SquareSlash } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import type { ScanResult } from "@lector/core/types";
+import type { Skill } from "@lector/core/types";
 import { useT } from "@/lib/i18n/context";
 
-export function StatCards({ result }: { result: ScanResult }) {
+export function StatCards({
+    skills,
+    rootsCount,
+}: {
+    skills: Skill[];
+    rootsCount: number;
+}) {
     const t = useT();
-    const { skills, roots } = result;
 
     const pluginSkills = skills.filter((s) => s.type === "plugin");
     const distinctPlugins = new Set(
@@ -20,7 +25,7 @@ export function StatCards({ result }: { result: ScanResult }) {
         {
             label: t.stats.totalSkills,
             value: skills.length,
-            sub: t.stats.acrossLocations(roots.length),
+            sub: t.stats.acrossLocations(rootsCount),
             Icon: Boxes,
         },
         {

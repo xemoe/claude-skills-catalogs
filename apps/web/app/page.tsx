@@ -63,13 +63,15 @@ export default async function DashboardPage({
                 </p>
             </div>
 
-            <StatCards result={result} />
-
             {result.skills.length === 0 ? (
-                <EmptyState claudeHome={result.claudeHome} t={t} />
+                <>
+                    <StatCards skills={[]} rootsCount={result.roots.length} />
+                    <EmptyState claudeHome={result.claudeHome} t={t} />
+                </>
             ) : (
                 <SkillsExplorer
                     skills={result.skills}
+                    rootsCount={result.roots.length}
                     presetFilter={{
                         presets: membership.presets,
                         initialPresetId,

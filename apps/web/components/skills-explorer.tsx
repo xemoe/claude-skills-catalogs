@@ -38,6 +38,7 @@ import { SourceBadge } from "@/components/source-badge";
 import { CountBadge } from "@/components/count-badge";
 import { ModelInvocationBadge } from "@/components/model-invocation-badge";
 import { PluginScopeNotice } from "@/components/plugin-scope-notice";
+import { StatCards } from "@/components/stat-cards";
 import { formatDate } from "@/lib/utils";
 import { useT } from "@/lib/i18n/context";
 import type { Skill, SkillType } from "@lector/core/types";
@@ -59,9 +60,11 @@ type PresetFilter = {
 
 export function SkillsExplorer({
     skills,
+    rootsCount,
     presetFilter,
 }: {
     skills: Skill[];
+    rootsCount: number;
     presetFilter?: PresetFilter;
 }) {
     const router = useRouter();
@@ -87,28 +90,15 @@ export function SkillsExplorer({
         return map;
     }, [presetFilter]);
 
-    const counts = useMemo(() => {
-        const c: Record<TypeFilter, number> = {
-            all: skills.length,
-            personal: 0,
-            plugin: 0,
-            project: 0,
-            local: 0,
-        };
-        for (const s of skills) c[s.type]++;
-        return c;
-    }, [skills]);
-
     const projects = useMemo(() => {
         const set = new Set<string>();
         for (const s of skills) if (s.project?.name) set.add(s.project.name);
         return [...set].sort((a, b) => a.localeCompare(b));
     }, [skills]);
 
-    const filtered = useMemo(() => {
+    const prefilteredForTabs = useMemo(() => {
         const q = query.trim().toLowerCase();
-        const list = skills.filter((s) => {
-            if (typeFilter !== "all" && s.type !== typeFilter) return false;
+        return skills.filter((s) => {
             if (projectFilter !== "all" && s.project?.name !== projectFilter)
                 return false;
             if (invocationFilter === "model" && s.disableModelInvocation)
@@ -128,13 +118,32 @@ export function SkillsExplorer({
                 s.source.label.toLowerCase().includes(q)
             );
         });
-        return list.sort((a, b) => {
+    }, [skills, query, projectFilter, invocationFilter, presetId, membership]);
+
+    const counts = useMemo(() => {
+        const c: Record<TypeFilter, number> = {
+            all: prefilteredForTabs.length,
+            personal: 0,
+            plugin: 0,
+            project: 0,
+            local: 0,
+        };
+        for (const s of prefilteredForTabs) c[s.type]++;
+        return c;
+    }, [prefilteredForTabs]);
+
+    const filtered = useMemo(() => {
+        const list =
+            typeFilter === "all"
+                ? prefilteredForTabs
+                : prefilteredForTabs.filter((s) => s.type === typeFilter);
+        return [...list].sort((a, b) => {
             if (sort === "name") return a.name.localeCompare(b.name);
             if (sort === "usage")
                 return (b.usage?.usageCount ?? 0) - (a.usage?.usageCount ?? 0);
             return Date.parse(b.lastUpdated) - Date.parse(a.lastUpdated);
         });
-    }, [skills, query, typeFilter, projectFilter, invocationFilter, presetId, membership, sort]);
+    }, [prefilteredForTabs, typeFilter, sort]);
 
     const invocationLabel: Record<InvocationFilter, string> = {
         all: t.explorer.invocationAll,
@@ -158,6 +167,7 @@ export function SkillsExplorer({
 
     return (
         <div className="space-y-4">
+            <StatCards skills={filtered} rootsCount={rootsCount} />
             <div className="flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-center">
                 <div className="relative lg:max-w-xs lg:flex-1">
                     <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />

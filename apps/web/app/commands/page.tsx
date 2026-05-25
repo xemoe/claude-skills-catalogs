@@ -63,13 +63,18 @@ export default async function CommandsPage({
                 </p>
             </div>
 
-            <CommandStatCards result={result} />
-
             {result.commands.length === 0 ? (
-                <EmptyState claudeHome={result.claudeHome} t={t} />
+                <>
+                    <CommandStatCards
+                        commands={[]}
+                        rootsCount={result.roots.length}
+                    />
+                    <EmptyState claudeHome={result.claudeHome} t={t} />
+                </>
             ) : (
                 <CommandsExplorer
                     commands={result.commands}
+                    rootsCount={result.roots.length}
                     presetFilter={{
                         presets: membership.presets,
                         initialPresetId,

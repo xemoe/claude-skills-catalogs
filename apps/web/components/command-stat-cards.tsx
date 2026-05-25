@@ -2,12 +2,17 @@
 
 import { Bot, Package, SquareSlash, SquareTerminal } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import type { CommandScanResult } from "@lector/core/types";
+import type { Command } from "@lector/core/types";
 import { useT } from "@/lib/i18n/context";
 
-export function CommandStatCards({ result }: { result: CommandScanResult }) {
+export function CommandStatCards({
+    commands,
+    rootsCount,
+}: {
+    commands: Command[];
+    rootsCount: number;
+}) {
     const t = useT();
-    const { commands, roots } = result;
 
     const pluginCommands = commands.filter((c) => c.scope === "plugin");
     const distinctPlugins = new Set(
@@ -22,7 +27,7 @@ export function CommandStatCards({ result }: { result: CommandScanResult }) {
         {
             label: t.stats.totalCommands,
             value: commands.length,
-            sub: t.stats.acrossLocations(roots.length),
+            sub: t.stats.acrossLocations(rootsCount),
             Icon: SquareTerminal,
         },
         {

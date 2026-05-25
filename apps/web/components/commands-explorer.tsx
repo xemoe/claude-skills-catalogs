@@ -38,6 +38,7 @@ import { SourceBadge } from "@/components/source-badge";
 import { CountBadge } from "@/components/count-badge";
 import { ModelInvocationBadge } from "@/components/model-invocation-badge";
 import { PluginScopeNotice } from "@/components/plugin-scope-notice";
+import { CommandStatCards } from "@/components/command-stat-cards";
 import { formatDate } from "@/lib/utils";
 import { useT } from "@/lib/i18n/context";
 import type { Command, CommandScope } from "@lector/core/types";
@@ -59,9 +60,11 @@ type PresetFilter = {
 
 export function CommandsExplorer({
     commands,
+    rootsCount,
     presetFilter,
 }: {
     commands: Command[];
+    rootsCount: number;
     presetFilter?: PresetFilter;
 }) {
     const router = useRouter();
@@ -87,27 +90,15 @@ export function CommandsExplorer({
         return map;
     }, [presetFilter]);
 
-    const counts = useMemo(() => {
-        const c: Record<ScopeFilter, number> = {
-            all: commands.length,
-            personal: 0,
-            plugin: 0,
-            project: 0,
-        };
-        for (const cmd of commands) c[cmd.scope]++;
-        return c;
-    }, [commands]);
-
     const projects = useMemo(() => {
         const set = new Set<string>();
         for (const c of commands) if (c.project?.name) set.add(c.project.name);
         return [...set].sort((a, b) => a.localeCompare(b));
     }, [commands]);
 
-    const filtered = useMemo(() => {
+    const prefilteredForTabs = useMemo(() => {
         const q = query.trim().toLowerCase();
-        const list = commands.filter((c) => {
-            if (scopeFilter !== "all" && c.scope !== scopeFilter) return false;
+        return commands.filter((c) => {
             if (projectFilter !== "all" && c.project?.name !== projectFilter)
                 return false;
             if (invocationFilter === "model" && c.disableModelInvocation)
@@ -127,11 +118,29 @@ export function CommandsExplorer({
                 c.source.label.toLowerCase().includes(q)
             );
         });
-        return list.sort((a, b) => {
+    }, [commands, query, projectFilter, invocationFilter, presetId, membership]);
+
+    const counts = useMemo(() => {
+        const c: Record<ScopeFilter, number> = {
+            all: prefilteredForTabs.length,
+            personal: 0,
+            plugin: 0,
+            project: 0,
+        };
+        for (const cmd of prefilteredForTabs) c[cmd.scope]++;
+        return c;
+    }, [prefilteredForTabs]);
+
+    const filtered = useMemo(() => {
+        const list =
+            scopeFilter === "all"
+                ? prefilteredForTabs
+                : prefilteredForTabs.filter((c) => c.scope === scopeFilter);
+        return [...list].sort((a, b) => {
             if (sort === "name") return a.name.localeCompare(b.name);
             return Date.parse(b.lastUpdated) - Date.parse(a.lastUpdated);
         });
-    }, [commands, query, scopeFilter, projectFilter, invocationFilter, presetId, membership, sort]);
+    }, [prefilteredForTabs, scopeFilter, sort]);
 
     const invocationLabel: Record<InvocationFilter, string> = {
         all: t.explorer.invocationAll,
@@ -154,6 +163,7 @@ export function CommandsExplorer({
 
     return (
         <div className="space-y-4">
+            <CommandStatCards commands={filtered} rootsCount={rootsCount} />
             <div className="flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-center">
                 <div className="relative lg:max-w-xs lg:flex-1">
                     <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
