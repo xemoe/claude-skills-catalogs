@@ -336,11 +336,11 @@ export function AnalyticsExplorer({
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <StatCard
                     label={t.analytics.trackedInvocations}
-                    value={analytics.totalEvents}
+                    value={winCount}
                     sub={
-                        analytics.totalEvents > 0
-                            ? t.analytics.acrossTranscripts(analytics.transcriptFiles)
-                            : t.analytics.noActivityYet
+                        analytics.totalEvents === 0
+                            ? t.analytics.noActivityYet
+                            : `${windowMeta.long} · ${t.analytics.acrossTranscripts(analytics.transcriptFiles)}`
                     }
                     Icon={Activity}
                 />
