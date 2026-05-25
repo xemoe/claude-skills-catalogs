@@ -7,3 +7,6 @@
 [submodule "vendor/ui-ux-pro-max-skill"]
 	path = vendor/ui-ux-pro-max-skill
 	url = https://github.com/nextlevelbuilder/ui-ux-pro-max-skill.git
+[submodule "vendor/anthropic-cybersecurity-skills"]
+	path = vendor/anthropic-cybersecurity-skills
+	url = git@github.com:mukul975/Anthropic-Cybersecurity-Skills.git
