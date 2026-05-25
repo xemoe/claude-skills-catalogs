@@ -39,9 +39,10 @@ import { CountBadge } from "@/components/count-badge";
 import { ModelInvocationBadge } from "@/components/model-invocation-badge";
 import { PluginScopeNotice } from "@/components/plugin-scope-notice";
 import { CommandStatCards } from "@/components/command-stat-cards";
+import { useCommandsScan } from "@/components/scanner/use-scanner-queries";
 import { formatDate } from "@/lib/utils";
 import { useT } from "@/lib/i18n/context";
-import type { Command, CommandScope } from "@lector/core/types";
+import type { CommandScope } from "@lector/core/types";
 import type { Preset } from "@lector/presets/types";
 
 type SortKey = "updated" | "name";
@@ -59,17 +60,16 @@ type PresetFilter = {
 };
 
 export function CommandsExplorer({
-    commands,
-    rootsCount,
     presetFilter,
 }: {
-    commands: Command[];
-    rootsCount: number;
     presetFilter?: PresetFilter;
 }) {
     const router = useRouter();
     const searchParams = useSearchParams();
     const t = useT();
+    const { data } = useCommandsScan();
+    const commands = data?.commands ?? [];
+    const rootsCount = data?.roots.length ?? 0;
     const [query, setQuery] = useState("");
     const [scopeFilter, setScopeFilter] = useState<ScopeFilter>("all");
     const [projectFilter, setProjectFilter] = useState("all");

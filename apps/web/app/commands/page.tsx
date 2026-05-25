@@ -1,6 +1,12 @@
 import { AlertTriangle } from "lucide-react";
+import {
+    HydrationBoundary,
+    QueryClient,
+    dehydrate,
+} from "@tanstack/react-query";
 import { CommandStatCards } from "@/components/command-stat-cards";
 import { CommandsExplorer } from "@/components/commands-explorer";
+import { scannerQk } from "@/components/scanner/scanner-query-keys";
 import { InlineCode } from "@/components/inline-code";
 import { scanCommands } from "@lector/core/command-scanner";
 import { loadPresetMembership } from "@lector/presets/membership";
@@ -43,6 +49,9 @@ export default async function CommandsPage({
             ? rawPresetId
             : null;
 
+    const queryClient = new QueryClient();
+    queryClient.setQueryData(scannerQk.commands(), result);
+
     return (
         <div className="space-y-4">
             <div className="flex flex-wrap items-end justify-between gap-3">
@@ -72,15 +81,15 @@ export default async function CommandsPage({
                     <EmptyState claudeHome={result.claudeHome} t={t} />
                 </>
             ) : (
-                <CommandsExplorer
-                    commands={result.commands}
-                    rootsCount={result.roots.length}
-                    presetFilter={{
-                        presets: membership.presets,
-                        initialPresetId,
-                        itemsByPreset: membership.itemsByPreset,
-                    }}
-                />
+                <HydrationBoundary state={dehydrate(queryClient)}>
+                    <CommandsExplorer
+                        presetFilter={{
+                            presets: membership.presets,
+                            initialPresetId,
+                            itemsByPreset: membership.itemsByPreset,
+                        }}
+                    />
+                </HydrationBoundary>
             )}
 
             {result.errors.length > 0 && (
