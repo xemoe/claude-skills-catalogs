@@ -14,7 +14,7 @@ External Claude Skills are vendored into this repo as **git submodules under `ve
 - **Installing a skill means copying that skill directory** into a location Claude Code discovers:
   - **personal** — `~/.claude/skills/` — the skill works in every project.
   - **project** — `<repo>/.claude/skills/` — the skill works only in this repo.
-- This repo lives on an exFAT volume, which cannot store symlinks, so installing **copies** the folder rather than linking it. That means an installed skill is a snapshot — re-run install with `--force` to pick up upstream changes.
+- This repo lives on an exFAT volume, which cannot store symlinks, so installing **copies** the folder rather than linking it. That means an installed skill is a snapshot — to pick up upstream changes, re-run install and pick the `override` resolution when prompted (see [Handling install conflicts](#handling-install-conflicts)).
 
 ## Helper script
 
@@ -46,9 +46,32 @@ Run the script with `--help` for the full option list. It needs no dependencies 
    node .claude/skills/install-vendor-skill/scripts/vendor-skills.mjs install <name> --target personal
    ```
    - If a name is ambiguous, the script prints the matching paths — re-run `install` with one of those paths.
-   - Add `--force` to overwrite an existing install (use this to refresh a skill after its submodule was updated).
    - Add `--as <name>` to install under a different directory name.
+   - If a skill with the same name is already installed at the target, the script **stops and prints a comparison table** instead of overwriting silently — see [Handling install conflicts](#handling-install-conflicts).
 4. **Confirm** — run `installed --target <same target>`, or open the catalog (`npm run dev`) and click Rescan to see it listed.
+
+## Handling install conflicts
+
+Installing **never overwrites an existing skill silently**. There is no `--force` flag.
+
+When the target directory already contains a skill with the same install name, the script:
+
+1. Stops before touching any files.
+2. Prints a comparison table (name, path, source repo, pinned commit, install timestamp, description) for the existing copy and the new vendor copy.
+3. Lists three resolutions and the exact re-run command for each.
+4. Exits with status code **`2`** (so callers can distinguish "conflict" from a generic error).
+
+Pick **one** resolution and re-run with the matching flag — never re-issue the bare install hoping it will work:
+
+| Choice | Flag | Effect |
+| --- | --- | --- |
+| 1. Override | `--on-conflict=override` | Delete the existing install and replace it with the new vendor copy. Use this to refresh a skill after its submodule was updated. |
+| 2. Skip | `--on-conflict=skip` | Keep the existing install untouched. Do not install the new copy. The script exits 0. |
+| 3. Rename | `--on-conflict=rename` | Install the new copy under `<name>-YYYYMMDDTHHMMSS` alongside the existing one. Both coexist; you decide later which to keep. |
+
+**When you (or the user) is unsure, default to `skip` or `rename`** — both are non-destructive. Only choose `override` after the user has seen the comparison and explicitly confirmed.
+
+Passing `--on-conflict=...` when there is **no** existing install is a no-op; the script logs a note and proceeds with a normal install.
 
 ## Adding a new skills repo as a submodule
 
@@ -70,7 +93,7 @@ Pull the latest upstream commits for a vendored repo:
 git submodule update --remote vendor/<short-name>
 ```
 
-Then re-run `install <name> --force` for any skill you had already installed, so the installed copy reflects the update.
+Then re-run `install <name>` for any skill you had already installed. The script will detect the existing copy, print the comparison table, and you re-run with `--on-conflict=override` to replace it (see [Handling install conflicts](#handling-install-conflicts)).
 
 ## Notes
 
