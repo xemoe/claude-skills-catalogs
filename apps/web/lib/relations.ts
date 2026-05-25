@@ -3,6 +3,7 @@ import { scanCommands } from "@lector/core/command-scanner";
 import { parseCommandMd } from "@lector/core/command-parser";
 import { scanSkills } from "@lector/core/scanner";
 import { parseSkillMd } from "@lector/core/skill-parser";
+import { listPresetItems } from "@lector/presets/presets";
 import { type Locale, DEFAULT_LOCALE } from "./i18n/config";
 import { getDictionary, type Dictionary } from "./i18n/dictionaries";
 import type { Command, Skill } from "@lector/core/types";
@@ -69,7 +70,19 @@ export interface RelationGraph {
 }
 
 const CACHE_TTL_MS = 8000;
-let cache: { graph: RelationGraph; at: number; locale: Locale } | null = null;
+let cache:
+    | { graph: RelationGraph; at: number; locale: Locale; presetId: number | null }
+    | null = null;
+
+function emptyGraph(): RelationGraph {
+    return {
+        nodes: [],
+        clusters: [],
+        edges: [],
+        stats: { skills: 0, commands: 0, clusters: 0, references: 0 },
+        scannedAt: new Date().toISOString(),
+    };
+}
 
 function escapeRegExp(s: string): string {
     return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -119,25 +132,61 @@ function commandCluster(command: Command, dict: Dictionary): ClusterRef {
 }
 
 /**
- * Builds a relationship graph of every deployed skill and command: which ones
- * are bundled together (clusters) and which ones reference each other.
+ * Builds a relationship graph restricted to the items in the given preset.
+ * When `presetId` is null/undefined (no active preset) returns an empty graph —
+ * the page deliberately never renders the full catalogue, which is too heavy
+ * with many deployed skills.
  */
 export function buildRelationGraph(
-    opts: { force?: boolean; locale?: Locale } = {},
+    opts: { force?: boolean; locale?: Locale; presetId?: number | null } = {},
 ): RelationGraph {
     const locale = opts.locale ?? DEFAULT_LOCALE;
+    const presetId = opts.presetId ?? null;
+
     if (
         !opts.force &&
         cache &&
         cache.locale === locale &&
+        cache.presetId === presetId &&
         Date.now() - cache.at < CACHE_TTL_MS
     ) {
         return cache.graph;
     }
 
+    if (presetId == null) {
+        const graph = emptyGraph();
+        cache = { graph, at: Date.now(), locale, presetId };
+        return graph;
+    }
+
+    let presetSkillNames: Set<string> | null = null;
+    let presetCommandNames: Set<string> | null = null;
+    try {
+        const items = listPresetItems(presetId);
+        presetSkillNames = new Set();
+        presetCommandNames = new Set();
+        for (const item of items) {
+            if (item.kind === "skill") presetSkillNames.add(item.identifier);
+            else presetCommandNames.add(item.identifier);
+        }
+    } catch {
+        // Preset DB is unavailable — return empty rather than rendering the full
+        // catalogue, which is the explicit anti-pattern this page is avoiding.
+        const graph = emptyGraph();
+        cache = { graph, at: Date.now(), locale, presetId };
+        return graph;
+    }
+
     const dict = getDictionary(locale);
     const skillScan = scanSkills(opts);
     const commandScan = scanCommands(opts);
+
+    const filteredSkills = presetSkillNames
+        ? skillScan.skills.filter((s) => presetSkillNames!.has(s.name))
+        : [];
+    const filteredCommands = presetCommandNames
+        ? commandScan.commands.filter((c) => presetCommandNames!.has(c.name))
+        : [];
 
     const nodes: RelationNode[] = [];
     const clusters = new Map<string, RelationCluster>();
@@ -150,7 +199,7 @@ export function buildRelationGraph(
         else clusters.set(ref.id, { id: ref.id, kind: ref.kind, label: ref.label, size: 1 });
     };
 
-    for (const skill of skillScan.skills) {
+    for (const skill of filteredSkills) {
         const cluster = skillCluster(skill, dict);
         registerCluster(cluster);
         const id = `s:${skill.id}`;
@@ -169,7 +218,7 @@ export function buildRelationGraph(
         bodies.set(id, parseSkillMd(skill.skillMdPath).body.toLowerCase());
     }
 
-    for (const command of commandScan.commands) {
+    for (const command of filteredCommands) {
         const cluster = commandCluster(command, dict);
         registerCluster(cluster);
         const id = `c:${command.id}`;
@@ -268,14 +317,14 @@ export function buildRelationGraph(
         clusters: clusterList,
         edges: [...membershipEdges, ...referenceEdges],
         stats: {
-            skills: skillScan.skills.length,
-            commands: commandScan.commands.length,
+            skills: filteredSkills.length,
+            commands: filteredCommands.length,
             clusters: clusterList.length,
             references: referenceEdges.length,
         },
         scannedAt: new Date().toISOString(),
     };
 
-    cache = { graph, at: Date.now(), locale };
+    cache = { graph, at: Date.now(), locale, presetId };
     return graph;
 }
