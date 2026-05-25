@@ -39,9 +39,10 @@ import { CountBadge } from "@/components/count-badge";
 import { ModelInvocationBadge } from "@/components/model-invocation-badge";
 import { PluginScopeNotice } from "@/components/plugin-scope-notice";
 import { StatCards } from "@/components/stat-cards";
+import { useSkillsScan } from "@/components/scanner/use-scanner-queries";
 import { formatDate } from "@/lib/utils";
 import { useT } from "@/lib/i18n/context";
-import type { Skill, SkillType } from "@lector/core/types";
+import type { SkillType } from "@lector/core/types";
 import type { Preset } from "@lector/presets/types";
 
 type SortKey = "updated" | "name" | "usage";
@@ -59,17 +60,16 @@ type PresetFilter = {
 };
 
 export function SkillsExplorer({
-    skills,
-    rootsCount,
     presetFilter,
 }: {
-    skills: Skill[];
-    rootsCount: number;
     presetFilter?: PresetFilter;
 }) {
     const router = useRouter();
     const searchParams = useSearchParams();
     const t = useT();
+    const { data } = useSkillsScan();
+    const skills = data?.skills ?? [];
+    const rootsCount = data?.roots.length ?? 0;
     const [query, setQuery] = useState("");
     const [typeFilter, setTypeFilter] = useState<TypeFilter>("all");
     const [projectFilter, setProjectFilter] = useState("all");

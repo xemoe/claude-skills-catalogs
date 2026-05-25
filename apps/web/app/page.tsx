@@ -1,6 +1,12 @@
 import { AlertTriangle } from "lucide-react";
+import {
+    HydrationBoundary,
+    QueryClient,
+    dehydrate,
+} from "@tanstack/react-query";
 import { StatCards } from "@/components/stat-cards";
 import { SkillsExplorer } from "@/components/skills-explorer";
+import { scannerQk } from "@/components/scanner/scanner-query-keys";
 import { InlineCode } from "@/components/inline-code";
 import { scanSkills } from "@lector/core/scanner";
 import { loadPresetMembership } from "@lector/presets/membership";
@@ -43,6 +49,9 @@ export default async function DashboardPage({
             ? rawPresetId
             : null;
 
+    const queryClient = new QueryClient();
+    queryClient.setQueryData(scannerQk.skills(), result);
+
     return (
         <div className="space-y-4">
             <div className="flex flex-wrap items-end justify-between gap-3">
@@ -69,15 +78,15 @@ export default async function DashboardPage({
                     <EmptyState claudeHome={result.claudeHome} t={t} />
                 </>
             ) : (
-                <SkillsExplorer
-                    skills={result.skills}
-                    rootsCount={result.roots.length}
-                    presetFilter={{
-                        presets: membership.presets,
-                        initialPresetId,
-                        itemsByPreset: membership.itemsByPreset,
-                    }}
-                />
+                <HydrationBoundary state={dehydrate(queryClient)}>
+                    <SkillsExplorer
+                        presetFilter={{
+                            presets: membership.presets,
+                            initialPresetId,
+                            itemsByPreset: membership.itemsByPreset,
+                        }}
+                    />
+                </HydrationBoundary>
             )}
 
             {result.errors.length > 0 && (
