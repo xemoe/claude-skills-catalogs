@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { FolderGit2, HardDrive, Package, User } from "lucide-react";
+import { createPortal } from "react-dom";
+import { FolderGit2, HardDrive, Maximize2, Minimize2, Package, User } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CountBadge } from "@/components/count-badge";
 import { RelationGraphScene } from "@/components/relation-graph-scene";
@@ -59,10 +60,17 @@ function Legend() {
     );
 }
 
-function GraphChrome({ graph }: { graph: RelationGraph }) {
+interface GraphChromeProps {
+    graph: RelationGraph;
+    fullscreen: boolean;
+    onToggleFullscreen: () => void;
+}
+
+function GraphChrome({ graph, fullscreen, onToggleFullscreen }: GraphChromeProps) {
     const t = useT();
     const [filter, setFilter] = useState<GraphFilter>("all");
     const data = useMemo(() => buildForceData(graph, filter), [graph, filter]);
+    const fullscreenLabel = fullscreen ? t.graph.exitFullscreen : t.graph.enterFullscreen;
 
     return (
         <>
@@ -90,6 +98,22 @@ function GraphChrome({ graph }: { graph: RelationGraph }) {
                     </Tabs>
                 </div>
 
+                <button
+                    type="button"
+                    onClick={onToggleFullscreen}
+                    aria-label={fullscreenLabel}
+                    title={fullscreenLabel}
+                    aria-pressed={fullscreen}
+                    className="pointer-events-auto absolute right-3 top-3 flex items-center gap-1.5 border bg-card/90 px-2.5 py-1.5 text-xs font-medium text-foreground shadow-sm backdrop-blur transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                    {fullscreen ? (
+                        <Minimize2 className="h-3.5 w-3.5" />
+                    ) : (
+                        <Maximize2 className="h-3.5 w-3.5" />
+                    )}
+                    <span>{fullscreenLabel}</span>
+                </button>
+
                 <div className="pointer-events-auto absolute bottom-3 left-3">
                     <Legend />
                 </div>
@@ -107,12 +131,40 @@ export function RelationGraph({ graph }: { graph: RelationGraph }) {
     // the browser — gate it behind a mount flag to avoid a hydration mismatch.
     const t = useT();
     const [mounted, setMounted] = useState(false);
+    const [fullscreen, setFullscreen] = useState(false);
     useEffect(() => setMounted(true), []);
 
-    return (
-        <div className="relative h-[calc(100vh-15rem)] min-h-[600px] w-full overflow-hidden border ring-1 ring-foreground/10">
+    // While the graph fills the page, lock body scroll and let Escape close it.
+    // The scene's own ResizeObserver re-fits the canvas to the new bounds.
+    useEffect(() => {
+        if (!fullscreen) return;
+        const onKey = (e: KeyboardEvent) => {
+            if (e.key === "Escape") setFullscreen(false);
+        };
+        const previousOverflow = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+        window.addEventListener("keydown", onKey);
+        return () => {
+            document.body.style.overflow = previousOverflow;
+            window.removeEventListener("keydown", onKey);
+        };
+    }, [fullscreen]);
+
+    const container = (
+        <div
+            className={cn(
+                "relative w-full overflow-hidden border ring-1 ring-foreground/10",
+                fullscreen
+                    ? "h-[100dvh] border-0 bg-background ring-0"
+                    : "h-[calc(100vh-15rem)] min-h-[600px]",
+            )}
+        >
             {mounted ? (
-                <GraphChrome graph={graph} />
+                <GraphChrome
+                    graph={graph}
+                    fullscreen={fullscreen}
+                    onToggleFullscreen={() => setFullscreen((value) => !value)}
+                />
             ) : (
                 <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
                     {t.common.loadingGraph}
@@ -120,4 +172,16 @@ export function RelationGraph({ graph }: { graph: RelationGraph }) {
             )}
         </div>
     );
+
+    // In fullscreen, portal to <body> so the overlay escapes the app shell's
+    // stacking context (the <main> backdrop-blur traps a plain `fixed` child)
+    // and covers the whole browser viewport — site header included.
+    if (fullscreen && mounted) {
+        return createPortal(
+            <div className="fixed inset-0 z-[100] bg-background">{container}</div>,
+            document.body,
+        );
+    }
+
+    return container;
 }

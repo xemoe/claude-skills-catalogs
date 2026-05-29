@@ -539,6 +539,8 @@ That feature ships in **v0.3.0** — until it lands, browse the \`vendor/\` dire
         bundledTogether: "bundled together",
         references: "references",
         controlsHint: "Drag to rotate · scroll to zoom · click a node to open it",
+        enterFullscreen: "View full page",
+        exitFullscreen: "Exit full page",
     },
 
     sources: {

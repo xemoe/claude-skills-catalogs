@@ -518,6 +518,8 @@ Keep the explanation tight — three short paragraphs at most.`,
         bundledTogether: "รวมอยู่ด้วยกัน",
         references: "การอ้างอิง",
         controlsHint: "ลากเพื่อหมุน · เลื่อนเพื่อซูม · คลิกโหนดเพื่อเปิด",
+        enterFullscreen: "ดูแบบเต็มหน้าจอ",
+        exitFullscreen: "ออกจากเต็มหน้าจอ",
     },
 
     sources: {
