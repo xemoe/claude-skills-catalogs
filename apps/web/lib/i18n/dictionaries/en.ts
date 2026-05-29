@@ -538,10 +538,7 @@ That feature ships in **v0.3.0** — until it lands, browse the \`vendor/\` dire
         legend: "Legend",
         bundledTogether: "bundled together",
         references: "references",
-        hubMeta: (kind: string, count: number) =>
-            `${kind} · ${count} item${count === 1 ? "" : "s"}`,
-        referencesBadge: (count: number) =>
-            `Linked to ${count} other ${count === 1 ? "item" : "items"}`,
+        controlsHint: "Drag to rotate · scroll to zoom · click a node to open it",
     },
 
     sources: {

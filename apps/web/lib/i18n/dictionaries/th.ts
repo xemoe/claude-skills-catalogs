@@ -517,8 +517,7 @@ Keep the explanation tight — three short paragraphs at most.`,
         legend: "คำอธิบาย",
         bundledTogether: "รวมอยู่ด้วยกัน",
         references: "การอ้างอิง",
-        hubMeta: (kind, count) => `${kind} · ${count} รายการ`,
-        referencesBadge: (count) => `เชื่อมโยงกับอีก ${count} รายการ`,
+        controlsHint: "ลากเพื่อหมุน · เลื่อนเพื่อซูม · คลิกโหนดเพื่อเปิด",
     },
 
     sources: {
