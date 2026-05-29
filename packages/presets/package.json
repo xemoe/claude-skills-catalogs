@@ -5,7 +5,7 @@
     "description": "Preset engine — SQLite-backed bundles of skills + commands that can be activated to toggle disable-model-invocation in the personal scope. The only mutating surface in the project.",
     "type": "module",
     "dependencies": {
-        "better-sqlite3": "^11.5.0",
+        "better-sqlite3": "^12.10.0",
         "gray-matter": "^4.0.3",
         "zod": "^3.23.8"
     },
